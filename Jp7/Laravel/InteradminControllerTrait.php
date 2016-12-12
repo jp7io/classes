@@ -34,7 +34,8 @@ trait InteradminControllerTrait
         return response(date('c'))
             ->withCookie($cookie)
             ->withHeaders([
-                'Access-Control-Allow-Origin' => '*'
+                'Access-Control-Allow-Origin' => $request->header('origin'),
+                'Access-Control-Allow-Credentials' => 'true'
             ]);
     }
     // Used to invalidate cache
