@@ -29,27 +29,16 @@ class QaAuth
         if (!App::environment('staging') && !starts_with($request->getHttpHost(), 'alt.')) {
             return true;
         }
-        // Server: Allow our IPs
-        $allowedClients = [
-            'aws01forge.jp7.com.br',
-            'aws11forge.ci.com.br',
-            'aws11.ci.com.br',
-            'aws01.jp7.com.br',
-            'loc01.jp7.com.br',
-            'loc02.jp7.com.br',
-            'aws01.ci.com.br',
-            'aws03.ci.com.br',
-        ];
-        foreach ($allowedClients as $hostname) {
-            if (gethostbyname($hostname) === $request->ip()) {
-                return true;
-            }
+        // Allow API calls
+        if ($request->ajax() || $request->wantsJson()) {
+            return true;
+        }
+        // Allow PHP file_get_contents() calls
+        if (empty($_SERVER['HTTP_USER_AGENT'])) {
+            return true;
         }
         // Browser: HTTP authentication
         $name = config('app.name');
-        if (isset($_SERVER['PHP_AUTH_USER']) && $_SERVER['PHP_AUTH_USER'] === $name && $_SERVER['PHP_AUTH_PW'] === $name) {
-            return true;
-        }
-        return false;
+        return (isset($_SERVER['PHP_AUTH_USER']) && $_SERVER['PHP_AUTH_USER'] === $name && $_SERVER['PHP_AUTH_PW'] === $name);
     }
 }
