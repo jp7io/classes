@@ -94,23 +94,28 @@ if (!function_exists('interadmin_data')) {
      * @param $object
      * @param string $search
      */
-    function dm($object, $search = '.*')
+    function dm($object, string $search = '.*')
     {
-        assert(is_string($search));
         $methods = [];
         if (is_object($object)) {
             $methods = get_class_methods($object);
             $methods = array_filter($methods, function ($a) use ($search) {
                 return preg_match('/'.$search.'/i', $a);
             });
+            sort($methods);
             foreach ($methods as $key => $method) {
                 $args = [];
                 $reflection = new ReflectionMethod($object, $method);
                 foreach ($reflection->getParameters() as $param) {
                     $default = '';
                     if ($param->isOptional()) {
+                        try {
                         $default = str_replace("\n", '', var_export($param->getDefaultValue(), true));
                         $default = str_replace('array ()', '[]', $default);
+                        } catch (Throwable $t) {
+                            $default = '__ERROR__';
+                            Log::warning($t);
+                        }
                     }
                     $args[] = ltrim($param->getType().' $').$param->name.($default ? ' = '.$default : '');
                 }
