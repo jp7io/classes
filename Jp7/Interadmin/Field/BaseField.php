@@ -131,8 +131,8 @@ abstract class BaseField implements FieldInterface
     protected function getValue()
     {
         $column = $this->id;
-        $value = $this->record->$column;
-        if (!$this->record->id && !$value) {
+        $value = $this->record ? $this->record->$column : null;
+        if (empty($this->record->id) && !$value) {
             $value = $this->getDefaultValue();
         }
         return $value;
