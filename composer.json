@@ -10,10 +10,11 @@
     }
   ],
   "require": {
-    "jp7internet/interadmin-orm": "3.2.x-dev",
-    "jp7internet/classes-deprecated": "3.2.x-dev"
+    
   },
   "require-dev": {
+    "jp7internet/interadmin-orm": "3.2.x-dev",
+    "jp7internet/classes-deprecated": "3.2.x-dev",
     "phpunit/phpunit": "^4.8",
     "jp7internet/inc": "dev-master"
   },
