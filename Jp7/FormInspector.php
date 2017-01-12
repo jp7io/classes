@@ -10,7 +10,7 @@ class FormInspector
 {
     public function crawler($url, $filter)
     {
-        $html = file_get_contents($url);
+        $html = url_get_contents($url);
 
         return $this->crawlerFromHtml($html, $filter);
     }
