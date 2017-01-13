@@ -42,6 +42,9 @@ if (!function_exists('interadmin_data')) {
         }
     }
 
+    /**
+     * @deprecated
+     */
     function error_controller($action)
     {
         $request = Request::create('/error/'.$action, 'GET', []);
@@ -64,11 +67,17 @@ if (!function_exists('interadmin_data')) {
         return ImgResize::tag($img, $template, $options);
     }
 
+    /**
+     * @deprecated
+     */
     function _try($object)
     {
         return $object ?: new \Jp7\NullObject();
     }
 
+    /**
+     * @deprecated
+     */
     function memoize(Closure $closure)
     {
         static $memoized = [];
@@ -162,7 +171,7 @@ if (!function_exists('interadmin_data')) {
         }
         return route($prefix.$name, $parameters, $absolute);
     }
-    
+
     function url_get_contents($url, array $contextOptions = [])
     {
         if (ends_with(parse_url($url)['host'], '.dev')) {
@@ -176,6 +185,62 @@ if (!function_exists('interadmin_data')) {
         }
         $context = stream_context_create($contextOptions);
         return file_get_contents($url, false, $context);
+    }
+}
+if (!function_exists('interadmin_tipos_campos_encode')) {
+    /**
+     * Transforma array de campos em string separada por ; e {,} no formato do InterAdmin.
+     *
+     * @param array $campos
+     *
+     * @return string
+     */
+    function interadmin_tipos_campos_encode($campos)
+    {
+        $s = '';
+        foreach ($campos as $value) {
+            unset($value['ordem']);
+            $s .= implode('{,}', $value).'{;}';
+        }
+        return $s;
+    }
+}
+if (!function_exists('toId')) {
+    /**
+     * Takes off diacritics and empty spaces from a string, if $tofile is <tt>FALSE</tt> (default) the case is changed to lowercase.
+     *
+     * @param string $S String to be formatted.
+     * @param bool $tofile Sets whether it will be used for a filename or not, <tt>FALSE</tt> is the default value.
+     * @param string $separador Separator used to replace empty spaces.
+     *
+     * @return string Formatted string.
+     *
+     * @version (2006/01/18)
+     */
+    function toId($string, $tofile = false, $separador = '')
+    {
+        // Check if there are diacritics before replacing them
+        if (preg_match('/[^a-zA-Z0-9-\/ _.,]/', $string)) {
+            $string = preg_replace('/[áàãâäÁÀÃÂÄª]/u', 'a', $string);
+            $string = preg_replace('/[éèêëÉÈÊË&]/u', 'e', $string);
+            $string = preg_replace('/[íìîïÍÌÎÏ]/u', 'i', $string);
+            $string = preg_replace('/[óòõôöÓÒÕÔÖº]/u', 'o', $string);
+            $string = preg_replace('/[úùûüÚÙÛÜ]/u', 'u', $string);
+            $string = preg_replace('/[çÇ]/u', 'c', $string);
+            $string = preg_replace('/[ñÑ]/u', 'n', $string);
+        }
+        if ($tofile) {
+            $string = preg_replace('/[^a-zA-Z0-9_]/u', '_', $string);
+        } else {
+            $string = preg_replace('/[^a-zA-Z0-9_]+/u', $separador, $string);
+            $string = trim(mb_strtolower($string), $separador);
+        }
+        if ($separador) {
+            $string = str_replace('_', $separador, $string);
+        } else {
+            $string = preg_replace('/[\/-]/u', '_', $string);
+        }
+        return $string;
     }
 }
 // Laravel 5.2
