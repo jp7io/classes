@@ -58,25 +58,22 @@ class Router extends MethodForwarder
 //// Map functions: Read/write to the type map
 ////
 
-    private function addType($id_tipo, $slug)
+    private function hasType($id_tipo)
     {
         $map = &$this->map[$this->getLocale()];
         $map = $map ?: [];
-        if (!is_numeric($id_tipo)) {
-            // Get id_tipo from class
-            $id_tipo = RecordClassMap::getInstance()->getClassIdTipo($id_tipo);
-        }
+        return array_key_exists($id_tipo, $map);
+    }
+
+    private function addType($id_tipo)
+    {
+        $map = &$this->map[$this->getLocale()];
+        $map = $map ?: [];
         // Saving routes for each id_tipo
-        $groupRoute = str_replace('/', '.', trim($this->getLastGroupPrefix(), '/'));
-        // Avoid setting same id_tipo twice
-        if (!array_key_exists($id_tipo, $map)) {
-            if ($slug === '/') {
-                $slug = ''; // special case for index
-            }
-            $map[$id_tipo] = ($groupRoute ? $groupRoute . '.' : '') . $slug;
-            return true; // map entry set
-        }
-        return false; // already existed route for this type
+        $allRoutes = Route::getRoutes()->getRoutes();
+        $routeParts = explode('.', end($allRoutes)->getName());
+        array_pop($routeParts);
+        $map[$id_tipo] = implode('.', $routeParts);
     }
 
     /**
@@ -155,10 +152,16 @@ class Router extends MethodForwarder
         if (empty($options['only'])) {
             $options['only'] = $this->getControllerActions($controller);
         }
+        // return is void, but might change in the future
+        $result = parent::resource($name, $controller, $options);
         if (isset($options['id_tipo'])) {
-            $this->addType($options['id_tipo'], $name); // Maps [id_tipo => route basename]
+            if (!is_numeric($options['id_tipo'])) {
+                // Get id_tipo from class
+                $options['id_tipo'] = RecordClassMap::getInstance()->getClassIdTipo($options['id_tipo']);
+            }
+            $this->addType($options['id_tipo']); // Maps [id_tipo => route basename]
         }
-        return parent::resource($name, $controller, $options);
+        return $result;
     }
 
     /**
@@ -244,7 +247,7 @@ class Router extends MethodForwarder
         }
         $this->locale = null;
     }
-    
+
     public function localizeRoute($routeName)
     {
         if ($this->locale === LaravelLocalization::getDefaultLocale()) {
@@ -285,14 +288,13 @@ class Router extends MethodForwarder
             }
         }
         if (!$isRoot) {
-            $slug = $section->getSlug();
-
-            if ($this->addType($section->id_tipo, $slug)) {
+            if (!$this->hasType($section->id_tipo)) {
                 // won't enter here if there is already a route for this type
                 $controllerClass = $section->getControllerBasename();
-                Route::resource($slug, $controllerClass, [
+                Route::resource($section->getSlug(), $controllerClass, [
                     'only' => $this->getControllerActions($controllerClass)
                 ]);
+                $this->addType($section->id_tipo);
             }
         }
     }
