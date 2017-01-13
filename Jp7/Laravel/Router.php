@@ -205,24 +205,6 @@ class Router extends MethodForwarder
         return $actions;
     }
 
-    /**
-     * Adds conventions for 'namespace':
-     *     r::group(['prefix' => 'contact'], $callback)
-     * Will behave like:
-     *     r::group(['prefix' => 'contact', 'namespace' => 'Contact'], $callback)
-     *
-     * @param  array   $attributes
-     * @param  Closure $callback
-     */
-    public function group(array $attributes, Closure $callback)
-    {
-        if (!empty($attributes['prefix']) && !array_key_exists('namespace', $attributes)) {
-            $attributes['namespace'] = studly_case($attributes['prefix']);
-        }
-        return parent::group($attributes, $callback);
-    }
-
-
 ////
 //// Localization: allows caching routes with localization
 ////
