@@ -231,6 +231,7 @@ class Router extends MethodForwarder
         return is_null($this->locale) ? App::getLocale() : $this->locale;
     }
 
+    // Works with Laravel 5.2
     public function languages(Closure $callback)
     {
         foreach (LaravelLocalization::getSupportedLanguagesKeys() as $locale) {
@@ -244,7 +245,13 @@ class Router extends MethodForwarder
         }
         $this->locale = null;
     }
-    
+
+    // Works with Laravel 5.3
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
+    }
+
     public function localizeRoute($routeName)
     {
         if ($this->locale === LaravelLocalization::getDefaultLocale()) {
