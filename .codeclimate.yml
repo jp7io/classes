@@ -10,8 +10,16 @@ engines:
     enabled: true
   phpmd:
     enabled: true
+    checks:
+      CleanCode/StaticAccess:
+        enabled: false
+      Controversial/CamelCaseVariableName:
+        enabled: false
+      Naming/ShortVariable:
+        enabled: false
 ratings:
   paths:
   - "**.js"
   - "**.php"
-exclude_paths: []
+exclude_paths:
+  - tests/
