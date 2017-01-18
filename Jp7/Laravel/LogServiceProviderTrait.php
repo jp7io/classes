@@ -40,7 +40,14 @@ trait LogServiceProviderTrait
     {
         Log::listen(function ($level, $message, $context) {
             if ($level === 'error' && $message instanceof Throwable) {
-                app('sentry')->captureException($message);
+                $sentry = app('sentry');
+                if ($user = auth()->user()) {
+                    $sentry->user_context([
+                        'id' => $user->id,
+                        'email' => $user->email ?? ''
+                    ]);
+                }
+                $sentry->captureException($message);
             }
         });
     }
