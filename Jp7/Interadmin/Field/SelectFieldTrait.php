@@ -107,7 +107,9 @@ trait SelectFieldTrait
             $camposCombo = ['id'];
         }
         $query = $this->nome->records();
-        $query->select($camposCombo)
+        // used later by isPublished()
+        $camposPublished = ['char_key', 'parent_id', 'publish', 'deleted', 'date_publish', 'date_expire'];
+        $query->select(array_merge($camposCombo, $camposPublished))
             ->where('deleted', false)
             ->orderByRaw(implode(', ', $camposCombo));
 
