@@ -3,6 +3,7 @@
 namespace Jp7\Interadmin\Field;
 
 use Former;
+use HtmlObject\Element;
 
 class SelectField extends ColumnField
 {
@@ -64,10 +65,11 @@ class SelectField extends ColumnField
     public function getFilterTag()
     {
         $this->showCamposCombo = false;
-        $options = ['blank' => '(vazio)'] + $this->getOptions();
-        return $this->getFilterField()
-            ->name('filtro_'.$this->getFormerName())
-            ->options($options)
+        $field = $this->getFilterField();
+        $blank = Element::create('option', '(vazio)')->setAttribute('value', 'blank');
+        $field->prependChild($blank);
+        
+        return $field->name('filtro_'.$this->getFormerName())
             ->removeClass('form-control')
             ->addClass('filter-select')
             ->data_allow_blank()
