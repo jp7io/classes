@@ -27,7 +27,7 @@ class VarcharField extends ColumnField
         $name = $this->getRuleName();
 
         if ($this->isUnique()) {
-            $rules[$name][] = $this->getUniqueRule();
+            $rules[$name][] = $this->record->getUniqueRule($this->tipo);
         }
         if ($this->isEmail()) {
             $rules[$name][] = 'email';
@@ -47,20 +47,6 @@ class VarcharField extends ColumnField
     protected function isUnique()
     {
         return $this->xtra === 'id' || $this->xtra === 'id_email' || $this->xtra === 'cpf';
-    }
-
-    protected function getUniqueRule()
-    {
-        // unique:table,column,except,idColumn
-        $table = str_replace(DB::getTablePrefix(), '', $this->type->getInterAdminsTableName()); // FIXME
-        return 'unique:'.implode(',', [
-            $table,             // table
-            $this->tipo,        // column
-            $this->record->id,  // except
-            'id',               // idColumn
-            // WHERE:
-            'id_tipo', $this->type->id_tipo
-        ]);
     }
 
     protected function isEmail()
