@@ -38,6 +38,7 @@ class InteradminServiceProvider extends ServiceProvider
         }
 
         BladeExtension::apply();
+        CacheExtension::apply();
 
         $this->publishPackageFiles();
         $this->bootOrm();
