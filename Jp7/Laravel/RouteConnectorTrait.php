@@ -17,6 +17,9 @@ trait RouteConnectorTrait
      */
     protected function mapWebRoutes(Router $router)
     {
+        if ($this->app->isDownForMaintenance()) {
+            return;
+        }
         if (!DynamicLoader::isRegistered()) {
             $this->showDbNotConnected();
             return;
