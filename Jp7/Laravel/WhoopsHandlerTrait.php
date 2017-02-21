@@ -8,10 +8,16 @@ trait WhoopsHandlerTrait
 {
     protected function convertExceptionToResponse(Exception $e)
     {
-        if (config('app.debug') && config('app.env') !== 'production') { // just in case
+        if (config('app.debug')) {
+            if (config('app.env') !== 'local') {
+                // dont use whoops in production
+                return parent::convertExceptionToResponse($e);
+            }
             return $this->renderExceptionWithWhoops($e);
         }
-        return parent::convertExceptionToResponse($e);
+        // Custom error 500 page
+        // Laravel only handles custom pages when it's a HttpException
+        return response()->view('errors.500', [], 500);
     }
 
     /**
