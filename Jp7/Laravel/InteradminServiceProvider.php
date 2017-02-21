@@ -30,13 +30,10 @@ class InteradminServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Security: don't leak debug variables
-        if (config('app.debug') && !App::environment('local', 'testing')) {
-            if (gethostbyname('office.jp7.com.br') != \Request::ip()) {
-                \Config::set('app.debug', false);
-            }
+        if ($this->app->isDownForMaintenance()) {
+            return;
         }
-
+  
         BladeExtension::apply();
 
         $this->publishPackageFiles();
