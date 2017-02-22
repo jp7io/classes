@@ -389,7 +389,8 @@ class InterAdmin extends Record implements InterAdminAbstract
     }
 
     /**
-     * Updates all the attributes from the passed-in array and saves the record.
+     * 
+     s all the attributes from the passed-in array and saves the record.
      *
      * @param array $attributes Array with fields names and values.
      */
@@ -397,6 +398,15 @@ class InterAdmin extends Record implements InterAdminAbstract
     {
         $this->setRawAttributes($attributes);
         $this->_update($attributes);
+    }
+    
+    public function save()
+    {
+        // Using id_string is deprecated, use id_slug instead
+        if (empty($this->attributes['id_string']) && in_array('id_string', $this->getColumns())) {
+            $this->id_string = toId($this->varchar_key);
+        }
+        return parent::save();
     }
 
     protected function _convertForDatabase($attributes, $aliases)
