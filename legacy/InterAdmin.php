@@ -389,8 +389,7 @@ class InterAdmin extends Record implements InterAdminAbstract
     }
 
     /**
-     * 
-     s all the attributes from the passed-in array and saves the record.
+     * Updates all the attributes from the passed-in array and saves the record.
      *
      * @param array $attributes Array with fields names and values.
      */
