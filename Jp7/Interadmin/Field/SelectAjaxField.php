@@ -44,15 +44,16 @@ class SelectAjaxField extends SelectField
         if (is_numeric($search)) {
             $whereOr[] = 'id_tipo = '.intval($search);
         }
-        $query->whereRaw('('.implode(' OR ', $whereOr).')');
 
         $order = [];
         foreach ($fields as $field) {
             $order[] = $field.' LIKE '.$db->qstr($search.'%').' DESC'; // starts with
         }
         $order = array_merge($order, $fields);
-        $query->orderByRaw(implode(', ', $order));
-        return $query;
+
+        return $query->whereRaw('('.implode(' OR ', $whereOr).')')
+            ->orderByRaw(implode(', ', $order))
+            ->limit(100);
     }
 
     protected function getSearchableFields()
