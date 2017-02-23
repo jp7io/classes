@@ -23,7 +23,7 @@ class SelectAjaxField extends SelectField
     public function searchOptions($search)
     {
         if (!$this->hasTipo()) {
-            $query = $this->buildSearch($this->records(), $this->getSearchableFields(), $search);
+            $query = $this->buildSearch($this->records(false), $this->getSearchableFields(), $search);
             return $this->toJsonOptions($query->get());
         }
         if ($this->nome instanceof Type || $this->nome === 'all') {

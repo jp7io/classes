@@ -133,7 +133,7 @@ trait SelectFieldTrait
         throw new UnexpectedValueException('Not implemented');
     }
 
-    protected function records()
+    protected function records($ordered = true)
     {
         $camposCombo = $this->nome->getCamposCombo();
         if (!$camposCombo) {
@@ -143,9 +143,10 @@ trait SelectFieldTrait
         // used later by isPublished()
         $camposPublished = ['char_key', 'parent_id', 'publish', 'deleted', 'date_publish', 'date_expire'];
         $query->select(array_merge($camposCombo, $camposPublished))
-            ->where('deleted', false)
-            ->orderByRaw(implode(', ', $camposCombo));
-
+            ->where('deleted', false);
+        if ($ordered) {
+            $query->orderByRaw(implode(', ', $camposCombo));
+        }
         if ($this->where) {
             // From xtra_disabledfields
             $query->whereRaw('1=1'.$this->where);
