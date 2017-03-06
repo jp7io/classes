@@ -1,5 +1,7 @@
-## development
-* TODO
+## 3.2
+* Split into 3 packages: classes, classes-deprecated and interadmin-orm
+* Removed automatic namespace on Router::group()
+* Custom 500 page by default on Laravel apps (see WhoopsHandlerTrait.php)
 
 ## 3.1
 * Fixed bugs after the merge of the ORM
