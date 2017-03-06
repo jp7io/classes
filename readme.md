@@ -7,17 +7,17 @@
 
 ## Description
 
-General classes used by our projects, including InterAdmin ORM.
+General classes used by our projects.
 
 * [CHANGELOG](CHANGELOG.md)
 
-## Docs v3.*
-* https://wiki.jp7.com.br:81/jp7/ORM
-* https://wiki.jp7.com.br:81/jp7/ORM:Query
-* https://wiki.jp7.com.br:81/jp7/ORM:Mass_Assignment
-* https://wiki.jp7.com.br:81/jp7/ORM:Extendendo_as_classes
-* https://wiki.jp7.com.br:81/jp7/ORM:Cheat_Sheet
+### Split into 3 packages
 
-## Docs v2.*
-* https://wiki.jp7.com.br:81/jp7/index.php?title=ORM&oldid=4164
-* https://wiki.jp7.com.br:81/jp7/index.php?title=ORM:Query&oldid=4274
+Since version 3.2 this package was split into 3 other:
+
+* [classes](https://github.com/jp7internet/classes) - Current general classes used by our projects
+* [classes-deprecated](https://github.com/jp7internet/classes-deprecated) - Obsolete and should be removed ASAP
+* [interadmin-orm](https://github.com/jp7internet/interadmin-orm) - ORM (handles queries from InterAdmin database)
+
+
+
