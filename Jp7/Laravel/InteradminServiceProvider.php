@@ -35,6 +35,7 @@ class InteradminServiceProvider extends ServiceProvider
         }
   
         BladeExtension::apply();
+        CacheExtension::apply();
 
         $this->publishPackageFiles();
         $this->bootOrm();
@@ -81,7 +82,9 @@ class InteradminServiceProvider extends ServiceProvider
 
         try {
             if (Schema::hasTable('tipos')) {
-                $this->checkTypesCache();
+                if (App::environment('local')) {
+                    Type::checkCache();
+                }
                 DynamicLoader::register();
             }
         } catch (PDOException $e) {
@@ -90,20 +93,6 @@ class InteradminServiceProvider extends ServiceProvider
             }
             echo 'Interadmin DB not connected: '.$e->getMessage().PHP_EOL;
             Log::error($e);
-        }
-    }
-
-    private function checkTypesCache()
-    {
-        if (!App::environment('local')) {
-            return;
-        }
-        $typesModified = DB::table('tipos')
-            ->select(DB::raw('MAX(date_modify) AS modified'))
-            ->value('modified');
-        if (strtotime($typesModified) > strtotime(Cache::get('Interadmin,modified'))) {
-            \Artisan::call('cache:clear');
-            Cache::forever('Interadmin,modified', $typesModified);
         }
     }
 

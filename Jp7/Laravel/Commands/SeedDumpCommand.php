@@ -9,9 +9,19 @@ use DB;
 
 class SeedDumpCommand extends Command
 {
-    protected $signature = 'seed:dump {--debug}';
+    protected $signature = 'seed:dump';
     protected $description = 'Dumps a seed file.';
+    /**
+     * Database config
+     *
+     * @var array
+     */
     protected $config;
+    /**
+     * IDs of types to be dumped
+     *
+     * @var array
+     */
     protected $typeIds = [];
 
     public function __construct()
@@ -39,7 +49,7 @@ class SeedDumpCommand extends Command
 
     protected function dumpTipos()
     {
-        $options = " interadmin_".config('app.name')."_tipos".
+        $options = " ".$this->config['prefix']."tipos".
             " --skip-extended-insert".
             " --no-create-info";
         $this->mysqldump($options, 'database/interadmin_tipos.sql');
@@ -73,20 +83,32 @@ class SeedDumpCommand extends Command
         return array_unique($tables);
     }
 
+    /**
+     * All existing tables
+     *
+     * @return array
+     */
     protected function getTables()
     {
         $tables = DB::connection()->getDoctrineSchemaManager()->listTableNames();
         return array_filter($tables, function ($table) {
-            // these tables are created by laravel migrations
-            if ($table === $this->config['prefix'].'migrations' ||
-                $table === $this->config['prefix'].'jobs' ||
-                $table === $this->config['prefix'].'failed_jobs' ||
-                $table === $this->config['prefix'].'password_resets'
-            ) {
-                return false;
-            }
-            return starts_with($table, $this->config['prefix']);
+            return !in_array($table, $this->getIgnoredTables()) && starts_with($table, $this->config['prefix']);
         });
+    }
+
+    /**
+     * Ignored tables. e.g: tables that are created by Laravel migrations
+     *
+     * @return array
+     */
+    protected function getIgnoredTables()
+    {
+        return [
+            $this->config['prefix'].'migrations',
+            $this->config['prefix'].'jobs',
+            $this->config['prefix'].'failed_jobs',
+            $this->config['prefix'].'password_resets',
+        ];
     }
 
     protected function mysqldump($options, $output)
@@ -96,7 +118,7 @@ class SeedDumpCommand extends Command
             " -p".$this->config['password'].
             " ".$this->config['database'].
             $options." > ".$output;
-        if ($this->option('debug')) {
+        if ($this->option('verbose')) {
             $this->comment($command);
         }
         exec($command, $_, $error_code);

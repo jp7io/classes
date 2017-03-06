@@ -6,6 +6,7 @@ use Illuminate\Queue\Events\JobProcessed;
 use Throwable;
 use Queue;
 use Log;
+use Request;
 
 trait LogServiceProviderTrait
 {
@@ -40,7 +41,22 @@ trait LogServiceProviderTrait
     {
         Log::listen(function ($level, $message, $context) {
             if ($level === 'error' && $message instanceof Throwable) {
-                app('sentry')->captureException($message);
+                try {
+                    // might fail if app() has broken bindings
+                    $sentry = app('sentry');
+                    $context = [
+                        'ip' => Request::ip()
+                    ];
+                    // might fail if auth() has wrong settings
+                    if ($user = auth()->user()) {
+                        $context['id'] = $user->id ?? 0;
+                        $context['email'] = $user->email ?? '';
+                    }
+                    $sentry->user_context($context);
+                    $sentry->captureException($message);
+                } catch (Throwable $e) {
+                    Log::critical($e);
+                }
             }
         });
     }

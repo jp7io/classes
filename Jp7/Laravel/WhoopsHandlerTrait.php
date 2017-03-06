@@ -3,14 +3,15 @@
 namespace Jp7\Laravel;
 
 use Exception;
+use App;
 
 trait WhoopsHandlerTrait
 {
     protected function convertExceptionToResponse(Exception $e)
     {
         if (config('app.debug')) {
-            if (config('app.env') !== 'local') {
-                // dont use whoops in production
+            if (config('app.env') !== 'local' || App::runningInConsole()) {
+                // dont use whoops in production or on console operations
                 return parent::convertExceptionToResponse($e);
             }
             return $this->renderExceptionWithWhoops($e);

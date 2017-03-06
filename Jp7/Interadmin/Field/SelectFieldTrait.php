@@ -6,6 +6,7 @@ use Jp7\Interadmin\Record;
 use Jp7\Interadmin\Type;
 use Jp7\Interadmin\Query\TypeQuery;
 use UnexpectedValueException;
+use Cache;
 
 trait SelectFieldTrait
 {
@@ -40,7 +41,7 @@ trait SelectFieldTrait
             return [$related->getName(), true];
         }
         if ($related instanceof Record) {
-            return [$related->getName(), $related->isPublished()];
+            return [$related->_cachedStringValue ?? $related->getName(), $related->isPublished()];
         }
         if (!$related) {
             return ['', true];
@@ -73,17 +74,49 @@ trait SelectFieldTrait
      */
     protected function getCurrentRecords()
     {
-        $ids = array_filter(explode(',', $this->getValue()));
+        $ids = explode(',', $this->getValue());
+        $ids = array_filter($ids, 'is_numeric');
         if (!$ids) {
             return []; // evita query inutil
         }
         if (!$this->hasTipo()) {
-            return $this->records()->whereIn('id', $ids)->get();
+            //return $this->records()->whereIn('id', $ids)->get();
+            return $this->cachedRecords($ids);
         }
         if ($this->nome instanceof Type || $this->nome === 'all') {
-            return $this->tipos()->whereIn('id_tipo', $ids)->get();
+            //return $this->tipos()->whereIn('id_tipo', $ids)->get();
+            $cached = new \Jp7\Interadmin\Collection();
+            foreach ($ids as $id_tipo) {
+                $cached[] = Type::getInstance($id_tipo);
+            }
+            return $cached;
         }
         throw new UnexpectedValueException('Not implemented');
+    }
+
+    protected function cachedRecords($ids)
+    {
+        $prefix = 'cachedRecords,'.$this->nome->id_tipo;
+        $cached = [];
+        foreach ($ids as $key => $id) {
+            if ($attributes = Cache::get($prefix.','.$id)) {
+                $cached[$key] = Record::getInstance($id, [], $this->nome);
+                $cached[$key]->setRawAttributes($attributes);
+            }
+        }
+        if ($pending = array_diff_key($ids, $cached)) {
+            $records = $this->records()
+                ->whereIn('id', $pending)
+                ->get();
+            foreach ($records as $record) {
+                $record->_cachedStringValue = $record->getStringValue();
+                // less serialized data
+                Cache::put($prefix.','.$record->id, $record->getAttributes(), 10);
+                $cached[array_search($record->id, $ids)] = $record;
+            }
+            ksort($cached);
+        }
+        return new \Jp7\Interadmin\Collection($cached);
     }
 
     protected function getOptions()
@@ -100,17 +133,20 @@ trait SelectFieldTrait
         throw new UnexpectedValueException('Not implemented');
     }
 
-    protected function records()
+    protected function records($ordered = true)
     {
         $camposCombo = $this->nome->getCamposCombo();
         if (!$camposCombo) {
             $camposCombo = ['id'];
         }
         $query = $this->nome->records();
-        $query->select($camposCombo)
-            ->where('deleted', false)
-            ->orderByRaw(implode(', ', $camposCombo));
-
+        // used later by isPublished()
+        $camposPublished = ['char_key', 'parent_id', 'publish', 'deleted', 'date_publish', 'date_expire'];
+        $query->select(array_merge($camposCombo, $camposPublished))
+            ->where('deleted', false);
+        if ($ordered) {
+            $query->orderByRaw(implode(', ', $camposCombo));
+        }
         if ($this->where) {
             // From xtra_disabledfields
             $query->whereRaw('1=1'.$this->where);

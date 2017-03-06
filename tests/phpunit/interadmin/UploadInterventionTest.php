@@ -23,7 +23,10 @@ class UploadInterventionTest extends \PHPUnit_Framework_TestCase
     {
         global $config;
         $config = (object) [
-            'storage' => ['host' => $this->storageHost()],
+            'storage' => [
+                'host' => $this->storageHost(),
+                'path' => ''
+            ],
             'imagecache' => true,
         ];
 

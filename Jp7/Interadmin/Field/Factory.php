@@ -36,7 +36,7 @@ class Factory
     {
         // tipo_de_campo -> only used in a few specials / xtra_disabledfields
         $tipo = empty($campo['tipo_de_campo']) ? $campo['tipo'] : $campo['tipo_de_campo'].'_';
-        $prefix = $this->getPrefix($tipo, $campo['xtra']);
+        $prefix = $this->getPrefix($tipo, $campo['xtra'] ?? '');
         $class = $this->getFieldClass($prefix, $campo);
         return new $class($campo);
     }

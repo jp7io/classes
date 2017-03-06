@@ -23,7 +23,10 @@ class UploadLegacyTest extends \PHPUnit_Framework_TestCase
     {
         global $config;
         $config = (object) [
-            'storage' => ['host' => $this->appHost()]
+            'storage' => [
+                'host' => $this->appHost(),
+                'path' => ''
+            ]
         ];
 
         $url = $this->url($filePath, $template);

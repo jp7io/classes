@@ -112,8 +112,8 @@ class ColumnField extends BaseField
     protected function getValue()
     {
         $column = $this->tipo;
-        $value = $this->record->$column;
-        if (!$this->record->id && !$value) {
+        $value = $this->record ? $this->record->$column : null;
+        if (empty($this->record->id) && !$value) {
             $value = $this->getDefaultValue();
         }
         return $value;
