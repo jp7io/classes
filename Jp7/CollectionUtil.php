@@ -97,7 +97,7 @@ class CollectionUtil
                 $children = self::separate($children, 'parent_id');
 
                 foreach ($records as $record) {
-                    $record->setRelation($relation, $children[$record->id] ?: []);
+                    $record->setRelation($relation, jp7_collect($children[$record->id] ?: []));
                 }
             } else {
                 throw new Exception('Unsupported relationship type: "'.$data['type'].'" for class '.get_class($model).' - ID: '.$model->id);
