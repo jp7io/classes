@@ -75,7 +75,7 @@ trait SelectFieldTrait
     protected function getCurrentRecords()
     {
         $ids = explode(',', $this->getValue());
-        $ids = array_filter($ids, 'is_numeric');
+        $ids = array_values(array_filter($ids, 'is_numeric'));
         if (!$ids) {
             return []; // evita query inutil
         }
