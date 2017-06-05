@@ -2,6 +2,8 @@
 
 namespace Jp7;
 
+use Jp7\Interadmin\Type;
+
 /**
  * Class for handling collections of objects.
  */
@@ -53,8 +55,11 @@ class CollectionUtil
 
     public static function eagerLoad($records, $relationships)
     {
+        if (!is_array($records)) {
+            $records = $records->all();
+        }
         if (!$records) {
-            return false;
+            return;
         }
         if (!is_array($relationships)) {
             $relationships = [$relationships];
@@ -63,47 +68,132 @@ class CollectionUtil
         $model = reset($records);
         if ($data = $model->getType()->getRelationshipData($relation)) {
             if ($data['type'] == 'select') {
-                // select.id = record.select_id
-                $idsMap = [];
-                foreach ($records as $record) {
-                    $alias = $relation.'_id';
-                    if (!isset($idsMap[$record->$alias])) {
-                        $idsMap[$record->$alias] = [];
-                    }
-                    $idsMap[$record->$alias][] = $record;
-                }
-
-                $rows = $data['tipo']
-                    ->records()
-                    ->whereIn('id', array_keys($idsMap))
-                    ->get();
-
-                foreach ($rows as $row) {
-                    foreach ($idsMap[$row->id] as $record) {
-                        $record->setRelation($relation, $row);
-                    }
-                    unset($row);
+                if ($data['multi']) {
+                    self::eagerLoadSelectMulti($records, $relationships, $relation, $data);
+                } else {
+                    self::eagerLoadSelect($records, $relationships, $relation, $data);
                 }
             } elseif ($data['type'] == 'children') {
-                // child.parent_id = parent.id
-                $data['tipo']->setParent(null);
-                $children = $data['tipo']
-                    ->records()
-                    ->whereIn('parent_id', $records)
-                    ->get();
-                if ($relationships) {
-                    self::eagerLoad($children, $relationships);
-                }
-                $children = self::separate($children, 'parent_id');
-
-                foreach ($records as $record) {
-                    $record->setRelation($relation, jp7_collect($children[$record->id] ?: []));
-                }
+                self::eagerLoadChildren($records, $relationships, $relation, $data);
             } else {
-                throw new Exception('Unsupported relationship type: "'.$data['type'].'" for class '.get_class($model).' - ID: '.$model->id);
+                throw new \Exception('Unsupported relationship type: "'.$data['type'].'" for class '.get_class($model).' - ID: '.$model->id);
             }
         } else {
-            throw new Exception('Unknown relationship: "'.$relation.'" for class '.get_class($model).' - ID: '.$model->id);
+            throw new \Exception('Unknown relationship: "'.$relation.'" for class '.get_class($model).' - ID: '.$model->id);
+        }
+    }
+
+    protected static function eagerLoadSelectMulti($records, $relationships, $relation, $data)
+    {
+        if (reset($records)->hasLoadedRelation($relation)) {
+            if ($relationships) {
+                $rows = collect(array_column($records, $relation))->flatten();
+                self::eagerLoad($rows, $relationships);
+            }
+            return;
+        }
+
+        // select_multi.id IN (record.select_multi_ids)
+        $ids = [];
+        $alias = $relation.'_ids';
+        foreach ($records as $record) {
+            $fks = $record->$alias;
+            $fksArray = is_array($fks) ? $fks : array_filter(explode(',', $fks));
+            $ids = array_merge($ids, $fksArray);
+        }
+        $ids = array_unique($ids);
+
+        if (!$ids) {
+            return;
+        }
+
+        if ($data['has_type']) {
+            $rows = jp7_collect([]);
+            foreach ($ids as $id) {
+                $rows[$id] = Type::getInstance($id);
+            }
+        } else {
+            $rows = $data['tipo']
+                ->records()
+                ->whereIn('id', $ids)
+                ->get()
+                ->keyBy('id');
+        }
+
+        foreach ($records as $record) {
+            $loaded = (object) [
+                'fks' => $record->$alias,
+                'values' => jp7_collect([])
+            ];
+            $fksArray = is_array($loaded->fks) ? $loaded->fks : array_filter(explode(',', $loaded->fks));
+            foreach ($fksArray as $fk) {
+                if (isset($rows[$fk])) {
+                    $loaded->values[] = $rows[$fk];
+                }
+            }
+            $record->setRelation($relation, $loaded);
+        }
+    }
+
+    protected static function eagerLoadSelect($records, $relationships, $relation, $data)
+    {
+
+        if (reset($records)->hasLoadedRelation($relation)) {
+            if ($relationships) {
+                $rows = array_filter(array_column($records, $relation));
+                self::eagerLoad($rows, $relationships);
+            }
+            return;
+        }
+
+        // select.id = record.select_id
+        $alias = $relation.'_id';
+        $ids = array_filter(array_unique(array_column($records, $alias)));
+
+        if ($data['has_type']) {
+            $rows = jp7_collect([]);
+            foreach ($ids as $id) {
+                $rows[$id] = Type::getInstance($id);
+            }
+        } else {
+            $rows = $data['tipo']
+                ->records()
+                ->whereIn('id', $ids)
+                ->get()
+                ->keyBy('id');
+        }
+        if ($relationships) {
+            self::eagerLoad($rows, $relationships);
+        }
+        foreach ($records as $record) {
+            $id = $record->$alias;
+            $record->setRelation($relation, $rows[$id] ?? null);
+        }
+    }
+
+    protected static function eagerLoadChildren($records, $relationships, $relation, $data)
+    {
+        if (reset($records)->hasLoadedRelation($relation)) {
+            if ($relationships) {
+                $rows = collect(array_column($records, $relation))->flatten();
+                self::eagerLoad($rows, $relationships);
+            }
+            return;
+        }
+
+        // child.parent_id = parent.id
+        $data['tipo']->setParent(null);
+        $children = $data['tipo']
+            ->records()
+            ->whereIn('parent_id', $records)
+            ->get();
+        if ($relationships) {
+            self::eagerLoad($children, $relationships);
+        }
+        $children = $children->groupBy('parent_id');
+
+        foreach ($records as $record) {
+            $record->setRelation($relation, $children[$record->id] ?? jp7_collect());
         }
     }
 }
