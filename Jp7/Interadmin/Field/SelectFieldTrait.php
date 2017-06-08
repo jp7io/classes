@@ -158,7 +158,7 @@ trait SelectFieldTrait
     {
         global $lang;
 
-        $query = new TypeQuery(new Type);
+        $query = new TypeQuery;
         $query->select('nome'.$lang->prefix, 'parent_id_tipo')
             ->published()
             ->orderByRaw('admin,ordem,nome'.$lang->prefix);
