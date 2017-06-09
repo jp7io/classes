@@ -53,7 +53,7 @@ class CollectionUtil
         }
     }
 
-    public static function eagerLoad($records, $relationships)
+    public static function eagerLoad($records, $relationships, $selectStack = null)
     {
         if (!is_array($records)) {
             $records = $records->all();
@@ -69,12 +69,12 @@ class CollectionUtil
         if ($data = $model->getType()->getRelationshipData($relation)) {
             if ($data['type'] == 'select') {
                 if ($data['multi']) {
-                    self::eagerLoadSelectMulti($records, $relationships, $relation, $data);
+                    self::eagerLoadSelectMulti($records, $relationships, $relation, $data, $selectStack);
                 } else {
-                    self::eagerLoadSelect($records, $relationships, $relation, $data);
+                    self::eagerLoadSelect($records, $relationships, $relation, $data, $selectStack);
                 }
             } elseif ($data['type'] == 'children') {
-                self::eagerLoadChildren($records, $relationships, $relation, $data);
+                self::eagerLoadChildren($records, $relationships, $relation, $data, $selectStack);
             } else {
                 throw new \Exception('Unsupported relationship type: "'.$data['type'].'" for class '.get_class($model).' - ID: '.$model->id);
             }
@@ -83,12 +83,13 @@ class CollectionUtil
         }
     }
 
-    protected static function eagerLoadSelectMulti($records, $relationships, $relation, $data)
+    protected static function eagerLoadSelectMulti($records, $relationships, $relation, $data, $selectStack = null)
     {
+        $select = $selectStack ? array_shift($selectStack) : [];
         if (reset($records)->hasLoadedRelation($relation)) {
             if ($relationships) {
                 $rows = collect(array_column($records, $relation))->flatten();
-                self::eagerLoad($rows, $relationships);
+                self::eagerLoad($rows, $relationships, $selectStack);
             }
             return;
         }
@@ -115,11 +116,14 @@ class CollectionUtil
         } else {
             $rows = $data['tipo']
                 ->records()
+                ->select($select)
                 ->whereIn('id', $ids)
                 ->get()
                 ->keyBy('id');
         }
-
+        if ($relationships) {
+            self::eagerLoad($rows, $relationships, $selectStack);
+        }
         foreach ($records as $record) {
             $loaded = (object) [
                 'fks' => $record->$alias,
@@ -135,13 +139,13 @@ class CollectionUtil
         }
     }
 
-    protected static function eagerLoadSelect($records, $relationships, $relation, $data)
+    protected static function eagerLoadSelect($records, $relationships, $relation, $data, $selectStack = null)
     {
-
+        $select = $selectStack ? array_shift($selectStack) : [];
         if (reset($records)->hasLoadedRelation($relation)) {
             if ($relationships) {
                 $rows = array_filter(array_column($records, $relation));
-                self::eagerLoad($rows, $relationships);
+                self::eagerLoad($rows, $relationships, $selectStack);
             }
             return;
         }
@@ -158,12 +162,13 @@ class CollectionUtil
         } else {
             $rows = $data['tipo']
                 ->records()
+                ->select($select)
                 ->whereIn('id', $ids)
                 ->get()
                 ->keyBy('id');
         }
         if ($relationships) {
-            self::eagerLoad($rows, $relationships);
+            self::eagerLoad($rows, $relationships, $selectStack);
         }
         foreach ($records as $record) {
             $id = $record->$alias;
@@ -171,12 +176,13 @@ class CollectionUtil
         }
     }
 
-    protected static function eagerLoadChildren($records, $relationships, $relation, $data)
+    protected static function eagerLoadChildren($records, $relationships, $relation, $data, $selectStack = null)
     {
+        $select = $selectStack ? array_shift($selectStack) : [];
         if (reset($records)->hasLoadedRelation($relation)) {
             if ($relationships) {
                 $rows = collect(array_column($records, $relation))->flatten();
-                self::eagerLoad($rows, $relationships);
+                self::eagerLoad($rows, $relationships, $selectStack);
             }
             return;
         }
@@ -185,10 +191,11 @@ class CollectionUtil
         $data['tipo']->setParent(null);
         $children = $data['tipo']
             ->records()
+            ->select($select)
             ->whereIn('parent_id', $records)
             ->get();
         if ($relationships) {
-            self::eagerLoad($children, $relationships);
+            self::eagerLoad($children, $relationships, $selectStack);
         }
         $children = $children->groupBy('parent_id');
 
