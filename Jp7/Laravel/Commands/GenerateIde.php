@@ -5,6 +5,7 @@ namespace Jp7\Laravel\Commands;
 use Illuminate\Console\Command;
 use Jp7\Interadmin\DynamicLoader;
 use Jp7\Interadmin\RecordClassMap;
+use Jp7\Interadmin\TypeClassMap;
 
 class GenerateIde extends Command
 {
@@ -39,16 +40,20 @@ class GenerateIde extends Command
         $contents = '<?php throw new Exception("dont include this file, IDE helper only"); ?>'.PHP_EOL;
 
         $classes = array_unique(RecordClassMap::getInstance()->getClasses());
-        $missingClasses = array_filter($classes, function ($class) {
+        $classesTipos = array_unique(TypeClassMap::getInstance()->getClasses());
+
+        $missingClasses = array_filter(array_merge($classes, $classesTipos), function ($class) {
             return !class_exists($class);
         });
 
         DynamicLoader::register();
+
         foreach ($missingClasses as $class) {
             echo '.';
             $contents .= DynamicLoader::getCode($class, true) . PHP_EOL. '?>'.PHP_EOL;
         }
         echo PHP_EOL;
+
         file_put_contents($helperFile, $contents);
         $this->info('Done!');
     }
