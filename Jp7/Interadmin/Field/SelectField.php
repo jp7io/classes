@@ -72,7 +72,7 @@ class SelectField extends ColumnField
         return $field->name('filtro_'.$this->getFormerName())
             ->removeClass('form-control')
             ->addClass('filter-select')
-            ->data_allow_blank()
+            ->data_allow_blank(true)
             ->raw();
     }
 }
