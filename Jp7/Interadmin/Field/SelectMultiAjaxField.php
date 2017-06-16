@@ -13,7 +13,7 @@ class SelectMultiAjaxField extends SelectMultiField
             ->id($this->getFormerId())
             ->options($this->getOptions())
             ->multiple()
-            ->data_ajax(true)
+            ->data_ajax()
             ->data_id_tipo($this->nome)
             ->data_has_tipo($this->hasTipo());
     }

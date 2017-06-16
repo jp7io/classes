@@ -21,7 +21,7 @@ class PasswordField extends ColumnField
         if ($this->getValue()) {
             // Disabled so it won't force the user to change the password
             $input->disabled()
-                ->data_filled(true);
+                ->data_filled();
         }
         return $input;
     }
