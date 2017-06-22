@@ -103,7 +103,6 @@ class CollectionUtil
             $ids = array_merge($ids, $fksArray);
         }
         $ids = array_unique($ids);
-
         if (!$ids) {
             return;
         }
@@ -153,6 +152,9 @@ class CollectionUtil
         // select.id = record.select_id
         $alias = $relation.'_id';
         $ids = array_filter(array_unique(array_column($records, $alias)));
+        if (!$ids) {
+            return;
+        }
 
         if ($data['has_type']) {
             $rows = jp7_collect([]);
