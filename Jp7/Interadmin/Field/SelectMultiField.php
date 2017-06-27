@@ -56,8 +56,13 @@ class SelectMultiField extends ColumnField
     protected function getFormerField()
     {
         $field = Former::checkboxes($this->getFormerName().'[]'); // [] makes it "grouped"
+        $checkboxes = $this->getCheckboxes($field);
+        if (!$checkboxes) {
+            // BUG: empty options render a ghost checkbox
+            return Former::text($this->getFormerName().'[]')->readonly();
+        }
         return $field->push(false)
-                ->checkboxes($this->getCheckboxes($field))
+                ->checkboxes($checkboxes)
                 ->onGroupAddClass('has-checkboxes');
                 // ->id($this->getFormerId()) // Wont work with checkboxes
     }
