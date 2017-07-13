@@ -37,9 +37,9 @@ trait LogServiceProviderTrait
     }
 
     // Exceptions thrown or handled and logged with Log::error($e)
-    protected function sentoToSentryAllExceptions()
+    protected function sentoToSentryAllExceptions($extra_context = [])
     {
-        Log::listen(function ($level, $message, $context) {
+        Log::listen(function ($level, $message, $context) use ($extra_context) {
             if ($level === 'error' && $message instanceof Throwable) {
                 try {
                     // might fail if app() has broken bindings
@@ -53,6 +53,9 @@ trait LogServiceProviderTrait
                         $context['email'] = $user->email ?? '';
                     }
                     $sentry->user_context($context);
+                    if ($extra_context) {
+                        $sentry->extra_context(value($extra_context));
+                    }
                     $sentry->captureException($message);
                 } catch (Throwable $e) {
                     Log::critical($e);
