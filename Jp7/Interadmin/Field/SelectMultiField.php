@@ -71,6 +71,7 @@ class SelectMultiField extends ColumnField
     {
         $selectField = new SelectField($this->campo);
         $selectField->setRecord($this->record);
+        $selectField->setType($this->type);
         return $selectField->getFilterTag();
     }
 
