@@ -9,6 +9,11 @@ class FuncField extends ColumnField
 {
     protected $id = 'func';
 
+    public function getText()
+    {
+        return strip_tags($this->getCellHtml());
+    }
+
     public function getHeaderHtml()
     {
         return $this->getFuncHtml('', 'header');
