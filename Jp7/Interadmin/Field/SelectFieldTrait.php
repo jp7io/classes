@@ -75,7 +75,7 @@ trait SelectFieldTrait
     protected function getCurrentRecords()
     {
         $ids = explode(',', $this->getValue());
-        $ids = array_values(array_filter($ids, 'is_numeric'));
+        $ids = array_values(array_filter(array_filter($ids), 'is_numeric'));
         if (!$ids) {
             return []; // evita query inutil
         }
@@ -102,24 +102,33 @@ trait SelectFieldTrait
         $prefix = 'cachedRecords,'.$this->nome->id_tipo;
         $cached = [];
         foreach ($ids as $key => $id) {
-            if ($attributes = Cache::get($prefix.','.$id)) {
+            $attributes = Cache::get($prefix.','.$id);
+            if ($attributes === false) {
+                // cached with empty value
+                $cached[$key] = null;
+            } elseif ($attributes) {
+                // cached
                 $cached[$key] = Record::getInstance($id, [], $this->nome);
                 $cached[$key]->setRawAttributes($attributes);
             }
         }
         if ($pending = array_diff_key($ids, $cached)) {
-            $records = $this->records()
-                ->whereIn('id', $pending)
-                ->get();
-            foreach ($records as $record) {
-                $record->_cachedStringValue = $record->getStringValue();
-                // less serialized data
-                Cache::put($prefix.','.$record->id, $record->getAttributes(), 10);
-                $cached[array_search($record->id, $ids)] = $record;
+            $records = $this->records()->findMany($pending);
+            foreach ($pending as $key => $id) {
+                $found = null;
+                foreach ($records as $record) {
+                    if ($record->id == $id) {
+                        $record->_cachedStringValue = $record->getStringValue();
+                        $found = $record;
+                        break;
+                    }
+                }
+                $cached[$key] = $found;
+                // getAttributes: less serialized data
+                Cache::put($prefix.','.$id, $found ? $record->getAttributes() : false, 10);
             }
-            ksort($cached);
         }
-        return new \Jp7\Interadmin\Collection($cached);
+        return new \Jp7\Interadmin\Collection(array_values(array_filter($cached)));
     }
 
     protected function getOptions()
