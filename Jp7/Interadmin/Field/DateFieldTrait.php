@@ -11,7 +11,7 @@ trait DateFieldTrait
 {
     public function getText()
     {
-        return $this->formatValue('d/m/Y'.($this->isDatetime() ? ' - H:i' : ''));
+        return $this->formatValue('d/m/Y'.($this->isDatetime() ? ' H:i' : ''));
     }
 
     protected function getValue()
