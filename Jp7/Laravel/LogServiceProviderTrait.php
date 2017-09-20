@@ -29,9 +29,6 @@ trait LogServiceProviderTrait
                 return; // too soon for ping
             }
             Log::info('[QUEUE] Ping');
-            if ($url = env('QUEUE_HEARTBEAT_URL')) {
-                get_headers($url);
-            }
             $last = time();
         });
     }
