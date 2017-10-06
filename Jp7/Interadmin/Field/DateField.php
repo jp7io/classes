@@ -24,6 +24,8 @@ class DateField extends ColumnField
 
     protected function isDatetime()
     {
-        return (ends_with($this->xtra, '_datetime') || $this->xtra === self::XTRA_NORMAL);
+        return empty($this->xtra) || // date_publish in some situations
+            ends_with($this->xtra, '_datetime') ||
+            $this->xtra === self::XTRA_NORMAL;
     }
 }
