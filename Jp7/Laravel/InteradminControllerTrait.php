@@ -30,7 +30,8 @@ trait InteradminControllerTrait
     {
         $s_cookie = ['user' => $request->user];
         // You can get it later with => Cookie::get('interadmin')
-        $cookie = Cookie::forever('interadmin', $s_cookie, null, null, false, false); // httpOnly = false
+        $domain = $this->getCookieDomain($request);
+        $cookie = Cookie::forever('interadmin', $s_cookie, null, $domain, false, false); // httpOnly = false
         return response(date('c'))
             ->withCookie($cookie)
             ->withHeaders([
@@ -43,5 +44,10 @@ trait InteradminControllerTrait
     {
         Artisan::call('httpcache:clear');
         return date('c');
+    }
+
+    protected function getCookieDomain(Request $request)
+    {
+        return replace_prefix('www.', '.', $request->getHost());
     }
 }
