@@ -55,17 +55,20 @@ class HttpCacheExtension extends HttpCache
     protected function validate(Request $request, Response $entry, $catch = false)
     {
         try {
-            return parent::validate($request, $entry, $catch);
+            $response = parent::validate($request, $entry, $catch);
+            if ($response->getStatusCode() !== 500) {
+                return $response;
+            }
         } catch (\Throwable $e) {
             if (!config('httpcache.use_stale_on_errors')) {
                 throw $e;
             }
-            \Log::critical('[HTTPCACHE] Using stale cache because page could not be rendered');
-            $entry = clone $entry;
-            $entry->headers->remove('Date');
-            $entry->setTtl(30); // try again in 30 seconds
-            $this->store($request, $entry);
-            return $entry;
         }
+        \Log::critical('[HTTPCACHE] Using stale cache because page could not be rendered');
+        $entry = clone $entry;
+        $entry->headers->remove('Date');
+        $entry->setTtl(30); // try again in 30 seconds
+        $this->store($request, $entry);
+        return $entry;
     }
 }
