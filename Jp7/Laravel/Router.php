@@ -7,7 +7,6 @@ use Jp7\Interadmin\RecordClassMap;
 use Jp7\Interadmin\Type;
 use LaravelLocalization;
 use Route;
-use Cache;
 use Closure;
 use App;
 
@@ -65,13 +64,21 @@ class Router extends MethodForwarder
         return array_key_exists($id_tipo, $map);
     }
 
-    private function addType($id_tipo)
+    private function addType($id_tipo, $controllerName)
     {
         $map = &$this->map[$this->getLocale()];
         $map = $map ?: [];
         // Saving routes for each id_tipo
-        $allRoutes = Route::getRoutes()->getRoutes();
-        $routeParts = explode('.', end($allRoutes)->getName());
+        $lastRoute = array_last(Route::getRoutes()->getRoutes());
+
+        if (!str_contains($lastRoute->getActionName(), $controllerName)) {
+            throw new \UnexpectedValueException(
+                'Check if your routes are duplicated.'.
+                'Expected '.$lastRoute->getActionName().' to contain '.$controllerName
+            );
+        }
+
+        $routeParts = explode('.', $lastRoute->getName());
         array_pop($routeParts);
         $map[$id_tipo] = implode('.', $routeParts);
     }
@@ -159,7 +166,7 @@ class Router extends MethodForwarder
                 // Get id_tipo from class
                 $options['id_tipo'] = RecordClassMap::getInstance()->getClassIdTipo($options['id_tipo']);
             }
-            $this->addType($options['id_tipo']); // Maps [id_tipo => route basename]
+            $this->addType($options['id_tipo'], $controller); // Maps [id_tipo => route basename]
         }
         return $result;
     }
@@ -283,7 +290,7 @@ class Router extends MethodForwarder
                 Route::resource($section->getSlug(), $controllerClass, [
                     'only' => $this->getControllerActions($controllerClass)
                 ]);
-                $this->addType($section->id_tipo);
+                $this->addType($section->id_tipo, $controllerClass);
             }
         }
     }
