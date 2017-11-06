@@ -202,7 +202,13 @@ class CollectionUtil
         $children = $children->groupBy('parent_id');
 
         foreach ($records as $record) {
-            $record->setRelation($relation, $children[$record->id] ?? jp7_collect());
+            if (!isset($children[$record->id])) {
+                $children[$record->id] = jp7_collect();
+            }
+            foreach ($children[$record->id] as $child) {
+                $child->setParent($record);
+            }
+            $record->setRelation($relation, $children[$record->id]);
         }
     }
 }
