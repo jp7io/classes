@@ -111,7 +111,6 @@ if (!function_exists('interadmin_data')) {
             $methods = array_filter($methods, function ($a) use ($search) {
                 return preg_match('/'.$search.'/i', $a);
             });
-            sort($methods);
             foreach ($methods as $key => $method) {
                 $args = [];
                 $reflection = new ReflectionMethod($object, $method);
@@ -128,11 +127,12 @@ if (!function_exists('interadmin_data')) {
                     }
                     $args[] = ltrim($param->getType().' $').$param->name.($default ? ' = '.$default : '');
                 }
-                $methods[$key] .= '('.implode(', ',$args).')';
+                $methods[$key] = ($reflection->isStatic() ? 'static ': '').$methods[$key].'('.implode(', ',$args).')';
             }
+            sort($methods);
         }
-
-        dd(compact('methods', 'object'));
+        highlight_string('<?php'.PHP_EOL.implode(PHP_EOL, $methods));
+        dd($object);
     }
 
     /**
