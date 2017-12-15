@@ -89,6 +89,11 @@ abstract class BaseField implements FieldInterface
         return '';
     }
 
+    public function getFilterSql()
+    {
+        return '';
+    }
+
     public function hasMassEdit()
     {
         return false;
