@@ -20,7 +20,7 @@ class BladeExtension
 
         // @ia($model)
         Blade::directive('ia', function ($expression) {
-            return "<?php echo interadmin_data{$expression}; ?>";
+            return "<?php echo interadmin_data({$expression}); ?>";
         });
     }
 

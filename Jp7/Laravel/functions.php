@@ -153,6 +153,9 @@ if (!function_exists('interadmin_data')) {
         }
     }
     // Laravel 5 functions
+    /**
+     * @deprecated Dont extend the base Collection
+     */
     function jp7_collect($arr = null)
     {
         return new \Jp7\Interadmin\Collection($arr);
