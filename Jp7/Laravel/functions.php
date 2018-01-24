@@ -106,6 +106,7 @@ if (!function_exists('interadmin_data')) {
     function dm($object, string $search = '.*')
     {
         $methods = [];
+        $docs = [];
         if (is_object($object)) {
             $methods = get_class_methods($object);
             $methods = array_filter($methods, function ($a) use ($search) {
@@ -127,11 +128,24 @@ if (!function_exists('interadmin_data')) {
                     }
                     $args[] = ltrim($param->getType().' $').$param->name.($default ? ' = '.$default : '');
                 }
-                $methods[$key] = ($reflection->isStatic() ? 'static ': '').$methods[$key].'('.implode(', ',$args).')';
+                $docs[$key] = ($reflection->isStatic() ? 'static ': '').$method.'('.implode(', ',$args).')';
             }
-            sort($methods);
+            sort($docs);
         }
-        highlight_string('<?php'.PHP_EOL.implode(PHP_EOL, $methods));
+        if (php_sapi_name() === "cli") {
+            foreach ($docs as $doc) {
+                echo $doc.PHP_EOL;
+            }
+        } else {
+            $html = highlight_string('<?php'.PHP_EOL.implode(PHP_EOL, $docs), true);
+            foreach ($methods as $key => $method) {
+                $reflection = new ReflectionMethod($object, $method);
+                $url = 'subl://open?url=file://'.$reflection->getFileName().'&line='.$reflection->getStartLine();
+                $link = '<a href="'.$url.'" style="text-decoration: none" title="'.htmlspecialchars($reflection->getDocComment()).'">\1</a>';
+                $html = preg_replace('/>('.$method.')</', '/>'.$link.'<', $html);
+            }
+            echo $html;
+        }
         dd($object);
     }
 
