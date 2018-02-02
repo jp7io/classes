@@ -2,6 +2,7 @@
 * UNDER DEVELOPMENT
 * Several improvements to eager load relations (see Jp7/CollectionUtil.php)
 * Deprecate jp7_collect(), use collect() instead.
+* Small fixes for Laravel 5.3
 
 ## 3.2.1
 * Due to problems with Laravel 5.3, repeated routes will trigger an error
