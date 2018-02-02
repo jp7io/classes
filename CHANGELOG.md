@@ -1,3 +1,12 @@
+## 3.3
+* UNDER DEVELOPMENT
+* Several improvements to eager load relations (see Jp7/CollectionUtil.php)
+* Deprecate jp7_collect(), use collect() instead.
+
+## 3.2.1
+* Due to problems with Laravel 5.3, repeated routes will trigger an error
+* Optional: Use stale cache if page could not be rendered (see Jp7/HttpCache/HttpCacheExtension.php)
+
 ## 3.2
 * Split into 3 packages: classes, classes-deprecated and interadmin-orm
 * Removed automatic namespace on Router::group()
@@ -14,11 +23,11 @@
 * Move getUrl() out of the ORM
 
 ## 3.0
-* Merged both ORMs: InterAdmin and Jp7/Interadmin/Record
+* Merged both ORMs: InterAdmin (original branch) and Jp7/Interadmin/Record (laravel branch)
 
 ### Changes to projects which used InterAdmin/InterAdminTipo:
  * Removed methods deprecated on 2.1.1 (like getInterAdmins)
- * InterAdmin::__construct receives an array now
+ * `InterAdmin::__construct` receives an array now
  * Calling select_* without alias won't bring objects: ->relationFromColumn() can be used if the alias is not known
  * ->attributes is not public anymore - Use ->getAttributes()
  * ->getCampoTipo() can only be overwritten on a Type
