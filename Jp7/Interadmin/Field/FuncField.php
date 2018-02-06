@@ -69,4 +69,14 @@ class FuncField extends ColumnField
         }
         return $html;
     }
+
+    public function searchOptions($search)
+    {
+        $relation = str_replace(['_ids', '_id'], '', $this->nome_id);
+        $data = $this->type->getRelationshipData($relation);
+        $field = new SelectAjaxField([
+            'nome' => $data['tipo']
+        ] + $this->campo);
+        return $field->searchOptions($search);
+    }
 }
