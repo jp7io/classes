@@ -33,13 +33,15 @@ class InteradminServiceProvider extends ServiceProvider
         if ($this->app->isDownForMaintenance()) {
             return;
         }
-  
-        BladeExtension::apply();
+
+        if (isset($this->app['view'])) {
+            BladeExtension::apply();
+            $this->shareViewPath();
+        }
         CacheExtension::apply();
 
         $this->publishPackageFiles();
         $this->bootOrm();
-        $this->shareViewPath();
         // self::bootTestingEnv();
     }
 
@@ -81,12 +83,10 @@ class InteradminServiceProvider extends ServiceProvider
         }
 
         try {
-            if (Schema::hasTable('tipos')) {
-                if (App::environment('local')) {
-                    Type::checkCache();
-                }
-                DynamicLoader::register();
+            if (App::environment('local')) {
+                Type::checkCache();
             }
+            DynamicLoader::register();
         } catch (PDOException $e) {
             if (!App::runningInConsole()) {
                 throw $e;
