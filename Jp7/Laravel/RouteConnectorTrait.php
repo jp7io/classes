@@ -14,7 +14,7 @@ trait RouteConnectorTrait
      */
     public function map()
     {
-        if (env('SKIP_ROUTES')) {
+        if (env('SKIP_ROUTES') || !RecordClassMap::getInstance()->getClasses()) {
             return;
         }
         // Clear Interadmin route map - allows route:cache to work

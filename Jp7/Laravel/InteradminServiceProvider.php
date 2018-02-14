@@ -4,6 +4,7 @@ namespace Jp7\Laravel;
 
 use Illuminate\Support\ServiceProvider;
 use Jp7\Interadmin\DynamicLoader;
+use Jp7\Interadmin\RecordClassMap;
 use Jp7\Interadmin\Type;
 use Jp7\Laravel\Commands\GenerateClasses;
 use Jp7\Laravel\RouterFacade as r;
@@ -86,7 +87,9 @@ class InteradminServiceProvider extends ServiceProvider
         if (file_exists($classesFile)) {
             require_once $classesFile;
         } else {
-            Type::checkCache();
+            if (RecordClassMap::getInstance()->getClasses()) {
+                Type::checkCache();
+            }
             DynamicLoader::register();
         }
     }
