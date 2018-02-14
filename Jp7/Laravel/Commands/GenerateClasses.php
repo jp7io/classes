@@ -7,21 +7,21 @@ use Jp7\Interadmin\DynamicLoader;
 use Jp7\Interadmin\RecordClassMap;
 use Jp7\Interadmin\TypeClassMap;
 
-class GenerateIde extends Command
+class GenerateClasses extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'generate:ide';
+    protected $signature = 'generate:classes';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate IDE helper files so PHP Storm can understand dynamic classes';
+    protected $description = 'Generate class files for InterAdmin dynamic classes';
 
     /**
      * Execute the console command.
@@ -30,14 +30,16 @@ class GenerateIde extends Command
      */
     public function handle()
     {
-        spl_autoload_unregister([DynamicLoader::class, 'load']);
+        if (DynamicLoader::isRegistered()) {
+            spl_autoload_unregister([DynamicLoader::class, 'load']);
+        }
 
-        $helperFile = storage_path('ide_helper/classes.php');
-        file_exists($helperFile) && unlink($helperFile);
+        $classesFile = $this->getFilePath();
+        file_exists($classesFile) && unlink($classesFile);
 
-        $this->info('Starting to generate IDE helper files.');
+        $this->info('Starting to generate dynamic class files.');
 
-        $contents = '<?php throw new Exception("dont include this file, IDE helper only"); ?>'.PHP_EOL;
+        $contents = '';
 
         $classes = array_unique(RecordClassMap::getInstance()->getClasses());
         $classesTipos = array_unique(TypeClassMap::getInstance()->getClasses());
@@ -45,16 +47,21 @@ class GenerateIde extends Command
         $missingClasses = array_filter(array_merge($classes, $classesTipos), function ($class) {
             return !class_exists($class);
         });
+        sort($missingClasses);
 
         DynamicLoader::register();
 
         foreach ($missingClasses as $class) {
-            echo '.';
-            $contents .= DynamicLoader::getCode($class, true) . PHP_EOL. '?>'.PHP_EOL;
+            echo $class.PHP_EOL;
+            $contents .= DynamicLoader::getCode($class, true) . PHP_EOL. '?>';
         }
-        echo PHP_EOL;
 
-        file_put_contents($helperFile, $contents);
-        $this->info('Done!');
+        file_put_contents($classesFile, trim($contents));
+        $this->info('Generated '.count($missingClasses).' classes!');
+    }
+
+    public static function getFilePath()
+    {
+        return base_path('bootstrap/cache/classes.php');
     }
 }
