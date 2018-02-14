@@ -5,6 +5,7 @@ namespace Jp7\Laravel;
 use Illuminate\Support\ServiceProvider;
 use Jp7\Interadmin\DynamicLoader;
 use Jp7\Interadmin\Type;
+use Jp7\Laravel\Commands\GenerateClasses;
 use Jp7\Laravel\RouterFacade as r;
 use Schema;
 use App;
@@ -33,11 +34,11 @@ class InteradminServiceProvider extends ServiceProvider
         if ($this->app->isDownForMaintenance()) {
             return;
         }
-
         if (isset($this->app['view'])) {
             BladeExtension::apply();
             $this->shareViewPath();
         }
+
         CacheExtension::apply();
 
         $this->publishPackageFiles();
@@ -81,18 +82,12 @@ class InteradminServiceProvider extends ServiceProvider
         if (config('interadmin.namespace')) {
             Type::setDefaultClass(config('interadmin.namespace').'Type');
         }
-
-        try {
-            if (App::environment('local')) {
-                Type::checkCache();
-            }
+        $classesFile = GenerateClasses::getFilePath();
+        if (file_exists($classesFile)) {
+            require_once $classesFile;
+        } else {
+            Type::checkCache();
             DynamicLoader::register();
-        } catch (PDOException $e) {
-            if (!App::runningInConsole()) {
-                throw $e;
-            }
-            echo 'Interadmin DB not connected: '.$e->getMessage().PHP_EOL;
-            Log::error($e);
         }
     }
 
