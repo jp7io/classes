@@ -87,7 +87,7 @@ class InteradminServiceProvider extends ServiceProvider
         if (file_exists($classesFile)) {
             require_once $classesFile;
         } else {
-            if (RecordClassMap::getInstance()->getClasses()) {
+            if (getenv('APP_DEBUG') && RecordClassMap::getInstance()->getClasses()) {
                 Type::checkCache();
             }
             DynamicLoader::register();
