@@ -16,6 +16,7 @@ class VarcharField extends ColumnField
     ['num'] = "Número";
     ['cep'] = "CEP";
     ['cpf'] = "CPF";
+    ['cnpj'] = "CNPJ";
     ['telefone'] = "Telefone";
     ['ll']="Latitude e Longitude";
     ['url'] = "URL";
@@ -37,6 +38,8 @@ class VarcharField extends ColumnField
             $rules[$name][] = 'cep';
         } elseif ($this->isCpf()) {
             $rules[$name][] = 'cpf';
+        } elseif ($this->isCnpj()) {
+            $rules[$name][] = 'cnpj';
         }
         if ($this->tamanho) {
             $rules[$name][] = 'max:'.$this->tamanho;
@@ -67,6 +70,11 @@ class VarcharField extends ColumnField
     protected function isCpf()
     {
         return $this->xtra === 'cpf';
+    }
+
+    protected function isCnpj()
+    {
+        return $this->xtra === 'cnpj';
     }
 
     protected function isCep()
