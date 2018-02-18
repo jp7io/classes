@@ -7,7 +7,6 @@ use HtmlObject\Input;
 class FileField extends ColumnField
 {
     protected $id = 'file';
-    protected $editCredits = true;
 
     public function getCellHtml()
     {
@@ -19,18 +18,13 @@ class FileField extends ColumnField
         );
     }
 
-    function setEditCredits($boolean)
-    {
-        $this->editCredits = $boolean;
-    }
-
     protected function getFormerField()
     {
         $input = parent::getFormerField();
         $input->append($this->getSearchButton());
         // TODO td.image_preview .image_preview_background
         $input->append($this->getCellHtml()); // thumbnail
-        if ($this->editCredits) {
+        if ($this->xtra !== 'notext') {
             $input->append($this->getCreditsHtml());
         }
         return $input;
