@@ -64,7 +64,7 @@ class SelectField extends ColumnField
 
     public function getFilterTag()
     {
-        $this->showCamposCombo = false;
+        $this->filterCombo = true;
         $field = $this->getFilterField();
         $blank = Element::create('option', '(vazio)')->setAttribute('value', 'blank');
         $field->prependChild($blank);

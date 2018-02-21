@@ -10,7 +10,7 @@ use Cache;
 
 trait SelectFieldTrait
 {
-    protected $showCamposCombo = true;
+    protected $filterCombo = false;
 
     public function getLabel()
     {
@@ -134,7 +134,22 @@ trait SelectFieldTrait
     protected function getOptions()
     {
         if (!$this->hasTipo()) {
-            return $this->toOptions($this->records()->get());
+            $cacheKey = 'cachedOptions,'.$this->nome->id_tipo;
+            $resolve = function () {
+                $records = $this->records()->get();
+                $prefix = 'cachedRecords,'.$this->nome->id_tipo;
+                foreach ($records as $record) {
+                    Cache::put($prefix.','.$record->id, $record->getAttributes(), 10);
+                }
+                return $this->toOptions($records);
+            };
+            if ($this->filterCombo) {
+                return Cache::remember($cacheKey, 10, $resolve);
+            } else {
+                $records = $resolve();
+                Cache::put($cacheKey, $records, 10);
+                return $records;
+            }
         }
         if ($this->nome instanceof Type) {
             return $this->toOptions($this->tipos()->get());
@@ -190,7 +205,7 @@ trait SelectFieldTrait
             }
         } elseif ($array[0] instanceof Record) {
             foreach ($array as $record) {
-                $options[$record->id] = ($this->showCamposCombo) ? $record->getStringValue() : $record->getName();
+                $options[$record->id] = $this->filterCombo ? $record->getName() : $record->getStringValue();
             }
         } elseif (count($array)) {
             throw new UnexpectedValueException('Should be an array of Record or Type');
