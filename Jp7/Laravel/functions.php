@@ -35,10 +35,17 @@ if (!function_exists('interadmin_data')) {
         return str_slug($string, $separator);
     }
 
-    function interadmin_data($record)
+    /**
+     * Called by @ia($record) blade extension
+     * 
+     * @param $record|null
+     */
+    function interadmin_data($record = null)
     {
         if ($record instanceof \Jp7\Interadmin\Record) {
             echo ' data-ia="'.$record->id.':'.$record->id_tipo.'"';
+        } elseif ($record && getenv('APP_DEBUG')) {
+            throw new InvalidArgumentException('@ia expects a Record, instance of '.get_class($record).' given');
         }
     }
 
