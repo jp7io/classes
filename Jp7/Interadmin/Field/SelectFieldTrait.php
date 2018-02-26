@@ -141,9 +141,7 @@ trait SelectFieldTrait
             if ($this->filterCombo) {
                 return Cache::remember($cacheKey, 10, $resolve);
             } else {
-                $records = $resolve();
-                Cache::put($cacheKey, $records, 10); // update cache
-                return $records;
+                return $resolve();
             }
         }
         if ($this->nome instanceof Type) {
@@ -191,7 +189,7 @@ trait SelectFieldTrait
         return $query;
     }
 
-    final protected function toOptions($array)
+    protected function toOptions($array)
     {
         $options = [];
         if ($array[0] instanceof Type) {
