@@ -42,7 +42,7 @@ if (!function_exists('interadmin_data')) {
      */
     function interadmin_data($record = null)
     {
-        if ($record instanceof \Jp7\Interadmin\Record) {
+        if ($record instanceof \Jp7\Interadmin\RecordAbstract) {
             echo ' data-ia="'.$record->id.':'.$record->id_tipo.'"';
         } elseif ($record && getenv('APP_DEBUG')) {
             throw new InvalidArgumentException('@ia expects a Record, instance of '.get_class($record).' given');
