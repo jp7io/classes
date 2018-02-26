@@ -136,18 +136,13 @@ trait SelectFieldTrait
         if (!$this->hasTipo()) {
             $cacheKey = 'cachedOptions,'.$this->nome->id_tipo;
             $resolve = function () {
-                $records = $this->records()->get();
-                $prefix = 'cachedRecords,'.$this->nome->id_tipo;
-                foreach ($records as $record) {
-                    Cache::put($prefix.','.$record->id, $record->getAttributes(), 10);
-                }
-                return $this->toOptions($records);
+                return $this->toOptions($this->records()->get());
             };
             if ($this->filterCombo) {
                 return Cache::remember($cacheKey, 10, $resolve);
             } else {
                 $records = $resolve();
-                Cache::put($cacheKey, $records, 10);
+                Cache::put($cacheKey, $records, 10); // update cache
                 return $records;
             }
         }
@@ -196,7 +191,7 @@ trait SelectFieldTrait
         return $query;
     }
 
-    protected function toOptions($array)
+    final protected function toOptions($array)
     {
         $options = [];
         if ($array[0] instanceof Type) {
