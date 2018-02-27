@@ -194,11 +194,12 @@ trait SelectFieldTrait
         $options = [];
         if ($array[0] instanceof Type) {
             foreach ($array as $tipo) {
-                $options[$tipo->id_tipo] = $tipo->getName();
+                $options[$tipo->id_tipo] = e($tipo->getName());
             }
         } elseif ($array[0] instanceof Record) {
             foreach ($array as $record) {
-                $options[$record->id] = $this->filterCombo ? $record->getName() : $record->getStringValue();
+                $options[$record->id] = e($this->filterCombo ? $record->getName() : $record->getStringValue() .
+                    ($record->isPublished() ? '': ' (despublicado)'));
             }
         } elseif (count($array)) {
             throw new UnexpectedValueException('Should be an array of Record or Type');
