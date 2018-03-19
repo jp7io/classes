@@ -20,12 +20,8 @@ class RecordUrl
      *
      * @return string
      */
-    public static function getTypeUrl(Type $type, $action = 'index', $parameters = [])
+    public static function getTypeUrl(Type $type, $action = 'index', $parameters = null)
     {
-        if ($type->getParent() instanceof Record) {
-            array_unshift($parameters, $type->getParent());
-        }
-
         $route = $type->getRoute($action);
         if (!$route) {
             throw new BadMethodCallException('There is no route for id_tipo: '.$type->id_tipo.
@@ -33,6 +29,8 @@ class RecordUrl
         }
 
         $variables = r::getVariablesFromRoute($route);
+        $parameters = $parameters ?? $type->getUrlParameters($variables);
+
         if (count($parameters) != count($variables)) {
             throw new BadMethodCallException('Route "'.$route->getUri().'" has '.count($variables).
                 ' parameters, but received '.count($parameters).'. Called on '.get_class($type));
