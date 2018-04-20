@@ -7,6 +7,7 @@ use Closure;
 class Select extends \Former\Form\Fields\Select
 {
     private $lazyOptions;
+    private $noPlaceholder = false;
 
     public function options($list, $selected = null, $valuesAsKeys = false)
     {
@@ -27,6 +28,14 @@ class Select extends \Former\Form\Fields\Select
         return parent::options($list, $selected, $valuesAsKeys);
     }
 
+    public function placeholder($placeholder)
+    {
+        if ($placeholder === false) {
+            $this->noPlaceholder = true;
+        }
+        return parent::placeholder($placeholder);
+    }
+
     public function render()
     {
         // Lazy loading options
@@ -34,7 +43,7 @@ class Select extends \Former\Form\Fields\Select
             parent::options(call_user_func($this->lazyOptions));
         }
         // Use "Selecione" as default placeholder
-        if ($this->getPlaceholder() === null || $this->getPlaceholder() === false) {
+        if ($this->getPlaceholder() === false && !$this->noPlaceholder) {
             if (empty($this->attributes['multiple'])) {
                 $this->placeholder('Selecione');
             }
