@@ -48,9 +48,13 @@ if (!function_exists('interadmin_data')) {
     function error_controller($action)
     {
         $request = Request::create('/error/'.$action, 'GET', []);
-
+        $session = Request::getSession();
+        if ($session) {
+            $request->setSession($session);
+        }
         return Route::dispatch($request);
     }
+
 
     function link_open($url, $attributes = [])
     {
