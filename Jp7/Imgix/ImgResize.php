@@ -8,7 +8,7 @@ class ImgResize extends BaseImgResize
 {
     public static function addTemplate($url, $template)
     {
-        if (starts_with($url, self::storageUrl())) {
+        if (starts_with($url, self::storageUrl()) || str_contains($url, '.imgix.net')) {
             $url = replace_prefix(self::storageUrl(), self::imgixUrl(), $url);
 
             $params = config('imgix.templates.'.$template);
