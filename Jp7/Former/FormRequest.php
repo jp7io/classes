@@ -83,13 +83,13 @@ class FormRequest
 
     protected function backUrl()
     {
-        $actionName = Route::getCurrentRoute()->getActionName();
-        $action = explode('@', $actionName)[1];
-
+        $routeName = Route::getCurrentRoute()->getName();
+        $parts = explode('.', $routeName);
+        $action = array_pop($parts);
         if ($action === 'store') {
-            return $this->model->getUrl('create');
+            return route(implode('.', $parts).'.create');
         } elseif ($action === 'update') {
-            return $this->model->getUrl('edit');
+            return route(implode('.', $parts).'.edit');
         }
         throw new Exception('Unknown action.');
     }
