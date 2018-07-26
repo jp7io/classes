@@ -37,20 +37,17 @@ class Factory
         // tipo_de_campo -> only used in a few specials / xtra_disabledfields
         $tipo = empty($campo['tipo_de_campo']) ? $campo['tipo'] : $campo['tipo_de_campo'].'_';
         $prefix = $this->getPrefix($tipo, $campo['xtra'] ?? '');
-        $class = $this->getFieldClass($prefix, $campo);
-        return new $class($campo);
-    }
 
-    protected function getFieldClass($prefix, array $campo)
-    {
-        if ($prefix === 'special' || $prefix === 'func') {
+        if (($prefix === 'special' || $prefix === 'func') && str_contains($campo['nome'], '\\')) {
             // Special as object implements FieldInterface
             // Special as callable should be deprecated in favor of object
-            if (str_contains($campo['nome'], '\\')) {
-                return $campo['nome'];
-            }
+            $class = $campo['nome'];
+            $campo['nome'] = $campo['nome_original'] ?? $campo['nome'];
+        } else {
+            $class = $this->namespace.studly_case($prefix).'Field';
         }
-        return $this->namespace.studly_case($prefix).'Field';
+
+        return new $class($campo);
     }
 
     /**
