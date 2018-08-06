@@ -63,7 +63,8 @@ class FormInspector
         ];
 
         $input->filter('option')->each(function ($option, $i) use ($return) {
-            if ($value = $option->attr('value')) {
+            $value = $option->attr('value');
+            if ($value !== '') {
                 if ($option->attr('selected') || $i == 0) {
                     $return->selected = $value;
                 }
