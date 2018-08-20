@@ -17,7 +17,19 @@ class SelectMultiField extends ColumnField
 
     public function getCellHtml()
     {
-        return implode(',<br>', $this->getTextArray(true));
+        $textArray = $this->getTextArray(true);
+        $visibleArray = array_slice($textArray, 0, 5);
+        $expandableArray = array_slice($textArray, 5);
+        $id = 'multi'.uniqid();
+
+        return $expandableArray ?
+            '<div data-toggle="collapse" data-target=".'.$id.'">'.
+                implode('<br>', $visibleArray).
+                '<br>'.
+                '<div class="'.$id.' collapse in">...</div>'.
+                '</div>'.
+                '<div class="'.$id.' collapse">'.implode('<br>', $expandableArray).'</div>' :
+            implode('<br>', $visibleArray);
     }
 
     public function getText()
