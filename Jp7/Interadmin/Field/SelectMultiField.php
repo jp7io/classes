@@ -20,15 +20,13 @@ class SelectMultiField extends ColumnField
         $textArray = $this->getTextArray(true);
         $visibleArray = array_slice($textArray, 0, 5);
         $expandableArray = array_slice($textArray, 5);
-        $id = 'multi'.uniqid();
 
         return $expandableArray ?
-            '<div data-toggle="collapse" data-target=".'.$id.'">'.
+            '<div data-toggle="collapse" data-target=".select_multi_expand">'.
                 implode('<br>', $visibleArray).
-                '<br>'.
-                '<div class="'.$id.' collapse in">...</div>'.
-                '</div>'.
-                '<div class="'.$id.' collapse">'.implode('<br>', $expandableArray).'</div>' :
+                '<div class="select_multi_expand collapse in">...</div>'.
+                '<div class="select_multi_expand collapse">'.implode('<br>', $expandableArray).'</div>'.
+            '</div>' :
             implode('<br>', $visibleArray);
     }
 
