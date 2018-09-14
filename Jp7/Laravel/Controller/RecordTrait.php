@@ -58,7 +58,7 @@ trait RecordTrait
 
     protected function _getResourceUri($route)
     {
-        $uri = $route->getUri();
+        $uri = $route->uri();
 
         if (!in_array($this->action, $this->implicitNamedActions)) {
             $uri = dirname($uri); // Remove extra directory

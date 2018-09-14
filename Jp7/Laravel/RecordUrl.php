@@ -34,7 +34,7 @@ class RecordUrl
 
         $variables = r::getVariablesFromRoute($route);
         if (count($parameters) != count($variables)) {
-            throw new BadMethodCallException('Route "'.$route->getUri().'" has '.count($variables).
+            throw new BadMethodCallException('Route "'.$route->uri().'" has '.count($variables).
                 ' parameters, but received '.count($parameters).'. Called on '.get_class($type));
         }
         // object -> id_slug
@@ -85,7 +85,7 @@ class RecordUrl
         }, $parameters);
 
         if (count($parameters) != count($variables)) {
-            throw new BadMethodCallException('Route "'.$route->getUri().'" has '.count($variables).
+            throw new BadMethodCallException('Route "'.$route->uri().'" has '.count($variables).
                     ' parameters, but received '.count($parameters).'. Called on '.get_class($record));
         }
 

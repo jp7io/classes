@@ -310,7 +310,7 @@ class Router extends MethodForwarder
     public function getVariablesFromRoute($route)
     {
         $matches = [];
-        preg_match_all('/{(\w+)}/', $route->getUri(), $matches);
+        preg_match_all('/{(\w+)}/', $route->uri(), $matches);
 
         return $matches[1] ?: [];
     }
