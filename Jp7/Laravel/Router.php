@@ -159,8 +159,9 @@ class Router extends MethodForwarder
         if (empty($options['only'])) {
             $options['only'] = $this->getControllerActions($controller);
         }
-        // return is void, but might change in the future
-        $result = parent::resource($name, $controller, $options);
+
+        $pendingResourceRegistration = null;
+        parent::resource($name, $controller, $options); // TODO allow fluent routes 5.4+
         if (isset($options['id_tipo'])) {
             if (!is_numeric($options['id_tipo'])) {
                 // Get id_tipo from class
@@ -168,7 +169,7 @@ class Router extends MethodForwarder
             }
             $this->addType($options['id_tipo'], $controller); // Maps [id_tipo => route basename]
         }
-        return $result;
+        return $pendingResourceRegistration;
     }
 
     /**
