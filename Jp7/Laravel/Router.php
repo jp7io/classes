@@ -145,6 +145,7 @@ class Router extends MethodForwarder
      * @param  string $name         Resource name
      * @param  string $controller   Controller class
      * @param  array  $options      Array of options
+     * @return \Illuminate\Routing\PendingResourceRegistration
      */
     public function resource($name, $controller = null, array $options = [])
     {
@@ -160,8 +161,10 @@ class Router extends MethodForwarder
             $options['only'] = $this->getControllerActions($controller);
         }
 
-        $pendingResourceRegistration = null;
-        parent::resource($name, $controller, $options); // TODO allow fluent routes 5.4+
+        $pendingResourceRegistration = parent::resource($name, $controller, $options);
+        if ($pendingResourceRegistration) {
+            $pendingResourceRegistration->register(); // Laravel 5.4+
+        }
         if (isset($options['id_tipo'])) {
             if (!is_numeric($options['id_tipo'])) {
                 // Get id_tipo from class
@@ -169,7 +172,16 @@ class Router extends MethodForwarder
             }
             $this->addType($options['id_tipo'], $controller); // Maps [id_tipo => route basename]
         }
-        return $pendingResourceRegistration;
+        if (!$pendingResourceRegistration) {
+            return null; // Laravel 5.3-
+        }
+        // Laravel 5.4+
+        return new class($pendingResourceRegistration) extends MethodForwarder {
+            public function __destruct()
+            {
+                $this->target->register();
+            }
+        };
     }
 
     /**
