@@ -3,6 +3,7 @@
 namespace Jp7\Laravel;
 
 use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Log\Events\MessageLogged;
 use Throwable;
 use Queue;
 use Log;
@@ -10,8 +11,14 @@ use Request;
 
 trait LogServiceProviderTrait
 {
+    /**
+     * @deprecated not needed for Laravel 5.3+
+     */
     protected function renameSyslogApp()
     {
+        if (!config('app.log')) {
+            throw new \UnexpectedValueException('No config(app.log) value. For Laravel 5.3+ remove calls to renameSyslogApp()');
+        }
         if (config('app.log') === 'syslog') {
             Log::getMonolog()->popHandler();
             Log::useSyslog(config('app.name'));
@@ -36,7 +43,7 @@ trait LogServiceProviderTrait
     // Exceptions thrown or handled and logged with Log::error($e)
     protected function sentoToSentryAllExceptions($extra_context = [])
     {
-        Log::listen(function ($level, $message, $context) use ($extra_context) {
+        $logHandler = function ($level, $message, $context) use ($extra_context) {
             if ($level === 'error' && $message instanceof Throwable) {
                 try {
                     // might fail if app() has broken bindings
@@ -58,6 +65,18 @@ trait LogServiceProviderTrait
                     Log::critical($e);
                 }
             }
-        });
+        };
+
+        if (class_exists(MessageLogged::class)) { // Laravel 5.4+
+            Log::listen(function (MessageLogged $message) use ($logHandler) {
+                if ($message->level === 'error') {
+                    $exception = $message->context['exception'];
+                    unset($message->context['exception']);
+                    $logHandler($message->level, $exception, $message->context);
+                }
+            });
+        } else { // Laravel 5.3-
+            Log::listen($logHandler);
+        }
     }
 }
