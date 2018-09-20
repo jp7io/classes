@@ -1,3 +1,13 @@
+## master
+* LogServiceProvider@renameSyslogApp is not needed anymore
+* HttpCacheExtension abandoned - use the ttl middleware from barryvdh, and the snippet below if necessary: 
+```
+// Cache AJAX requests independently
+app()->singleton(\Symfony\Component\HttpKernel\HttpCache\Store::class, function ($app) {
+    return new \Jp7\HttpCache\Store($app['http_cache.cache_dir']);
+});
+```
+
 ## 3.3
 * UNDER DEVELOPMENT
 * Several improvements to eager load relations (see Jp7/CollectionUtil.php)
