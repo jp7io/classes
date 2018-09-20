@@ -1,7 +1,7 @@
 ## master
 * Small fixes for Laravel 5.6
 * LogServiceProvider@renameSyslogApp is not needed anymore
-* HttpCacheExtension abandoned - use the ttl middleware from barryvdh, and the snippet below if necessary: 
+* HttpCacheExtension abandoned - use the ttl middleware from barryvdh, DontCacheOldInput middleware, and the snippet below if necessary: 
 ```php
 // Cache AJAX requests independently
 app()->singleton(\Symfony\Component\HttpKernel\HttpCache\Store::class, function ($app) {
