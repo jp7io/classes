@@ -1,3 +1,18 @@
+## master
+* Small fixes for Laravel 5.6
+* LogServiceProvider@renameSyslogApp is not needed anymore
+* HttpCacheExtension abandoned
+  * remove `blacklist` and `invalidate` from httpcache.php
+  * use the ttl middleware from barryvdh on routes that were on blacklist: ->middleware('ttl:0')
+  * use the DontCacheOldInput middleware if the return from old() forms should not be cached
+  * Add the snippet below if AJAX should cache independently: 
+```php
+// Cache AJAX requests independently
+app()->singleton(\Symfony\Component\HttpKernel\HttpCache\Store::class, function ($app) {
+    return new \Jp7\HttpCache\Store($app['http_cache.cache_dir']);
+});
+```
+
 ## 3.3
 * UNDER DEVELOPMENT
 * Several improvements to eager load relations (see Jp7/CollectionUtil.php)

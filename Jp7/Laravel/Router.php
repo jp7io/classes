@@ -145,6 +145,7 @@ class Router extends MethodForwarder
      * @param  string $name         Resource name
      * @param  string $controller   Controller class
      * @param  array  $options      Array of options
+     * @return \Illuminate\Routing\PendingResourceRegistration
      */
     public function resource($name, $controller = null, array $options = [])
     {
@@ -159,8 +160,11 @@ class Router extends MethodForwarder
         if (empty($options['only'])) {
             $options['only'] = $this->getControllerActions($controller);
         }
-        // return is void, but might change in the future
-        $result = parent::resource($name, $controller, $options);
+
+        $pendingResourceRegistration = parent::resource($name, $controller, $options);
+        if ($pendingResourceRegistration) {
+            $pendingResourceRegistration->register(); // Laravel 5.4+
+        }
         if (isset($options['id_tipo'])) {
             if (!is_numeric($options['id_tipo'])) {
                 // Get id_tipo from class
@@ -168,7 +172,16 @@ class Router extends MethodForwarder
             }
             $this->addType($options['id_tipo'], $controller); // Maps [id_tipo => route basename]
         }
-        return $result;
+        if (!$pendingResourceRegistration) {
+            return null; // Laravel 5.3-
+        }
+        // Laravel 5.4+
+        return new class($pendingResourceRegistration) extends MethodForwarder {
+            public function __destruct()
+            {
+                $this->target->register();
+            }
+        };
     }
 
     /**
@@ -310,7 +323,7 @@ class Router extends MethodForwarder
     public function getVariablesFromRoute($route)
     {
         $matches = [];
-        preg_match_all('/{(\w+)}/', $route->getUri(), $matches);
+        preg_match_all('/{(\w+)}/', $route->uri(), $matches);
 
         return $matches[1] ?: [];
     }

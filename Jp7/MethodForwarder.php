@@ -13,6 +13,7 @@ class MethodForwarder
 
     public function __call($method, $arguments)
     {
-        return call_user_func_array([$this->target, $method], $arguments);
+        $return = call_user_func_array([$this->target, $method], $arguments);
+        return $return === $this->target ? $this : $return;
     }
 }
