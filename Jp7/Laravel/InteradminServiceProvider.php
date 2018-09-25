@@ -66,7 +66,7 @@ class InteradminServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        App::singleton(Type::class, function () {
+        App::bind(Type::class, function () {
             $route = Route::getCurrentRoute();
             if ($route) { // Some pages don't have route, like 503.blade.php
                 return r::getTypeByRoute($route);
