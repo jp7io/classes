@@ -163,7 +163,7 @@ class Router extends MethodForwarder
 
         $pendingResourceRegistration = parent::resource($name, $controller, $options);
         if ($pendingResourceRegistration) {
-            $pendingResourceRegistration->register(); // Laravel 5.4+
+            $pendingResourceRegistration->__destruct(); // Laravel 5.5+
         }
         if (isset($options['id_tipo'])) {
             if (!is_numeric($options['id_tipo'])) {
@@ -172,16 +172,7 @@ class Router extends MethodForwarder
             }
             $this->addType($options['id_tipo'], $controller); // Maps [id_tipo => route basename]
         }
-        if (!$pendingResourceRegistration) {
-            return null; // Laravel 5.3-
-        }
-        // Laravel 5.4+
-        return new class($pendingResourceRegistration) extends MethodForwarder {
-            public function __destruct()
-            {
-                $this->target->register();
-            }
-        };
+        return $pendingResourceRegistration;
     }
 
     /**
