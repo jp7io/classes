@@ -43,6 +43,9 @@ trait LogServiceProviderTrait
     // Exceptions thrown or handled and logged with Log::error($e)
     protected function sentoToSentryAllExceptions($extra_context = [])
     {
+        if (version_compare(app()->version(), '5.6.0') >= 0) {
+            throw new \UnexpectedValueException('For Laravel 5.6+ remove calls to sentoToSentryAllExceptions(), add "sentry" to config/logging.php, and use the stack option.');
+        }
         $logHandler = function ($level, $message, $context) use ($extra_context) {
             if ($level === 'error' && $message instanceof Throwable) {
                 try {
