@@ -70,7 +70,9 @@ trait LogServiceProviderTrait
         if (class_exists(MessageLogged::class)) { // Laravel 5.4+
             Log::listen(function (MessageLogged $message) use ($logHandler) {
                 if ($message->level === 'error') {
-                    $exception = $message->context['exception'];
+                    $exception = $message->message instanceof Throwable ?
+                        $message->message :
+                        $message->context['exception'];
                     unset($message->context['exception']);
                     $logHandler($message->level, $exception, $message->context);
                 }
