@@ -3,7 +3,7 @@
 * Deprecate jp7_collect(), use collect() instead.
 
 ## 3.2.2
-* Small fixes for Laravel 5.6
+* Small fixes for Laravel 5.7
 * LogServiceProvider@renameSyslogApp is not needed anymore
 * HttpCacheExtension abandoned
   * remove `blacklist` and `invalidate` from httpcache.php
