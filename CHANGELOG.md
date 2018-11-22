@@ -19,7 +19,7 @@ app()->singleton(\Symfony\Component\HttpKernel\HttpCache\Store::class, function 
 
 ## 3.2.1
 * Due to problems with Laravel 5.3, repeated routes will trigger an error
-* Optional: Use stale cache if page could not be rendered (see Jp7/HttpCache/HttpCacheExtension.php)
+* ~Optional: Use stale cache if page could not be rendered (see Jp7/HttpCache/HttpCacheExtension.php)~ (Found out later that it's already part of the Symfony HttpCache behavior, it's just not as long, dropped because it was too magic)
 
 ## 3.2
 * Split into 3 packages: classes, classes-deprecated and interadmin-orm
