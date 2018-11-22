@@ -1,4 +1,8 @@
-## master
+## 3.3
+* Several improvements to eager load relations (see Jp7/CollectionUtil.php)
+* Deprecate jp7_collect(), use collect() instead.
+
+## 3.2.2
 * Small fixes for Laravel 5.6
 * LogServiceProvider@renameSyslogApp is not needed anymore
 * HttpCacheExtension abandoned
@@ -12,12 +16,6 @@ app()->singleton(\Symfony\Component\HttpKernel\HttpCache\Store::class, function 
     return new \Jp7\HttpCache\Store($app['http_cache.cache_dir']);
 });
 ```
-
-## 3.3
-* UNDER DEVELOPMENT
-* Several improvements to eager load relations (see Jp7/CollectionUtil.php)
-* Deprecate jp7_collect(), use collect() instead.
-* Small fixes for Laravel 5.3
 
 ## 3.2.1
 * Due to problems with Laravel 5.3, repeated routes will trigger an error
