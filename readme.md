@@ -13,7 +13,7 @@ General classes used by our projects.
 
 ### Split into 3 packages
 
-Since version 3.2 this package was split into 3 other:
+Since version 3.2 (March, 2017) this package was split into 3 other:
 
 * [classes](https://github.com/jp7internet/classes) - Current general classes used by our projects
 * [classes-deprecated](https://github.com/jp7internet/classes-deprecated) - Obsolete and should be removed ASAP
