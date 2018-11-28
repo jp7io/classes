@@ -189,7 +189,7 @@ if (!function_exists('interadmin_data')) {
     function trans_route($name, $parameters = [], $absolute = true)
     {
         $locale = LaravelLocalization::getCurrentLocale();
-        $prefix = LaravelLocalization::getDefaultLocale() ? '' : $locale.'.';
+        $prefix = $locale === LaravelLocalization::getDefaultLocale() ? '' : $locale.'.';
         return route($prefix.$name, $parameters, $absolute);
     }
 
