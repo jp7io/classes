@@ -41,7 +41,7 @@ trait SelectFieldTrait
             return [$related->getName(), true];
         }
         if ($related instanceof Record) {
-            return [$related->_cachedStringValue ?? $related->getName(), $related->isPublished()];
+            return [$related->getStringValue(), $related->isPublished()];
         }
         if (!$related) {
             return ['', true];
@@ -118,7 +118,6 @@ trait SelectFieldTrait
                 $found = null;
                 foreach ($records as $record) {
                     if ($record->id == $id) {
-                        $record->_cachedStringValue = $record->getStringValue();
                         $found = $record;
                         break;
                     }
@@ -198,8 +197,7 @@ trait SelectFieldTrait
             }
         } elseif ($array[0] instanceof Record) {
             foreach ($array as $record) {
-                $options[$record->id] = e($this->filterCombo ? $record->getName() : $record->getStringValue() .
-                    ($record->isPublished() ? '': ' (despublicado)'));
+                $options[$record->id] = e($record->getStringValue() . ($record->isPublished() ? '': ' (despublicado)'));
             }
         } elseif (count($array)) {
             throw new UnexpectedValueException('Should be an array of Record or Type');
