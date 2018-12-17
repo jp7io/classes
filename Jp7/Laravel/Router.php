@@ -164,6 +164,13 @@ class Router extends MethodForwarder
         $pendingResourceRegistration = parent::resource($name, $controller, $options);
         if ($pendingResourceRegistration) {
             $pendingResourceRegistration->__destruct(); // Laravel 5.5+
+            try {
+                $reflection = new \ReflectionProperty($pendingResourceRegistration, 'registered');
+                $reflection->setAccessible(true);
+                $reflection->setValue($pendingResourceRegistration, false);
+            } catch (\ReflectionException $e) {
+                // do nothing, Laravel 5.5 does not have ->registered
+            }
         }
         if (isset($options['id_tipo'])) {
             if (!is_numeric($options['id_tipo'])) {
