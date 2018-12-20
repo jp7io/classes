@@ -31,7 +31,7 @@ trait InteradminControllerTrait
         $s_cookie = ['user' => $request->user];
         // You can get it later with => Cookie::get('interadmin')
         $domain = $this->getCookieDomain($request);
-        $cookie = Cookie::forever('interadmin', $s_cookie, null, $domain, false, false); // httpOnly = false
+        $cookie = Cookie::forever('interadmin', json_encode($s_cookie), null, $domain, false, false); // httpOnly = false
         return response(date('c'))
             ->withCookie($cookie)
             ->withHeaders([
