@@ -27,7 +27,7 @@ class ParseEsi
             preg_match_all('/<esi:include[^>]+src="(.+?)"[^>]+>/', $content, $matches);
             if ($matches) {
                 foreach ($matches[0] as $i => $match) {
-                    $subResponse = $this->getSubRequestResponse($matches[1][$i]);
+                    $subResponse = $this->getSubRequestResponse($request, $matches[1][$i]);
                     $content = str_replace($match, $subResponse, $content);
                 }
             }
@@ -38,10 +38,11 @@ class ParseEsi
         return $response;
     }
 
-    protected function getSubRequestResponse($url)
+    protected function getSubRequestResponse($request, $url)
     {
-        $request = app(Request::class)->create($url, 'GET');
-        $response = app(Router::class)->dispatch($request);
+        $subRequest = app(Request::class)->create($url, 'GET');
+        $subRequest->setLaravelSession($request->getSession());
+        $response = app(Router::class)->dispatch($subRequest);
         return $response->getContent();
     }
 }
