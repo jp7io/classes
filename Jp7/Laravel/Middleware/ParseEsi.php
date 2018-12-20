@@ -4,7 +4,7 @@ namespace Jp7\Laravel\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Router
+use Illuminate\Routing\Router;
 
 class ParseEsi
 {
