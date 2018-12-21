@@ -6,6 +6,9 @@ use Symfony\Component\HttpKernel\HttpCache\HttpCache;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpCache\SubRequestHandler;
+use Symfony\Component\HttpKernel\HttpCache\StoreInterface;
+use Symfony\Component\HttpKernel\HttpCache\SurrogateInterface;
 
 /**
  * Adds four features to Symfony's HttpCache
@@ -17,10 +20,18 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class HttpCacheExtension extends HttpCache
 {
+    private $kernel;
+
+    public function __construct(HttpKernelInterface $kernel, StoreInterface $store, SurrogateInterface $surrogate = null, array $options = array())
+    {
+        $this->kernel = $kernel;
+        parent::__construct($kernel, $store, $surrogate, $options);
+    }
+
     public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
         if (!config('httpcache.enabled') || $this->matchesBlacklist($request) || $request->old()) {
-            return $this->pass($request, $catch);
+            return SubRequestHandler::handle($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $catch);
         }
 
         if (config('httpcache.invalidate')) {
