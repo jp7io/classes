@@ -22,6 +22,7 @@ class FormerExtension
     private $model;
     private $rules;
     private $former;
+    private $labeless = false;
 
     public function __construct(OriginalFormer $former)
     {
@@ -60,6 +61,12 @@ class FormerExtension
     public function __set($property, $value)
     {
         $this->former->$property = $value;
+    }
+
+    public function labeless_open(...$arguments)
+    {
+        $this->labeless = true;
+        return $this->former->open(...$arguments)->addClass('labeless');
     }
 
     public function populate($model)
@@ -156,6 +163,9 @@ class FormerExtension
                 $field->pattern('\S+ +\S.*')
                     ->title('Preencha nome e sobrenome');
             }
+        }
+        if ($this->labeless) {
+            $field->placeholder($field->getLabel()->getValue());
         }
     }
 
