@@ -12,7 +12,7 @@ class Select extends \Former\Form\Fields\Select
     public function options($list, $selected = null, $valuesAsKeys = false)
     {
         if ($list instanceof \Jp7\Interadmin\Query\BaseQuery) {
-            throw new \Exception('Use ->lists(attr_name,id)');
+            throw new \Exception('Expected array but received Query, use $query->pluck(attr_name,id)');
         }
 
         // clear previous options
