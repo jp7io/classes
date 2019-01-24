@@ -66,7 +66,7 @@ class FormerExtension
     public function labeless_open(...$arguments)
     {
         $this->labeless = true;
-        return $this->former->open(...$arguments)->addClass('labeless');
+        return $this->open(...$arguments)->addClass('labeless');
     }
 
     public function populate($model)
