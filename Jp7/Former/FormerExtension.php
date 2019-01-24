@@ -158,8 +158,8 @@ class FormerExtension
             $field->setValue($field->getValue()->format('Y-m-d'));
         }
 
-        if (isset($this->rules[$alias])) {
-            if (in_array('name_and_surname', $this->rules[$alias])) {
+        if ($rules = $this->former->getRules($alias)) {
+            if (isset($rules['name_and_surname'])) {
                 $field->pattern('\S+ +\S.*')
                     ->title('Preencha nome e sobrenome');
             }
