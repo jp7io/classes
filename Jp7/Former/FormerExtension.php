@@ -22,7 +22,7 @@ class FormerExtension
     private $model;
     private $rules;
     private $former;
-    private $labeless = false;
+    private $labelless = false; // Custom setting
 
     public function __construct(OriginalFormer $former)
     {
@@ -63,10 +63,10 @@ class FormerExtension
         $this->former->$property = $value;
     }
 
-    public function labeless_open(...$arguments)
+    public function labelless_open(...$arguments)
     {
-        $this->labeless = true;
-        return $this->open(...$arguments)->addClass('labeless');
+        $this->labelless = true;
+        return $this->open(...$arguments)->addClass('labelless');
     }
 
     public function populate($model)
@@ -164,7 +164,7 @@ class FormerExtension
                     ->title('Preencha nome e sobrenome');
             }
         }
-        if ($this->labeless) {
+        if ($this->labelless) {
             $field->placeholder($field->getLabel()->getValue());
         }
     }
