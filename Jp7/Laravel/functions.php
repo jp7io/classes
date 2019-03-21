@@ -193,8 +193,17 @@ if (!function_exists('interadmin_data')) {
         return route($prefix.$name, $parameters, $absolute);
     }
 
+    /**
+     * Like file_get_contents() but with some default settings for URLs
+     */
     function url_get_contents($url, array $contextOptions = [])
     {
+        $contextOptions += [
+            'http' => [
+                'timeout' => 15,
+                'user_agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36 JP7'
+            ]
+        ];
         if (ends_with(parse_url($url)['host'], '.dev')) {
             // Local development does not have SSL certificates
             $contextOptions += [
