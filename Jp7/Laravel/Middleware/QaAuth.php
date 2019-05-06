@@ -30,7 +30,7 @@ class QaAuth
             return true;
         }
         // Allow API calls
-        if ($request->ajax() || $request->wantsJson()) {
+        if ($request->ajax() || $request->wantsJson() || $request->header('origin')) {
             return true;
         }
         // Allow PHP file_get_contents() calls
