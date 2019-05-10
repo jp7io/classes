@@ -162,4 +162,12 @@ class ColumnField extends BaseField
         }
         return $rules;
     }
+
+    public function getOrderSql($direction)
+    {
+        if (starts_with($this->tipo, 'func_')) {
+            return ''; // func is not a real column
+        }
+        return $this->tipo.' '.$direction;
+    }
 }

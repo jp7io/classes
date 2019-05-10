@@ -152,4 +152,14 @@ abstract class BaseField implements FieldInterface
     {
         return [];
     }
+
+    public function getOrderSql($direction)
+    {
+        return '';
+    }
+
+    public function getSearchSql($search)
+    {
+        return '';
+    }
 }
