@@ -37,7 +37,7 @@ if (!function_exists('interadmin_data')) {
 
     /**
      * Called by @ia($record) blade extension
-     * 
+     *
      * @param $record|null
      */
     function interadmin_data($record = null)
@@ -114,15 +114,17 @@ if (!function_exists('interadmin_data')) {
      * @param $object
      * @param string $search
      */
-    function dm($object, string $search = '.*')
+    function dm($object, $search = '.*', ...$other)
     {
         $methods = [];
         $docs = [];
         if (is_object($object)) {
             $methods = get_class_methods($object);
-            $methods = array_filter($methods, function ($a) use ($search) {
-                return preg_match('/'.$search.'/i', $a);
-            });
+            if (is_string($search)) {
+                $methods = array_filter($methods, function ($a) use ($search) {
+                    return preg_match('/'.$search.'/i', $a);
+                });
+            }
             foreach ($methods as $key => $method) {
                 $args = [];
                 $reflection = new ReflectionMethod($object, $method);
@@ -151,13 +153,25 @@ if (!function_exists('interadmin_data')) {
             $html = highlight_string('<?php'.PHP_EOL.implode(PHP_EOL, $docs), true);
             foreach ($methods as $key => $method) {
                 $reflection = new ReflectionMethod($object, $method);
+                $isInherited = $reflection->class !== get_class($object);
                 $url = 'subl://open?url=file://'.$reflection->getFileName().'&line='.$reflection->getStartLine();
-                $link = '<a href="'.$url.'" style="text-decoration: none" title="'.htmlspecialchars($reflection->getDocComment()).'">\1</a>';
+                $link = '<a href="'.$url.'" style="text-decoration: none;color:'.($isInherited ? ' #666;' : '#000;').
+                    '" title="'.htmlspecialchars($reflection->getDocComment()).'"'.
+                    ' onmouseover="this.querySelector(\'.expand\').style.display = \'inline\'"'.
+                    ' onmouseout="this.querySelector(\'.expand\').style.display = \'none\'">'.
+                    '<span class="expand" style="display:none;">'.$reflection->class.'::</span>'.
+                    '\1</a>';
                 $html = preg_replace('/>('.$method.')</', '/>'.$link.'<', $html);
+            }
+            if ($object instanceof \Jp7\Interadmin\Record) {
+                $html .= '<br /><br /><b>'.get_class($object).' Relationships: </b> '.implode(', ', array_keys($object->getType()->getRelationships()));
             }
             echo $html;
         }
-        dd($object);
+        if (is_string($search) && !$other) {
+            dd($object);
+        }
+        dd(...array_merge([$object, $search], $other));
     }
 
     /**
