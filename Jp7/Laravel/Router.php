@@ -132,6 +132,25 @@ class Router extends MethodForwarder
         return $this->map;
     }
 
+    public function tempTypeRoutes(...$id_tipo_array)
+    {
+        $map = &$this->map[$this->getLocale()]; // reference
+        foreach ($id_tipo_array as $id_tipo) {
+            if (isset($map[$id_tipo])) {
+                echo 'WARNING: Please check tempTypeRoutes for id_tipo: '.$id_tipo.PHP_EOL;
+                continue;
+            }
+            // Create temporary controller
+            $tempRouteName = 'temporarilyIgnored'.$id_tipo;
+            eval('namespace App\Http\Controllers {
+                class '.$tempRouteName.'Controller extends \Illuminate\Routing\Controller {
+                }
+            }');
+            parent::resource($tempRouteName, $tempRouteName.'Controller');
+            $map[$id_tipo] = $tempRouteName;
+        }
+    }
+
 ////
 //// Route override: Adds default values for methods
 ////
