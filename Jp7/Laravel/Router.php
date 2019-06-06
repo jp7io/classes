@@ -142,10 +142,12 @@ class Router extends MethodForwarder
             }
             // Create temporary controller
             $tempRouteName = 'temporarilyIgnored'.$id_tipo;
-            eval('namespace App\Http\Controllers {
-                class '.$tempRouteName.'Controller extends \Illuminate\Routing\Controller {
-                }
-            }');
+            if (!class_exists('App\Http\Controllers\\'.$tempRouteName.'Controller')) {
+                eval('namespace App\Http\Controllers {
+                    class '.$tempRouteName.'Controller extends \Illuminate\Routing\Controller {
+                    }
+                }');
+            }
             parent::resource($tempRouteName, $tempRouteName.'Controller');
             $map[$id_tipo] = $tempRouteName;
         }
