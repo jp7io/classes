@@ -116,6 +116,9 @@ if (!function_exists('interadmin_data')) {
      */
     function dm($object, $search = '.*', ...$other)
     {
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
         $methods = [];
         $docs = [];
         if (is_object($object)) {
