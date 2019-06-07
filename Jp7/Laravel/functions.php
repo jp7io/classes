@@ -172,7 +172,7 @@ if (!function_exists('interadmin_data')) {
                 }
                 echo $html;
             }
-            if (!$other) {
+            if (is_string($search) && !$other) {
                 dd($object);
             }
         }
