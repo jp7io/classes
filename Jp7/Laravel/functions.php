@@ -117,7 +117,11 @@ if (!function_exists('interadmin_data')) {
     function dm($object, $search = '.*', ...$other)
     {
         while (ob_get_level()) {
-            ob_end_clean();
+            // Remove any blade view HTML that might make it harder to read the dump
+            $buffer = ob_get_clean();
+            if (str_contains($buffer, 'Sfdump("')) {
+                echo $buffer;
+            }
         }
         $methods = [];
         $docs = [];
