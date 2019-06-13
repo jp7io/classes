@@ -100,8 +100,8 @@ trait LogServiceProviderTrait
                 str_contains($value, '/*') || // Comments: SQL Injection
                 str_contains($value, ';') || // End statement: SQL Injection
                 str_contains($value, '\'') || // Quotes: SQL Injection
-                preg_match('/\b(SELECT|INSERT|DROP|UPDATE|EXEC|DECLARE)\b/i', $value) || // Operations: SQL Injection
-                preg_match('/\w+\s*\(/', $value) || // Function call: XSS or SQL
+                preg_match('/\b(SELECT|INSERT|DROP|UPDATE|EXEC|DECLARE|ORDER BY|HAVING)\b/i', $value) || // Operations: SQL Injection
+                preg_match('/\w+\s*\(.*(\(.+\)|[^\w\d\s,()-]).*\)/s', $value) || // Function call: XSS or SQL
                 preg_match('/[^\\p{Latin}\x{0020}-\x{00FF}]/u', $value) // UTF-8 non-latin characters
             ) {
                 Log::$logLevel(new \UnexpectedValueException("[HACKING] Possible attack attempt: $key=$value"));
