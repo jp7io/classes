@@ -109,12 +109,11 @@ if (!function_exists('interadmin_data')) {
 
         return $cache;
     }
-
     /**
      * @param $object
      * @param string $search
      */
-    function dm($object, $search = '.*', ...$other)
+    function dm($object, $search = '', ...$other)
     {
         while (ob_get_level()) {
             // Remove any blade view HTML that might make it harder to read the dump
@@ -127,7 +126,7 @@ if (!function_exists('interadmin_data')) {
         $docs = [];
         if (is_object($object)) {
             $methods = get_class_methods($object);
-            if (is_string($search)) {
+            if ($search && is_string($search)) { // filter by regex
                 $methods = array_filter($methods, function ($a) use ($search) {
                     return preg_match('/'.$search.'/i', $a);
                 });
@@ -139,8 +138,8 @@ if (!function_exists('interadmin_data')) {
                     $default = '';
                     if ($param->isOptional()) {
                         try {
-                        $default = str_replace("\n", '', var_export($param->getDefaultValue(), true));
-                        $default = str_replace('array ()', '[]', $default);
+                            $default = str_replace("\n", '', var_export($param->getDefaultValue(), true));
+                            $default = str_replace('array ()', '[]', $default);
                         } catch (Throwable $t) {
                             $default = '__ERROR__';
                             Log::warning($t);
@@ -180,7 +179,7 @@ if (!function_exists('interadmin_data')) {
                 dd($object);
             }
         }
-        dd(...array_merge([$object, $search], $other));
+        dd(...func_get_args());
     }
 
     /**
