@@ -90,22 +90,34 @@ trait LogServiceProviderTrait
      */
     public function logPossibleAttacks($logLevel = 'error')
     {
-        if (!$_GET) {
+        foreach ($_GET as $key => $value) {
+            if (!starts_with($key, 'utm_') && !starts_with($key, '_')) {
+                $this->checkForAttack($logLevel, $value, $key);
+            }
+        }
+    }
+
+    private function checkForAttack($logLevel, $value, $key)
+    {
+        if (is_array($value)) {
+            foreach ($value as $key2 => $value2) {
+                $this->checkForAttack($logLevel, $value2, $key.'['.$key2.']');
+            }
+        }
+        if (!is_string($value)) {
             return;
         }
-        foreach ($_GET as $key => $value) {
-            if (str_contains($value, '<') || // Tags: XSS
-                str_contains($value, '&#') || // Entities: XSS
-                str_contains($value, '\\') || // Escape: XSS or SQL
-                str_contains($value, '/*') || // Comments: SQL Injection
-                str_contains($value, ';') || // End statement: SQL Injection
-                str_contains($value, '\'') || // Quotes: SQL Injection
-                preg_match('/\b(SELECT|INSERT|DROP|UPDATE|EXEC|DECLARE|ORDER BY|HAVING)\b/i', $value) || // Operations: SQL Injection
-                preg_match('/\w+\s*\(.*(\(.+\)|[^\w\d\s,()-]).*\)/s', $value) || // Function call: XSS or SQL
-                preg_match('/[^\\p{Latin}\x{0020}-\x{00FF}]/u', $value) // UTF-8 non-latin characters
-            ) {
-                Log::$logLevel(new \UnexpectedValueException("[HACKING] Possible attack attempt: $key=$value"));
-            }
+        if (str_contains($value, '<') || // Tags: XSS
+            str_contains($value, '&#') || // Entities: XSS
+            str_contains($value, '\\') || // Escape: XSS or SQL
+            str_contains($value, '/*') || // Comments: SQL Injection
+            str_contains($value, ';') || // End statement: SQL Injection
+            str_contains($value, '\'') || // Quotes: SQL Injection
+            preg_match('/\b(SELECT|INSERT|DROP|UPDATE|EXEC|DECLARE|ORDER BY|HAVING)\b/i', $value) || // Operations: SQL Injection
+            preg_match('/\w+\s*\(.*(\(.+\)|[^\w\d\s,()-]).*\)/s', $value) || // Function call: XSS or SQL
+            preg_match('/[^\\p{Latin}\x{0020}-\x{00FF}]/u', $value) // UTF-8 non-latin characters
+        ) {
+            Log::$logLevel(new \UnexpectedValueException("[HACKING] Possible attack attempt: $key=$value"));
         }
     }
 }
