@@ -84,4 +84,28 @@ trait LogServiceProviderTrait
             Log::listen($logHandler);
         }
     }
+
+    /**
+     * Keep logs on hacking attempts. Better safe than sorry.
+     */
+    public function logPossibleAttacks($logLevel = 'error')
+    {
+        if (!$_GET) {
+            return;
+        }
+        foreach ($_GET as $key => $value) {
+            if (str_contains($value, '<') || // Tags: XSS
+                str_contains($value, '&#') || // Entities: XSS
+                str_contains($value, '\\') || // Escape: XSS or SQL
+                str_contains($value, '/*') || // Comments: SQL Injection
+                str_contains($value, ';') || // End statement: SQL Injection
+                str_contains($value, '\'') || // Quotes: SQL Injection
+                preg_match('/\b(SELECT|INSERT|DROP|UPDATE|EXEC|DECLARE)\b/i', $value) || // Operations: SQL Injection
+                preg_match('/\w+\s*\(/', $value) || // Function call: XSS or SQL
+                preg_match('/[^\\p{Latin}\x{0020}-\x{00FF}]/u', $value) // UTF-8 non-latin characters
+            ) {
+                Log::$logLevel(new \UnexpectedValueException("[HACKING] Possible attack attempt: $key=$value"));
+            }
+        }
+    }
 }
