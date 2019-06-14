@@ -4,6 +4,8 @@ namespace Jp7\Laravel;
 
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Log\Events\MessageLogged;
+use Illuminate\Cache\RateLimiter;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Throwable;
 use Queue;
 use Log;
@@ -11,6 +13,8 @@ use Request;
 
 trait LogServiceProviderTrait
 {
+    private $limiter;
+
     /**
      * @deprecated not needed for Laravel 5.3+
      */
@@ -118,6 +122,16 @@ trait LogServiceProviderTrait
             preg_match('/[^\\p{Latin}\x{0020}-\x{00FF}]/u', $value) // UTF-8 non-latin characters
         ) {
             Log::$logLevel(new \UnexpectedValueException("[HACKING] Possible attack attempt: $key=$value"));
+            if (!$this->limiter && env('HACKING_MAX_ATTEMPTS')) {
+                $this->limiter = app(RateLimiter::class);
+                $key = __METHOD__.Request::ip();
+                $maxAttempts = env('HACKING_MAX_ATTEMPTS');
+
+                if ($this->limiter->tooManyAttempts($key, $maxAttempts)) {
+                    throw new ThrottleRequestsException('Too Many Attempts.');
+                }
+                $this->limiter->hit($key, 0.5);
+            }
         }
     }
 }
