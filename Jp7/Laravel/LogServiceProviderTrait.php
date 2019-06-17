@@ -96,16 +96,16 @@ trait LogServiceProviderTrait
     {
         foreach ($_GET as $key => $value) {
             if (!starts_with($key, 'utm_') && !starts_with($key, '_')) {
-                $this->checkForAttack($logLevel, $value, $key);
+                $this->checkForAttack($logLevel, $value);
             }
         }
     }
 
-    private function checkForAttack($logLevel, $value, $key)
+    private function checkForAttack($logLevel, $value)
     {
         if (is_array($value)) {
             foreach ($value as $key2 => $value2) {
-                $this->checkForAttack($logLevel, $value2, $key.'['.$key2.']');
+                $this->checkForAttack($logLevel, $value2);
             }
         }
         if (!is_string($value)) {
@@ -123,15 +123,16 @@ trait LogServiceProviderTrait
         ) {
             if (!$this->limiter && env('HACKING_MAX_ATTEMPTS')) {
                 $this->limiter = app(RateLimiter::class);
-                $key = __METHOD__.Request::ip();
+                $ip = Request::ip();
+                $key = __METHOD__.$ip;
                 $maxAttempts = env('HACKING_MAX_ATTEMPTS');
                 if ($this->limiter->tooManyAttempts($key, $maxAttempts)) {
-                    Log::error(new \Exception("[HACKING] Too many possible attacks"), [$key => $value]);
+                    Log::error(new \Exception("[HACKING] Too many possible attacks from ".$ip), $_GET;
                     throw new ThrottleRequestsException('Too Many Attempts.');
                 }
                 $this->limiter->hit($key, 0.5);
             }
-            Log::$logLevel(new \Exception("[HACKING] Possible attack attempt"), [$key => $value]);
+            Log::$logLevel(new \Exception("[HACKING] Possible attack attempt from ".$ip), $_GET);
         }
     }
 }
