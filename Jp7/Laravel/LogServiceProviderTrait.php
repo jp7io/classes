@@ -127,7 +127,7 @@ trait LogServiceProviderTrait
                 $key = __METHOD__.$ip;
                 $maxAttempts = env('HACKING_MAX_ATTEMPTS');
                 if ($this->limiter->tooManyAttempts($key, $maxAttempts)) {
-                    Log::error(new \Exception("[HACKING] Too many possible attacks from ".$ip), $_GET;
+                    Log::error(new \Exception("[HACKING] Too many possible attacks from ".$ip), $_GET);
                     throw new ThrottleRequestsException('Too Many Attempts.');
                 }
                 $this->limiter->hit($key, 0.5);
