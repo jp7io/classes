@@ -119,7 +119,7 @@ trait LogServiceProviderTrait
             preg_match("/(\W'|'\W)/", $value) || // Quotes: SQL Injection
             preg_match('/\b(SELECT|INSERT|DROP|UPDATE|EXEC|DECLARE|ORDER BY|HAVING)\b/i', $value) || // Operations: SQL Injection
             preg_match('/\w+\s*\(.*(\(.+\)|[^\p{Latin}\d\s,()-]).*\)/s', $value) || // Function call: XSS or SQL
-            preg_match('/[^\p{Latin}\x{0020}-\x{00FF}\x{2013}]/u', $value) // UTF-8 non-latin characters, except EN DASH
+            preg_match('/[^\p{Latin}\x{0020}-\x{00FF}\x{2013}\x{fffd}]/u', $value) // UTF-8 non-latin characters, except EN DASH and CHARACTER REPLACEMENT
         ) {
             if (!$this->limiter && env('HACKING_MAX_ATTEMPTS')) {
                 $this->limiter = app(RateLimiter::class);
