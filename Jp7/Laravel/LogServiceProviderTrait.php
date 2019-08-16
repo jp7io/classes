@@ -122,17 +122,22 @@ trait LogServiceProviderTrait
             preg_match('/[^\p{Latin}\x{0020}-\x{00FF}\x{2013}\x{fffd}]/u', $value) // UTF-8 non-latin characters, except EN DASH and CHARACTER REPLACEMENT
         ) {
             $ip = Request::ip();
-            if (!$this->limiter && env('HACKING_MAX_ATTEMPTS')) {
-                $this->limiter = app(RateLimiter::class);
+            Log::$logLevel(new \Exception("[HACKING] Possible attack attempt from ".$ip), $_GET);
+
+            $maxAttempts = (int) env('HACKING_MAX_ATTEMPTS');
+            $ignoredIps = array_filter(explode(',', env('HACKING_IGNORE_IPS')));
+            if ($maxAttempts && !in_array($ip, $ignoredIps) && !$this->limiter) { // only enter the first time
                 $key = __METHOD__.$ip;
-                $maxAttempts = env('HACKING_MAX_ATTEMPTS');
-                if ($this->limiter->tooManyAttempts($key, $maxAttempts)) {
+                $this->limiter = app(RateLimiter::class);
+                $this->limiter->hit($key, 0.5);
+                $attempts = $this->limiter->attempts($key);
+                if ($attempts >= $maxAttempts) {
+                    if ($attempts === $maxAttempts) { // only log once
                     Log::error(new \Exception("[HACKING] Too many possible attacks from ".$ip), $_GET);
+                    }
                     throw new ThrottleRequestsException('Too Many Attempts.');
                 }
-                $this->limiter->hit($key, 0.5);
             }
-            Log::$logLevel(new \Exception("[HACKING] Possible attack attempt from ".$ip), $_GET);
         }
     }
 }
