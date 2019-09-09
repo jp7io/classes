@@ -95,7 +95,7 @@ trait LogServiceProviderTrait
     public function logPossibleAttacks($logLevel = 'warning')
     {
         foreach ($_GET as $key => $value) {
-            if (!starts_with($key, 'utm_') && !starts_with($key, '_')) {
+            if ($key !== 'cid' && !starts_with($key, 'utm_') && !starts_with($key, '_')) {
                 $this->checkForAttack($logLevel, $value);
             }
         }
