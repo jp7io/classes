@@ -51,9 +51,11 @@ class SeedDumpCommand extends Command
     protected function dumpTipos()
     {
         $options = " ".$this->config['prefix']."tipos".
+            " --where=\"deleted_tipo = '' AND mostrar <> ''\"".
             " --skip-extended-insert".
             " --no-create-info";
         $this->mysqldump($options, 'database/interadmin_tipos.sql');
+        $this->removeLogs('database/interadmin_tipos.sql');
     }
 
     protected function dumpRecords()
@@ -66,6 +68,7 @@ class SeedDumpCommand extends Command
             " --no-create-info";
 
         $this->mysqldump($options, 'database/interadmin_records.sql');
+        $this->removeLogs('database/interadmin_records.sql');
     }
 
     protected function getRecordsTables()
@@ -133,5 +136,14 @@ class SeedDumpCommand extends Command
         } else {
             $this->info('Dumped: '.$output);
         }
+    }
+
+    /**
+     * Remove logs for smaller file:
+     */
+    protected function removeLogs(string $file)
+    {
+        $removed = preg_replace("/'[^']+\d\d:\d\d - jp7_[^']+'/", "''", file_get_contents($file));
+        file_put_contents($file, $removed);
     }
 }
