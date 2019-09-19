@@ -14,6 +14,9 @@ trait RecordTrait
      */
     protected $scope = null;
     protected $recordActions = ['show', 'edit', 'update', 'destroy'];
+    public $type = null;
+    public $record = null;
+
     /**
      * @var array   Everything except /create, /edit and custom actions
      */

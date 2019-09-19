@@ -4,28 +4,26 @@ namespace Jp7\Laravel\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use View;
-use stdClass;
 use Exception;
 use Request;
+use UnexpectedValueException;
 
 trait DynamicViewTrait
 {
     /**
-     * @var Variables to send to view
+     * @var array Variables to send to view
      */
-    protected $_view;
+    private $viewData = [];
+    protected $remote = null;
     protected $layout = 'layouts.master';
 
     public function constructDynamicViewTrait()
     {
-        $this->_view = new stdClass;
-
         $this->checkAjax();
     }
 
     public function checkAjax()
     {
-        $this->remote = null;
         if (Request::ajax()) {
             $this->layout = 'layouts.ajax';
             $this->remote = true;
@@ -34,12 +32,12 @@ trait DynamicViewTrait
 
     public function &__get($key)
     {
-        return $this->_view->$key;
+        return $this->viewData[$key];
     }
 
     public function __set($key, $value)
     {
-        $this->_view->$key = $value;
+        $this->viewData[$key] = $value;
     }
 
     /**
@@ -59,10 +57,23 @@ trait DynamicViewTrait
         return $this->response($content);
     }
 
-    protected function view()
+    protected function defaultViewData()
     {
+        return [
+            'remote' => $this->remote,
+            'layout' => $this->layout,
+        ];
+    }
+
+    protected function viewData()
+    {
+        return $this->viewData;
+    }
+
+    protected function view(array $data = [])
+    {
+        $data += $this->defaultViewData();
         $viewName = $this->findViewName($this->action);
-        $data = (array) $this->_view;
         $view = View::make($viewName, $data);
 
         if ($this->layout) {
@@ -75,7 +86,10 @@ trait DynamicViewTrait
     protected function response($content = null)
     {
         if (is_null($content)) {
-            $content = $this->view();
+            if (env('APP_DEBUG')) {
+                throw new UnexpectedValueException('No view returned from '.static::class);
+            }
+            $content = $this->view($this->viewData);
         }
         return response($content)->header('Vary', 'Accept');
     }

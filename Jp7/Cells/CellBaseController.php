@@ -7,9 +7,24 @@ use Jp7\Laravel\Controller;
 
 abstract class CellBaseController extends \Torann\Cells\CellBaseController
 {
-    private $_returned;
+    private $returned;
+    /**
+     * @var array Variables to send to view
+     */
+    private $viewData = [];
     public $type;
     public $record;
+    public $name;
+
+    public function &__get($key)
+    {
+        return $this->viewData[$key];
+    }
+
+    public function __set($key, $value)
+    {
+        $this->viewData[$key] = $value;
+    }
 
     // Multiple calls to a cell will run __construct only once
     public function __construct(Factory $view, $caching_disabled)
@@ -42,24 +57,44 @@ abstract class CellBaseController extends \Torann\Cells\CellBaseController
         $this->setSharedVariables();
         $this->init();
 
-        $this->_returned = $this->$viewAction();
-
-        // Use data on $this
-        unset($this->data);
-        $this->data = array_merge($this->attributes, (array) $this);
+        $this->returned = $this->$viewAction();
 
         if (class_exists('Debugbar', false)) {
             \Debugbar::stopMeasure('Cell '.$this->name);
         }
     }
 
+    protected function defaultViewData()
+    {
+        return [
+            'type' => $this->type,
+            'record' => $this->record,
+            'name' => $this->name,
+            'attributes' => $this->attributes,
+        ] + $this->attributes;
+    }
+
+    protected function viewData()
+    {
+        return $this->viewData;
+    }
+
+    protected function view(array $data = [])
+    {
+        $data += $this->defaultViewData();
+        $this->data = $data;
+        return parent::displayView();
+    }
+
     public function displayView()
     {
-        if ($this->_returned) {
-            return $this->_returned;
-        } else {
-            return parent::displayView();
+        if (is_null($this->returned)) {
+            if (env('APP_DEBUG')) {
+                throw new \UnexpectedValueException('No view returned from '.static::class);
+            }
+            return $this->view($this->viewData);
         }
+        return $this->returned;
     }
 
     public function isCached()

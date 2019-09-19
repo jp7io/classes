@@ -26,6 +26,16 @@ class Controller extends BaseController
         $this->constructRecordTrait();
     }
 
+    protected function defaultViewData()
+    {
+        return [
+            'remote' => $this->remote,
+            'layout' => $this->layout,
+            'type' => $this->type,
+            'record' => $this->record,
+        ];
+    }
+
     /* Temporary solution - Avoid using this as much as possible */
     public static function getCurrentController()
     {
