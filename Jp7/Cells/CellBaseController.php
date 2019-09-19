@@ -31,7 +31,8 @@ abstract class CellBaseController extends \Torann\Cells\CellBaseController
     {
         parent::__construct($view, $caching_disabled);
         // CoC - name is always snake_case of the class name
-        $this->name = snake_case(substr(get_called_class(), 4), '-');
+        $reflection = new \ReflectionClass($this);
+        $this->name = snake_case(substr($reflection->getShortName(), 4), '-');
 
         if (class_exists('Debugbar', false)) {
             \Debugbar::startMeasure('Cell '.$this->name);
