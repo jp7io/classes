@@ -44,7 +44,7 @@ trait RecordTrait
         $uri = $this->_getResourceUri($route);
 
         $breadcrumb = Router::uriToBreadcrumb($uri, function ($type, $segment) use ($route) {
-            $slug = $route->getParameter(trim($segment, '{}'));
+            $slug = $route->parameter(trim($segment, '{}'));
 
             return $type->records()->findOrFail($slug);
         });
