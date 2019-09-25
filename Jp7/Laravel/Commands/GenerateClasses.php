@@ -14,7 +14,7 @@ class GenerateClasses extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:classes';
+    protected $signature = 'generate:classes {outputPath?}';
 
     /**
      * The console command description.
@@ -34,7 +34,7 @@ class GenerateClasses extends Command
             spl_autoload_unregister([DynamicLoader::class, 'load']);
         }
 
-        $classesFile = $this->getFilePath();
+        $classesFile = $this->argument('outputPath') ?? $this->getFilePath();
         file_exists($classesFile) && unlink($classesFile);
 
         $this->info('Starting to generate dynamic class files.');

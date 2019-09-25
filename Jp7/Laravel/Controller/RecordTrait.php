@@ -14,7 +14,13 @@ trait RecordTrait
      */
     protected $scope = null;
     protected $recordActions = ['show', 'edit', 'update', 'destroy'];
+    /**
+     * @var \Jp7\Interadmin\Type
+     */
     public $type = null;
+    /**
+     * @var Record
+     */
     public $record = null;
 
     /**
