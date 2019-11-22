@@ -218,13 +218,14 @@ if (!function_exists('interadmin_data')) {
     /**
      * Like file_get_contents() but with some default settings for URLs
      */
-    function url_get_contents($url, array $contextOptions = [])
+    function url_get_contents($url, array $contextOptions = ['http' => []])
     {
-        $contextOptions += [
-            'http' => [
-                'timeout' => 15,
-                'user_agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36 JP7'
-            ]
+        // Using Safari, not Chrome to avoid downloading WEBP
+        $safariUserAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Safari/605.1.15';
+        $contextOptions['http'] += [ // merge with passed http options
+            'timeout' => 15,
+            // JP7 in user agent for whitelisting in Firewall / Bot Blocker
+            'user_agent' => $safariUserAgent.' JP7'
         ];
         if (ends_with(parse_url($url)['host'], '.dev')) {
             // Local development does not have SSL certificates
