@@ -5,7 +5,7 @@
 ## 3.2.2
 * Small fixes for Laravel 5.7
 * LogServiceProvider@renameSyslogApp is not needed anymore
-* HttpCacheExtension abandoned
+* ~HttpCacheExtension abandoned~ (it's still being used, the steps below are a possible way to remove it if needed)
   * remove `blacklist` and `invalidate` from httpcache.php
   * use the ttl middleware from barryvdh on routes that were on blacklist: ->middleware('ttl:0')
   * use the DontCacheOldInput middleware if the return from old() forms should not be cached
