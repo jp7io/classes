@@ -35,7 +35,10 @@ class HttpCacheExtension extends HttpCache
             $request->headers->set('x-httpcache-cacheable', true);
         }
         if (!config('httpcache.enabled') || $blacklisted) {
-            return SubRequestHandler::handle($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $catch);
+            if (!class_exists(SubRequestHandler::class)) {
+                return $this->pass($request, $catch); // Symfony < 3.3 / Laravel < 5.5
+            }
+            return SubRequestHandler::handle($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $catch);  
         }
 
         if (config('httpcache.invalidate')) {
