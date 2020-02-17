@@ -145,7 +145,8 @@ if (!function_exists('interadmin_data')) {
                             Log::warning($t);
                         }
                     }
-                    $args[] = ltrim($param->getType().' $').$param->name.($default ? ' = '.$default : '');
+                    $typeName = $param->getType() ? $param->getType()->getName() : '';
+                    $args[] = ltrim($typeName.' $').$param->name.($default ? ' = '.$default : '');
                 }
                 $docs[$key] = ($reflection->isStatic() ? 'static ': '').$method.'('.implode(', ',$args).')';
             }
