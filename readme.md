@@ -11,6 +11,18 @@ General classes used by our projects.
 
 * [CHANGELOG](CHANGELOG.md)
 
+
+## Route and getUrl()
+
+For info about:
+
+* Mapping id_tipo on route
+* How getUrl() works
+* How to customize getUrl()
+
+See: https://docs.google.com/document/d/1vWUk7g9HonOo8szRJn90r9c1rsWFzxDC3GfQ1s1QehY
+
+
 ### Split into 3 packages
 
 Since version 3.2 (March, 2017) this package was split into 3 other:
