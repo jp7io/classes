@@ -76,6 +76,11 @@ trait SelectFieldTrait
     {
         $ids = explode(',', $this->getValue());
         $ids = array_values(array_filter(array_filter($ids), 'is_numeric'));
+        $old = old($this->tipo);
+        if ($old) {
+            // previous POST values needs to be available for Former to select it
+            $ids = array_unique(array_merge($ids, $old));
+        }
         if (!$ids) {
             return []; // evita query inutil
         }
