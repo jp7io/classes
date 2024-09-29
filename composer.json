@@ -1,19 +1,19 @@
 {
-  "name": "jp7internet/classes",
+  "name": "jp7io/classes",
   "description": "JP7 Classes",
   "keywords": [],
   "license": "proprietary",
   "repositories" : [
     {
         "type": "composer",
-        "url": "https://satis.jp7.com.br"
+        "url": "https://satis.jp7.io"
     }
   ],
   "require": {
 
   },
   "require-dev": {
-    "jp7internet/classes-deprecated": "3.2.x-dev",
+    "jp7io/classes-deprecated": "3.2.x-dev",
     "illuminate/support": "~5.1",
     "phpunit/phpunit": "^4.8"
   },
