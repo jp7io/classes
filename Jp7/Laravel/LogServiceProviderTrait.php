@@ -2,6 +2,7 @@
 
 namespace Jp7\Laravel;
 
+use Illuminate\Support\Str;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Cache\RateLimiter;
@@ -95,7 +96,7 @@ trait LogServiceProviderTrait
     public function logPossibleAttacks($logLevel = 'warning')
     {
         foreach ($_GET as $key => $value) {
-            if ($key !== 'cid' && !starts_with($key, 'utm_') && !starts_with($key, '_')) {
+            if ($key !== 'cid' && !Str::startsWith($key, 'utm_') && !Str::startsWith($key, '_')) {
                 $this->checkForAttack($logLevel, $value);
             }
         }

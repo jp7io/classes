@@ -2,13 +2,14 @@
 
 namespace Jp7\Imgix;
 
+use Illuminate\Support\Str;
 use Jp7\Laravel\ImgResize as BaseImgResize;
 
 class ImgResize extends BaseImgResize
 {
     public static function addTemplate($url, $template)
     {
-        if (starts_with($url, self::storageUrl()) || str_contains($url, '.imgix.net')) {
+        if (Str::startsWith($url, self::storageUrl()) || str_contains($url, '.imgix.net')) {
             $url = replace_prefix(self::storageUrl(), self::imgixUrl(), $url);
 
             $params = config('imgix.templates.'.$template);

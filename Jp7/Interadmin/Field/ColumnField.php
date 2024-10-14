@@ -2,6 +2,7 @@
 
 namespace Jp7\Interadmin\Field;
 
+use Illuminate\Support\Str;
 use Jp7\Interadmin\Type;
 
 /**
@@ -165,7 +166,7 @@ class ColumnField extends BaseField
 
     public function getOrderSql($direction)
     {
-        if (starts_with($this->tipo, 'func_')) {
+        if (Str::startsWith($this->tipo, 'func_')) {
             return ''; // func is not a real column
         }
         return $this->tipo.' '.$direction;

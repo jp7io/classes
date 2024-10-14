@@ -2,6 +2,7 @@
 
 namespace Jp7\Laravel\Middleware;
 
+use Illuminate\Support\Str;
 use Closure;
 use App;
 
@@ -26,7 +27,7 @@ class QaAuth
     protected function isAuthorized($request)
     {
         // QA or Alt environment
-        if (!App::environment('staging') && !starts_with($request->getHttpHost(), 'alt.')) {
+        if (!App::environment('staging') && !Str::startsWith($request->getHttpHost(), 'alt.')) {
             return true;
         }
         // Allow API calls

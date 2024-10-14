@@ -2,6 +2,7 @@
 
 namespace Jp7\Interadmin\Field;
 
+use Illuminate\Support\Str;
 use Throwable;
 use Log;
 
@@ -64,7 +65,7 @@ class FuncField extends ColumnField
     {
         $html = trim($this->getFuncHtml($this->getValue(), 'edit'));
 
-        if (starts_with($html, '<tr') || ends_with($html, '</tr>')) {
+        if (Str::startsWith($html, '<tr') || Str::endsWith($html, '</tr>')) {
              $html = '<table class="special-shim">'.$html.'</table>';
         }
         return $html;

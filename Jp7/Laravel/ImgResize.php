@@ -2,6 +2,7 @@
 
 namespace Jp7\Laravel;
 
+use Illuminate\Support\Str;
 use Jp7\Interadmin\Downloadable;
 //use Storage;
 use InvalidArgumentException;
@@ -71,7 +72,7 @@ class ImgResize
 
     protected static function makeElement($img, $template, $alt, $options)
     {
-        if (ends_with($template, '-')) {
+        if (Str::endsWith($template, '-')) {
             // Image with srcset=""
             $srcset = static::srcset($img, $template);
             $element = ImgResizeElement::create(null, $alt, $options)
@@ -117,14 +118,14 @@ class ImgResize
 
     public static function srcset($img, $prefix)
     {
-        if (!ends_with($prefix, '-')) {
+        if (!Str::endsWith($prefix, '-')) {
             throw new InvalidArgumentException('Prefix for srcset must end with dash (Eg: small- or large-)');
         }
         $all = static::getAllTemplates();
         // If prefix is "wide-"
         // Filters all templates starting with "wide-"
         $templates = array_filter($all, function ($x) use ($prefix) {
-            return starts_with($x, $prefix);
+            return Str::startsWith($x, $prefix);
         });
 
         $srcs = [];

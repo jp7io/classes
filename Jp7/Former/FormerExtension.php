@@ -2,6 +2,7 @@
 
 namespace Jp7\Former;
 
+use Illuminate\Support\Str;
 use Former\Former as OriginalFormer;
 use Log;
 use Jp7\Interadmin\Record;
@@ -150,7 +151,7 @@ class FormerExtension
         }
 
         // Populate options
-        if (starts_with($name, 'select_')) {
+        if (Str::startsWith($name, 'select_')) {
             $this->populateOptions($field, $campo['nome']);
         }
         // Fix date format

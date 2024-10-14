@@ -2,6 +2,7 @@
 
 namespace Jp7\Interadmin\Field;
 
+use Illuminate\Support\Str;
 use Jp7_Date as Date;
 
 class DateField extends ColumnField
@@ -25,7 +26,7 @@ class DateField extends ColumnField
     protected function isDatetime()
     {
         return empty($this->xtra) || // date_publish in some situations
-            ends_with($this->xtra, '_datetime') ||
+            Str::endsWith($this->xtra, '_datetime') ||
             $this->xtra === self::XTRA_NORMAL;
     }
 }
