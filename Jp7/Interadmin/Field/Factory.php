@@ -2,6 +2,8 @@
 
 namespace Jp7\Interadmin\Field;
 
+use Illuminate\Support\Str;
+
 class Factory
 {
     protected $namespace = 'Jp7\\Interadmin\\Field\\';
@@ -44,7 +46,7 @@ class Factory
             $class = $campo['nome'];
             $campo['nome'] = $campo['nome_original'] ?? $campo['nome'];
         } else {
-            $class = $this->namespace.studly_case($prefix).'Field';
+            $class = $this->namespace . Str::studly($prefix).'Field';
         }
 
         return new $class($campo);
@@ -57,7 +59,7 @@ class Factory
     {
         $prefix = explode('_', $tipo)[0];
         if ($prefix === 'select') {
-            if (starts_with($tipo, 'select_multi_')) {
+            if (Str::startsWith($tipo, 'select_multi_')) {
                 $prefix .= '_multi'; // SelectMultiField
                 if (in_array($xtra, [SelectMultiField::XTRA_RECORD_SEARCH, SelectMultiField::XTRA_TYPE_SEARCH])) {
                     $prefix .= '_ajax'; // SelectMultiAjaxField

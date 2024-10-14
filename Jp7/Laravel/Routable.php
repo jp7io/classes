@@ -2,6 +2,8 @@
 
 namespace Jp7\Laravel;
 
+use Illuminate\Support\Str;
+
 trait Routable
 {
     public function getControllerBasename()
@@ -33,7 +35,7 @@ trait Routable
     // a-empresa
     public function getSlug()
     {
-        $nome = to_slug($this->nome);
+        $nome = Str::slug($this->nome);
         if (is_numeric($nome)) {
             // verificar maneira de tratar isso
             $nome = 'list-'.$nome;
@@ -44,7 +46,7 @@ trait Routable
 
     public function getStudly()
     {
-        return studly_case($this->getSlug());
+        return Str::studly($this->getSlug());
     }
 
     public function isRoot()
