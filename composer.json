@@ -11,9 +11,9 @@
   ],
   "require": {},
   "require-dev": {
-    "jp7io/classes-deprecated": "^3.2",
-    "illuminate/support": "^8.75",
-    "phpunit/phpunit": "^4.8"
+    "jp7io/classes-deprecated": "dev-docker-2024",
+    "illuminate/support": "^10.10",
+    "phpunit/phpunit": "^9.6"
   },
   "autoload": {
     "psr-4": {
