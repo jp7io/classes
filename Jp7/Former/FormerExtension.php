@@ -133,8 +133,8 @@ class FormerExtension
 
     private function decorateFieldByTypeAndAlias($field, $type, $alias)
     {
-        $campos = $type->getCampos();
-        $aliases = array_flip($type->getCamposAlias());
+        $campos = $type->getFields();
+        $aliases = array_flip($type->getFieldsAlias());
 
         if (empty($aliases[$alias])) {
             return;

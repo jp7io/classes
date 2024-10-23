@@ -45,12 +45,12 @@ trait SelectAjaxFieldTrait
 
     protected function getSearchableFields()
     {
-        $campos = $this->nome->getCampos();
+        $campos = $this->nome->getFields();
         $searchable = [];
 
-        foreach ($this->nome->getCamposCombo() as $campoCombo) {
+        foreach ($this->nome->getFieldsCombo() as $campoCombo) {
             if ($campos[$campoCombo]['nome'] instanceof Type) {
-                foreach ($campos[$campoCombo]['nome']->getCamposCombo() as $campoCombo2) {
+                foreach ($campos[$campoCombo]['nome']->getFieldsCombo() as $campoCombo2) {
                     $searchable[] = $campoCombo.'.'.$campoCombo2;
                 }
             } else {
