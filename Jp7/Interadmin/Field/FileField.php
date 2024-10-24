@@ -7,10 +7,17 @@ use HtmlObject\Input;
 class FileField extends ColumnField
 {
     protected $id = 'file';
+    protected $config;
+
+    public function __construct($config)
+    {
+        $this->config = $config;
+    }
 
     public function getCellHtml()
     {
         return interadmin_arquivos_preview(
+            $this->config,
             $this->getText() ?: DEFAULT_PATH.'/img/px.png', // url
             '', // alt
             false, // presrc

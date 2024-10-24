@@ -5,7 +5,7 @@ namespace Jp7\Intervention;
 use Illuminate\Routing\Controller as BaseController;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * ImageCache using Storage as source
