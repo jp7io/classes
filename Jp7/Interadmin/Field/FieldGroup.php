@@ -22,8 +22,6 @@ class FieldGroup
             $html .= $first->openPanel();
         } else {
             $firstClass = (isset($first->nome_id) ? $first->nome_id.'-panel' : '');
-            $html .= '<div class="card card-default '.$firstClass.'">'.
-                        '<div class="card-body">';
         }
 
         $html .= implode(PHP_EOL, array_map(function ($field) {
@@ -36,8 +34,7 @@ class FieldGroup
         if ($first instanceof TitField) {
             $html .= $first->closePanel();
         } else {
-            $html .= '</div>'.
-                        '</div>';
+            $html .= '<hr class="separator" />';
         }
 
         return $html;

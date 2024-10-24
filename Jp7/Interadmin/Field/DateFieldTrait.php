@@ -2,7 +2,7 @@
 
 namespace Jp7\Interadmin\Field;
 
-use Former;
+use Former\Facades\Former;
 use HtmlObject\Input;
 use HtmlObject\Element;
 use Jp7_Date as Date;
