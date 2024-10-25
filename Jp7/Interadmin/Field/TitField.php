@@ -12,9 +12,9 @@ class TitField extends ColumnField
     public function openPanel()
     {
         $class = ($this->xtra === self::XTRA_VISIBLE) ? 'in' : '';
-        return '<div class="card card-default '.$this->id.'-panel '.$this->nome_id.'-panel">'.
+        return '<div class="card card-default mb-3 '.$this->id.'-panel '.$this->nome_id.'-panel">'.
                     $this->getEditTag().
-                    '<div id="collapse'.$this->tipo.$this->index.'" class="panel-collapse collapse '.$class.'" role="tabpanel">
+                    '<div id="collapse'.$this->tipo.$this->index.'" class="panel-collapse _collapse '.$class.'" role="tabpanel">
                         <div class="card-body">';
     }
 
@@ -22,12 +22,10 @@ class TitField extends ColumnField
     {
         $class = ($this->xtra === self::XTRA_VISIBLE) ? '' : 'collapsed';
         return '<div class="card-header">'.
-            '<h4 class="card-title">'.
                 '<a role="button" class="'.$class.'" data-toggle="collapse" href="#collapse'.$this->tipo.$this->index.'" '.
                     'aria-controls="collapse'.$this->tipo.$this->index.'" title="'.$this->tipo.'">'.
                     $this->getLabel().
                 '</a>'.
-            '</h4>'.
         '</div>';
     }
 
