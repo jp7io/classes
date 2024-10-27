@@ -37,8 +37,8 @@ class Factory
     public function makeField(array $campo)
     {
         // tipo_de_campo -> only used in a few specials / xtra_disabledfields
-        $tipo = empty($campo['tipo_de_campo']) ? $campo['tipo'] : $campo['tipo_de_campo'].'_';
-        $prefix = $this->getPrefix($tipo, $campo['xtra'] ?? '');
+        $type = empty($campo['tipo_de_campo']) ? $campo['tipo'] : $campo['tipo_de_campo'].'_';
+        $prefix = $this->getPrefix($type, $campo['xtra'] ?? '');
 
         if (($prefix === 'special' || $prefix === 'func') && str_contains($campo['nome'], '\\')) {
             // Special as object implements FieldInterface
@@ -55,11 +55,11 @@ class Factory
     /**
      * @param string
      */
-    protected function getPrefix($tipo, $xtra)
+    protected function getPrefix($type, $xtra)
     {
-        $prefix = explode('_', $tipo)[0];
+        $prefix = explode('_', $type)[0];
         if ($prefix === 'select') {
-            if (Str::startsWith($tipo, 'select_multi_')) {
+            if (Str::startsWith($type, 'select_multi_')) {
                 $prefix .= '_multi'; // SelectMultiField
                 if (in_array($xtra, [SelectMultiField::XTRA_RECORD_SEARCH, SelectMultiField::XTRA_TYPE_SEARCH])) {
                     $prefix .= '_ajax'; // SelectMultiAjaxField

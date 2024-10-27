@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Jp7\Interadmin\Type;
 
 /**
- * @property string $tipo
+ * @property string $type
  * @property Type|string $nome
  * @property string $ajuda
  * @property string|int $tamanho
