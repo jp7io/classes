@@ -29,7 +29,7 @@ trait SelectAjaxFieldTrait
             $whereOr[] = $field.' LIKE '.$db->qstr($pattern);
         }
         if (is_numeric($search)) {
-            $whereOr[] = 'id_tipo = '.intval($search);
+            $whereOr[] = 'type_id = '.intval($search);
         }
 
         $order = [];

@@ -16,7 +16,7 @@ General classes used by our projects.
 
 For info about:
 
-* Mapping id_tipo on route
+* Mapping type_id on route
 * How getUrl() works
 * How to customize getUrl()
 
@@ -30,6 +30,3 @@ Since version 3.2 (March, 2017) this package was split into 3 other:
 * [classes](https://github.com/jp7internet/classes) - Current general classes used by our projects
 * [classes-deprecated](https://github.com/jp7internet/classes-deprecated) - Obsolete and should be removed ASAP
 * [interadmin-orm](https://github.com/jp7internet/interadmin-orm) - ORM (handles queries from InterAdmin database)
-
-
-

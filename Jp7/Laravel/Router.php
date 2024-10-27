@@ -17,7 +17,7 @@ use App;
 class Router extends MethodForwarder
 {
     /**
-     * @var array [id_tipo => route basename]
+     * @var array [type_id => route basename]
      */
     protected $map = [];
     protected $cachefile = 'bootstrap/cache/routemap.cache';
@@ -58,18 +58,18 @@ class Router extends MethodForwarder
 //// Map functions: Read/write to the type map
 ////
 
-    private function hasType($id_tipo)
+    private function hasType($type_id)
     {
         $map = &$this->map[$this->getLocale()];
         $map = $map ?: [];
-        return array_key_exists($id_tipo, $map);
+        return array_key_exists($type_id, $map);
     }
 
-    private function addType($id_tipo, $controllerName)
+    private function addType($type_id, $controllerName)
     {
         $map = &$this->map[$this->getLocale()];
         $map = $map ?: [];
-        // Saving routes for each id_tipo
+        // Saving routes for each type_id
         $lastRoute = array_last(Route::getRoutes()->getRoutes());
 
         if (!str_contains($lastRoute->getActionName(), $controllerName)) {
@@ -81,22 +81,22 @@ class Router extends MethodForwarder
 
         $routeParts = explode('.', $lastRoute->getName());
         array_pop($routeParts);
-        $map[$id_tipo] = implode('.', $routeParts);
+        $map[$type_id] = implode('.', $routeParts);
     }
 
     /**
-     * @param  int $id_tipo
+     * @param  int $type_id
      * @param  string $action
      * @return Route
      */
-    public function getRouteByTypeId($id_tipo, $action = 'index')
+    public function getRouteByTypeId($type_id, $action = 'index')
     {
         $map = &$this->map[$this->getLocale()];
         $map = $map ?: [];
-        if (!isset($map[$id_tipo])) {
-            throw new RouteException('There is no route registered for id_tipo: ' . $id_tipo);
+        if (!isset($map[$type_id])) {
+            throw new RouteException('There is no route registered for type_id: ' . $type_id);
         }
-        $mappedRoute = $map[$id_tipo];
+        $mappedRoute = $map[$type_id];
         $routePrefix = ($mappedRoute && $mappedRoute != '/') ? $mappedRoute . '.' : '';
 
         return $this->target->getRoutes()->getByName($routePrefix . $action);
@@ -110,9 +110,9 @@ class Router extends MethodForwarder
     {
         $map = &$this->map[$this->getLocale()];
         $map = $map ?: [];
-        $id_tipo = array_search($routeBasename, $map);
-        if ($id_tipo) {
-            return Type::getInstance($id_tipo);
+        $type_id = array_search($routeBasename, $map);
+        if ($type_id) {
+            return Type::getInstance($type_id);
         }
     }
     /**
@@ -126,23 +126,23 @@ class Router extends MethodForwarder
     }
 
     /**
-     * @return array [id_tipo => route basename]
+     * @return array [type_id => route basename]
      */
     public function getTypeMap()
     {
         return $this->map;
     }
 
-    public function tempTypeRoutes(...$id_tipo_array)
+    public function tempTypeRoutes(...$type_id_array)
     {
         $map = &$this->map[$this->getLocale()]; // reference
-        foreach ($id_tipo_array as $id_tipo) {
-            if (isset($map[$id_tipo])) {
-                echo 'WARNING: Please check tempTypeRoutes for id_tipo: '.$id_tipo.PHP_EOL;
+        foreach ($type_id_array as $type_id) {
+            if (isset($map[$type_id])) {
+                echo 'WARNING: Please check tempTypeRoutes for type_id: '.$type_id.PHP_EOL;
                 continue;
             }
             // Create temporary controller
-            $tempRouteName = 'temporarilyIgnored'.$id_tipo;
+            $tempRouteName = 'temporarilyIgnored'.$type_id;
             if (!class_exists('App\Http\Controllers\\'.$tempRouteName.'Controller')) {
                 eval('namespace App\Http\Controllers {
                     class '.$tempRouteName.'Controller extends \Illuminate\Routing\Controller {
@@ -150,7 +150,7 @@ class Router extends MethodForwarder
                 }');
             }
             parent::resource($tempRouteName, $tempRouteName.'Controller');
-            $map[$id_tipo] = $tempRouteName;
+            $map[$type_id] = $tempRouteName;
         }
     }
 
@@ -194,12 +194,12 @@ class Router extends MethodForwarder
                 // do nothing, Laravel 5.5 does not have ->registered
             }
         }
-        if (isset($options['id_tipo'])) {
-            if (!is_numeric($options['id_tipo'])) {
-                // Get id_tipo from class
-                $options['id_tipo'] = RecordClassMap::getInstance()->getClassIdTipo($options['id_tipo']);
+        if (isset($options['type_id'])) {
+            if (!is_numeric($options['type_id'])) {
+                // Get type_id from class
+                $options['type_id'] = RecordClassMap::getInstance()->getClassIdTipo($options['type_id']);
             }
-            $this->addType($options['id_tipo'], $controller); // Maps [id_tipo => route basename]
+            $this->addType($options['type_id'], $controller); // Maps [type_id => route basename]
         }
         return $pendingResourceRegistration;
     }
@@ -317,13 +317,13 @@ class Router extends MethodForwarder
             }
         }
         if (!$isRoot) {
-            if (!$this->hasType($section->id_tipo)) {
+            if (!$this->hasType($section->type_id)) {
                 // won't enter here if there is already a route for this type
                 $controllerClass = $section->getControllerBasename();
                 Route::resource($section->getSlug(), $controllerClass, [
                     'only' => $this->getControllerActions($controllerClass)
                 ]);
-                $this->addType($section->id_tipo, $controllerClass);
+                $this->addType($section->type_id, $controllerClass);
             }
         }
     }

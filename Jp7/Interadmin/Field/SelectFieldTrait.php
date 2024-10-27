@@ -89,10 +89,10 @@ trait SelectFieldTrait
             return $this->cachedRecords($ids);
         }
         if ($this->nome instanceof Type || $this->nome === 'all') {
-            //return $this->tipos()->whereIn('id_tipo', $ids)->get();
+            //return $this->tipos()->whereIn('type_id', $ids)->get();
             $cached = new \Jp7\Interadmin\Collection();
-            foreach ($ids as $id_tipo) {
-                $type = Type::getInstance($id_tipo);
+            foreach ($ids as $type_id) {
+                $type = Type::getInstance($type_id);
                 if ($type->nome !== null) { // deleted types
                     $cached[] = $type;
                 }
@@ -104,7 +104,7 @@ trait SelectFieldTrait
 
     protected function cachedRecords($ids)
     {
-        $prefix = 'cachedRecords,'.$this->nome->id_tipo;
+        $prefix = 'cachedRecords,'.$this->nome->type_id;
         $cached = [];
         foreach ($ids as $key => $id) {
             $attributes = Cache::get($prefix.','.$id);
@@ -138,7 +138,7 @@ trait SelectFieldTrait
     protected function getOptions()
     {
         if (!$this->hasTipo()) {
-            $cacheKey = 'cachedOptions,'.$this->nome->id_tipo;
+            $cacheKey = 'cachedOptions,'.$this->nome->type_id;
             $resolve = function () {
                 return $this->toOptions($this->records()->get());
             };
@@ -183,12 +183,12 @@ trait SelectFieldTrait
         global $lang;
 
         $query = new TypeQuery;
-        $query->select('nome'.$lang->prefix, 'parent_id_tipo')
+        $query->select('nome'.$lang->prefix, 'parent_type_id')
             ->published()
             ->orderByRaw('admin,ordem,nome'.$lang->prefix);
         // only children tipos
         if ($this->nome instanceof Type) {
-            $query->where('parent_id_tipo', $this->nome->id_tipo);
+            $query->where('parent_type_id', $this->nome->type_id);
         }
         return $query;
     }
@@ -198,7 +198,7 @@ trait SelectFieldTrait
         $options = [];
         if (!empty($array) && $array[0] instanceof Type) {
             foreach ($array as $tipo) {
-                $options[$tipo->id_tipo] = e($tipo->getName());
+                $options[$tipo->type_id] = e($tipo->getName());
             }
         } elseif (!empty($array) && $array[0] instanceof Record) {
             foreach ($array as $record) {
@@ -224,20 +224,20 @@ trait SelectFieldTrait
     {
         $map = [];
         foreach ($tipos as $tipo) {
-            $map[$tipo->parent_id_tipo][] = $tipo;
+            $map[$tipo->parent_type_id][] = $tipo;
         }
         $options = [];
         $this->addTipoTreeOptions($options, $map, 0);
         return $options;
     }
 
-    protected function addTipoTreeOptions(&$options, $map, $parent_id_tipo, $level = 0)
+    protected function addTipoTreeOptions(&$options, $map, $parent_type_id, $level = 0)
     {
-        if (!empty($map[$parent_id_tipo])) {
-            foreach ($map[$parent_id_tipo] as $tipo) {
+        if (!empty($map[$parent_type_id])) {
+            foreach ($map[$parent_type_id] as $tipo) {
                 $prefix = ($level ? str_repeat('--', $level) . '> ' : ''); // ----> Nome
-                $options[$tipo->id_tipo] = $prefix.$tipo->getName();
-                $this->addTipoTreeOptions($options, $map, $tipo->id_tipo, $level + 1);
+                $options[$tipo->type_id] = $prefix.$tipo->getName();
+                $this->addTipoTreeOptions($options, $map, $tipo->type_id, $level + 1);
             }
         }
     }

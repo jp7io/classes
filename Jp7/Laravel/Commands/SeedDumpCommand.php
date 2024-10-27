@@ -64,7 +64,7 @@ class SeedDumpCommand extends Command
         $tables = $this->getRecordsTables();
 
         $options = " --tables ".implode(' ', $tables).
-            " --where=\"char_key <> '' AND publish <> '' AND deleted = '' AND id_tipo IN (".implode(',', $this->typeIds).")\"".
+            " --where=\"char_key <> '' AND publish <> '' AND deleted = '' AND type_id IN (".implode(',', $this->typeIds).")\"".
             " --skip-extended-insert".
             " --no-create-info";
 
@@ -83,8 +83,8 @@ class SeedDumpCommand extends Command
             }
             foreach ($type->getRelationships() as $relation => $data) {
                 $query = $data['query'];
-                if ($query instanceof Query && !in_array($query->type()->id_tipo, $this->typeIds)) {
-                    $this->warn($type->nome.' ('.$typeId.') might require '.$relation.' ('.$query->type()->id_tipo.')');
+                if ($query instanceof Query && !in_array($query->type()->type_id, $this->typeIds)) {
+                    $this->warn($type->nome.' ('.$typeId.') might require '.$relation.' ('.$query->type()->type_id.')');
                 }
             }
             $tables[] = $type->getInterAdminsTableName();

@@ -16,7 +16,7 @@ class SelectMultiAjaxField extends SelectMultiField
             ->options($this->getOptions())
             ->multiple()
             ->data_ajax()
-            ->data_id_tipo($this->type->id_tipo);
+            ->data_type_id($this->type->type_id);
     }
 
     protected function getOptions()

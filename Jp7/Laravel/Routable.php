@@ -25,7 +25,7 @@ trait Routable
             $namespace[] = $parent->getStudly();
             $parent = $parent->getParent();
         }
-        if ($this->id_tipo == 4178) {
+        if ($this->type_id == 4178) {
             kd($namespace);
         }
         return implode($namespace, '\\');
@@ -51,7 +51,7 @@ trait Routable
 
     public function isRoot()
     {
-        return $this->id_tipo == '0';
+        return $this->type_id == '0';
     }
 
     public function getChildrenMenu()
