@@ -243,7 +243,7 @@ if (!function_exists('interadmin_data')) {
         return file_get_contents($url, false, $context);
     }
 }
-if (!function_exists('interadmin_tipos_campos_encode')) {
+if (!function_exists('interadmin_types_fields_encode')) {
     /**
      * Transforma array de campos em string separada por ; e {,} no formato do InterAdmin.
      *
@@ -251,7 +251,7 @@ if (!function_exists('interadmin_tipos_campos_encode')) {
      *
      * @return string
      */
-    function interadmin_tipos_campos_encode($campos)
+    function interadmin_types_fields_encode($campos)
     {
         $s = '';
         foreach ($campos as $value) {
