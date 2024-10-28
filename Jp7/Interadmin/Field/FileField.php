@@ -16,7 +16,7 @@ class FileField extends ColumnField
 
     public function getCellHtml()
     {
-        return interadmin_arquivos_preview(
+        return interadmin_files_preview(
             $this->config,
             $this->getText() ?: DEFAULT_PATH.'/img/px.png', // url
             '', // alt
