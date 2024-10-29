@@ -52,7 +52,7 @@ class SeedDumpCommand extends Command
     protected function dumpTipos()
     {
         $options = " ".$this->config['prefix']."tipos".
-            " --where=\"deleted_type = '' AND mostrar <> ''\"".
+            " --where=\"deleted_at = '' AND mostrar <> ''\"".
             " --skip-extended-insert".
             " --no-create-info";
         $this->mysqldump($options, 'database/interadmin_tipos.sql');
