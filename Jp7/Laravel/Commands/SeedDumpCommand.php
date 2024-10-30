@@ -64,7 +64,7 @@ class SeedDumpCommand extends Command
         $tables = $this->getRecordsTables();
 
         $options = " --tables ".implode(' ', $tables).
-            " --where=\"char_key <> '' AND publish <> '' AND deleted = '' AND type_id IN (".implode(',', $this->typeIds).")\"".
+            " --where=\"char_key <> '' AND publish <> '' AND deleted_at IS NULL AND type_id IN (".implode(',', $this->typeIds).")\"".
             " --skip-extended-insert".
             " --no-create-info";
 
