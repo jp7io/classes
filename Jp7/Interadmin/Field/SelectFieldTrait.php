@@ -30,9 +30,9 @@ trait SelectFieldTrait
     {
         list($value, $status) = $this->valueAndStatus($related);
         if ($html) {
-            return ($status ? e($value) : '<del>'.e($value).'</del>');
+            return ($status ? e($value) : '<del>' . e($value) . '</del>');
         }
-        return $value.($status ? '' : ' [unpublished]');
+        return $value . ($status ? '' : ' [unpublished]');
     }
 
     protected function valueAndStatus($related)
@@ -104,10 +104,10 @@ trait SelectFieldTrait
 
     protected function cachedRecords($ids)
     {
-        $prefix = 'cachedRecords,'.$this->nome->type_id;
+        $prefix = 'cachedRecords,' . $this->nome->type_id;
         $cached = [];
         foreach ($ids as $key => $id) {
-            $attributes = Cache::get($prefix.','.$id);
+            $attributes = Cache::get($prefix . ',' . $id);
             if ($attributes === false) {
                 // cached with empty value
                 $cached[$key] = null;
@@ -129,7 +129,7 @@ trait SelectFieldTrait
                 }
                 $cached[$key] = $found;
                 // getAttributes: less serialized data
-                Cache::put($prefix.','.$id, $found ? $record->getAttributes() : false, 10);
+                Cache::put($prefix . ',' . $id, $found ? $record->getAttributes() : false, 10);
             }
         }
         return new \Jp7\Interadmin\Collection(array_values(array_filter($cached)));
@@ -138,7 +138,7 @@ trait SelectFieldTrait
     protected function getOptions()
     {
         if (!$this->hasTipo()) {
-            $cacheKey = 'cachedOptions,'.$this->nome->type_id;
+            $cacheKey = 'cachedOptions,' . $this->nome->type_id;
             $resolve = function () {
                 return $this->toOptions($this->records()->get());
             };
@@ -165,7 +165,7 @@ trait SelectFieldTrait
         }
         $query = $this->nome->records();
         // used later by isPublished()
-        $camposPublished = ['char_key', 'parent_id', 'publish', 'deleted_at', 'date_publish', 'date_expire'];
+        $camposPublished = ['char_key', 'parent_id', 'publish', 'deleted_at', 'publish_at', 'expire_at'];
         $query->select(array_merge($camposCombo, $camposPublished))
             ->where('deleted_at', null);
         if ($ordered) {
@@ -173,7 +173,7 @@ trait SelectFieldTrait
         }
         if ($this->where) {
             // From xtra_disabledfields
-            $query->whereRaw('1=1'.$this->where);
+            $query->whereRaw('1=1' . $this->where);
         }
         return $query;
     }
@@ -183,9 +183,9 @@ trait SelectFieldTrait
         global $lang;
 
         $query = new TypeQuery;
-        $query->select('nome'.$lang->prefix, 'parent_type_id')
+        $query->select('nome' . $lang->prefix, 'parent_type_id')
             ->published()
-            ->orderByRaw('admin,ordem,nome'.$lang->prefix);
+            ->orderByRaw('admin,ordem,nome' . $lang->prefix);
         // only children tipos
         if ($this->nome instanceof Type) {
             $query->where('parent_type_id', $this->nome->type_id);
@@ -202,7 +202,7 @@ trait SelectFieldTrait
             }
         } elseif (!empty($array) && $array[0] instanceof Record) {
             foreach ($array as $record) {
-                $options[$record->id] = e($record->getStringValue() . ($record->isPublished() ? '': ' (despublicado)'));
+                $options[$record->id] = e($record->getStringValue() . ($record->isPublished() ? '' : ' (despublicado)'));
             }
         } elseif (!empty($array)) {
             throw new UnexpectedValueException('Should be an array of Record or Type');
@@ -214,7 +214,7 @@ trait SelectFieldTrait
             }
             for ($count; $count > 0; $count--) {
                 $id = array_search($text, $options);
-                $options[$id] = $text.' ('.$id.')';
+                $options[$id] = $text . ' (' . $id . ')';
             }
         }
         return $options;
@@ -236,7 +236,7 @@ trait SelectFieldTrait
         if (!empty($map[$parent_type_id])) {
             foreach ($map[$parent_type_id] as $type) {
                 $prefix = ($level ? str_repeat('--', $level) . '> ' : ''); // ----> Nome
-                $options[$type->type_id] = $prefix.$type->getName();
+                $options[$type->type_id] = $prefix . $type->getName();
                 $this->addTipoTreeOptions($options, $map, $type->type_id, $level + 1);
             }
         }
