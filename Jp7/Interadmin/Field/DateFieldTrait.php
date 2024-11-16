@@ -5,7 +5,7 @@ namespace Jp7\Interadmin\Field;
 use Former\Facades\Former;
 use HtmlObject\Input;
 use HtmlObject\Element;
-use Jp7_Date as Date;
+use Carbon\Carbon as Date;
 
 trait DateFieldTrait
 {
