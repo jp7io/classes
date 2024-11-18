@@ -3,7 +3,7 @@
 namespace Jp7\Interadmin\Field;
 
 use Illuminate\Support\Str;
-use Jp7\Interadmin\Type;
+use App\Models\Type;
 
 /**
  * @property string $type
@@ -90,9 +90,9 @@ class ColumnField extends BaseField
             $input->help($this->ajuda);
         }
         // Title is just for information
-        $input->getLabel()->setAttribute('title', $this->nome_id.' ('.$this->tipo.', xtra: '.$this->xtra.')');
+        $input->getLabel()->setAttribute('title', $this->nome_id . ' (' . $this->tipo . ', xtra: ' . $this->xtra . ')');
         $input->onGroupAddClass($this->id);
-        $input->onGroupAddClass($this->nome_id.'-group');
+        $input->onGroupAddClass($this->nome_id . '-group');
         if ($this->separador) {
             $input->onGroupAddClass('has-separator');
         }
@@ -102,12 +102,12 @@ class ColumnField extends BaseField
 
     protected function getFormerName()
     {
-        return $this->tipo.(is_null($this->index) ? '' : '['.$this->index.']');
+        return $this->tipo . (is_null($this->index) ? '' : '[' . $this->index . ']');
     }
 
     protected function getFormerId()
     {
-        return $this->nome_id.(is_null($this->index) ? '' : '_'.$this->index);
+        return $this->nome_id . (is_null($this->index) ? '' : '_' . $this->index);
     }
 
     protected function getValue()
@@ -169,6 +169,6 @@ class ColumnField extends BaseField
         if (Str::startsWith($this->tipo, 'func_')) {
             return ''; // func is not a real column
         }
-        return $this->tipo.' '.$direction;
+        return $this->tipo . ' ' . $direction;
     }
 }

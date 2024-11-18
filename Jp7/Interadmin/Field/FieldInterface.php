@@ -3,7 +3,7 @@
 namespace Jp7\Interadmin\Field;
 
 use HtmlObject\Element;
-use Jp7\Interadmin\Type;
+use App\Models\Type;
 
 ///////// Hierarchy ////////////////
 // Tag          <td>{!! $Html !!}</td>

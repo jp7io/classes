@@ -3,7 +3,7 @@
 namespace Jp7\Interadmin\Field;
 
 use UnexpectedValueException;
-use Jp7\Interadmin\Type;
+use App\Models\Type;
 
 trait SelectAjaxFieldTrait
 {
@@ -23,22 +23,22 @@ trait SelectAjaxFieldTrait
     protected function buildSearch($query, $fields, $search)
     {
         global $db;
-        $pattern = '%'.str_replace(' ', '%', $search).'%';
+        $pattern = '%' . str_replace(' ', '%', $search) . '%';
         $whereOr = [];
         foreach ($fields as $field) {
-            $whereOr[] = $field.' LIKE '.$db->qstr($pattern);
+            $whereOr[] = $field . ' LIKE ' . $db->qstr($pattern);
         }
         if (is_numeric($search)) {
-            $whereOr[] = 'type_id = '.intval($search);
+            $whereOr[] = 'type_id = ' . intval($search);
         }
 
         $order = [];
         foreach ($fields as $field) {
-            $order[] = $field.' LIKE '.$db->qstr($search.'%').' DESC'; // starts with
+            $order[] = $field . ' LIKE ' . $db->qstr($search . '%') . ' DESC'; // starts with
         }
         $order = array_merge($order, $fields);
 
-        return $query->whereRaw('('.implode(' OR ', $whereOr).')')
+        return $query->whereRaw('(' . implode(' OR ', $whereOr) . ')')
             ->orderByRaw(implode(', ', $order))
             ->limit(100);
     }
@@ -51,7 +51,7 @@ trait SelectAjaxFieldTrait
         foreach ($this->nome->getFieldsCombo() as $campoCombo) {
             if ($campos[$campoCombo]['nome'] instanceof Type) {
                 foreach ($campos[$campoCombo]['nome']->getFieldsCombo() as $campoCombo2) {
-                    $searchable[] = $campoCombo.'.'.$campoCombo2;
+                    $searchable[] = $campoCombo . '.' . $campoCombo2;
                 }
             } else {
                 $searchable[] = $campoCombo;

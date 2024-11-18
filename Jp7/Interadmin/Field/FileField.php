@@ -17,8 +17,7 @@ class FileField extends ColumnField
     public function getCellHtml()
     {
         return interadmin_files_preview(
-            $this->config,
-            $this->getText() ?: DEFAULT_PATH.'/img/px.png', // url
+            $this->getText() ?: '/img/px.png', // url
             '', // alt
             false, // presrc
             true // icon_small
@@ -47,12 +46,12 @@ class FileField extends ColumnField
 
     protected function getCreditsHtml()
     {
-        $field = new VarcharField(['tipo' => $this->tipo.'_text']);
+        $field = new VarcharField(['tipo' => $this->tipo . '_text']);
         $field->setRecord($this->record);
         $field->setIndex($this->index);
         $input = $field->getFormerField();
         $this->handleReadonly($input);
-        return '<div class="input-group"><span class="input-group-addon">Legenda:</span>'.
-            $input->raw().'</div>';
+        return '<div class="input-group"><span class="input-group-addon">Legenda:</span>' .
+            $input->raw() . '</div>';
     }
 }

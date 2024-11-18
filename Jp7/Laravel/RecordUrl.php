@@ -2,7 +2,7 @@
 
 namespace Jp7\Laravel;
 
-use Jp7\Interadmin\Type;
+use App\Models\Type;
 use Jp7\Interadmin\Record;
 use Jp7\Laravel\RouterFacade as r;
 use BadMethodCallException;
@@ -24,16 +24,16 @@ class RecordUrl
     {
         $route = $type->getRoute($action);
         if (!$route) {
-            throw new BadMethodCallException('There is no route for type_id: '.$type->type_id.
-                ', action: '.$action.'. Called on '.get_class($type));
+            throw new BadMethodCallException('There is no route for type_id: ' . $type->type_id .
+                ', action: ' . $action . '. Called on ' . get_class($type));
         }
 
         $variables = r::getVariablesFromRoute($route);
         $parameters = $parameters ?? $type->getUrlParameters($variables);
 
         if (count($parameters) != count($variables)) {
-            throw new BadMethodCallException('Route "'.$route->uri().'" has '.count($variables).
-                ' parameters, but received '.count($parameters).'. Called on '.get_class($type));
+            throw new BadMethodCallException('Route "' . $route->uri() . '" has ' . count($variables) .
+                ' parameters, but received ' . count($parameters) . '. Called on ' . get_class($type));
         }
         // object -> id_slug
         $parameters = array_map(function ($parameter) {
@@ -60,8 +60,8 @@ class RecordUrl
     {
         $route = $record->getRoute($action);
         if (!$route) {
-            throw new BadMethodCallException('There is no route for type_id: '.$record->type_id.
-                 ', action: '.$action.'. Called on '.get_class($record));
+            throw new BadMethodCallException('There is no route for type_id: ' . $record->type_id .
+                ', action: ' . $action . '. Called on ' . get_class($record));
         }
 
         $variables = r::getVariablesFromRoute($route);
@@ -83,8 +83,8 @@ class RecordUrl
         }, $parameters);
 
         if (count($parameters) != count($variables)) {
-            throw new BadMethodCallException('Route "'.$route->uri().'" has '.count($variables).
-                    ' parameters, but received '.count($parameters).'. Called on '.get_class($record));
+            throw new BadMethodCallException('Route "' . $route->uri() . '" has ' . count($variables) .
+                ' parameters, but received ' . count($parameters) . '. Called on ' . get_class($record));
         }
 
         return URL::route($route->getName(), $parameters);

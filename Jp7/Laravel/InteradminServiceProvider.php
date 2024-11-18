@@ -5,7 +5,7 @@ namespace Jp7\Laravel;
 use Illuminate\Support\ServiceProvider;
 use Jp7\Interadmin\DynamicLoader;
 use Jp7\Interadmin\RecordClassMap;
-use Jp7\Interadmin\Type;
+use App\Models\Type;
 use Jp7\Laravel\Commands\GenerateClasses;
 use Jp7\Laravel\RouterFacade as r;
 use Schema;
@@ -49,17 +49,17 @@ class InteradminServiceProvider extends ServiceProvider
 
     private function publishPackageFiles()
     {
-        $base = __DIR__.'/../..';
+        $base = __DIR__ . '/../..';
 
         $this->publishes([
-            $base.'/config/httpcache.php' => config_path('httpcache.php'),
-            $base.'/config/imgix.php' => config_path('imgix.php'),
-            $base.'/config/interadmin.php' => config_path('interadmin.php'),
+            $base . '/config/httpcache.php' => config_path('httpcache.php'),
+            $base . '/config/imgix.php' => config_path('imgix.php'),
+            $base . '/config/interadmin.php' => config_path('interadmin.php'),
         ], 'config');
 
         $this->publishes([
-            $base.'/resources/lang/en/interadmin.php' => resource_path('lang/en/interadmin.php'),
-            $base.'/resources/lang/pt-BR/interadmin.php' => resource_path('lang/pt-BR/interadmin.php'),
+            $base . '/resources/lang/en/interadmin.php' => resource_path('lang/en/interadmin.php'),
+            $base . '/resources/lang/pt-BR/interadmin.php' => resource_path('lang/pt-BR/interadmin.php'),
         ], 'resources');
     }
 
@@ -81,7 +81,7 @@ class InteradminServiceProvider extends ServiceProvider
     private function bootOrm()
     {
         if (config('interadmin.namespace')) {
-            Type::setDefaultClass(config('interadmin.namespace').'Type');
+            Type::setDefaultClass(config('interadmin.namespace') . 'Type');
         }
         $classesFile = GenerateClasses::getFilePath();
         if (file_exists($classesFile)) {

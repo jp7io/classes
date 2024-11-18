@@ -4,7 +4,7 @@ namespace Jp7\Interadmin\Field;
 
 use HtmlObject\Element;
 use Former;
-use Jp7\Interadmin\Type;
+use App\Models\Type;
 
 abstract class BaseField implements FieldInterface
 {
@@ -115,12 +115,12 @@ abstract class BaseField implements FieldInterface
 
     protected function getFormerName()
     {
-        return $this->id.(is_null($this->index) ? '' : '['.$this->index.']');
+        return $this->id . (is_null($this->index) ? '' : '[' . $this->index . ']');
     }
 
     protected function getFormerId()
     {
-        return $this->id.(is_null($this->index) ? '' : '_'.$this->index);
+        return $this->id . (is_null($this->index) ? '' : '_' . $this->index);
     }
 
     protected function getRuleName()

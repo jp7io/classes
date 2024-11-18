@@ -2,11 +2,11 @@
 
 namespace Jp7\Interadmin\Field;
 
+use Illuminate\Support\Facades\Cache;
 use Jp7\Interadmin\Record;
-use Jp7\Interadmin\Type;
+use App\Models\Type;
 use Jp7\Interadmin\Query\TypeQuery;
 use UnexpectedValueException;
-use Cache;
 
 trait SelectFieldTrait
 {
@@ -92,7 +92,7 @@ trait SelectFieldTrait
             //return $this->tipos()->whereIn('type_id', $ids)->get();
             $cached = new \Jp7\Interadmin\Collection();
             foreach ($ids as $type_id) {
-                $type = Type::getInstance($type_id);
+                $type = Type::find($type_id);
                 if ($type->nome !== null) { // deleted types
                     $cached[] = $type;
                 }

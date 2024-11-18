@@ -5,7 +5,7 @@ namespace Jp7\Laravel;
 use Illuminate\Support\Str;
 use Jp7\MethodForwarder;
 use Jp7\Interadmin\RecordClassMap;
-use Jp7\Interadmin\Type;
+use App\Models\Type;
 use LaravelLocalization;
 use Illuminate\Support\Facades\Route;
 use Closure;
@@ -23,9 +23,9 @@ class Router extends MethodForwarder
     protected $cachefile = 'bootstrap/cache/routemap.cache';
     protected $locale;
 
-////
-//// Cache functions: Type map will work even when Laravel routes are cached
-////
+    ////
+    //// Cache functions: Type map will work even when Laravel routes are cached
+    ////
 
     public function __construct($target)
     {
@@ -54,9 +54,9 @@ class Router extends MethodForwarder
         $this->map = unserialize(file_get_contents($this->cachefile));
     }
 
-////
-//// Map functions: Read/write to the type map
-////
+    ////
+    //// Map functions: Read/write to the type map
+    ////
 
     private function hasType($type_id)
     {
@@ -74,8 +74,8 @@ class Router extends MethodForwarder
 
         if (!str_contains($lastRoute->getActionName(), $controllerName)) {
             throw new \UnexpectedValueException(
-                'Check if your routes are duplicated.'.
-                'Expected '.$lastRoute->getActionName().' to contain '.$controllerName
+                'Check if your routes are duplicated.' .
+                    'Expected ' . $lastRoute->getActionName() . ' to contain ' . $controllerName
             );
         }
 
@@ -112,7 +112,7 @@ class Router extends MethodForwarder
         $map = $map ?: [];
         $type_id = array_search($routeBasename, $map);
         if ($type_id) {
-            return Type::getInstance($type_id);
+            return Type::find($type_id);
         }
     }
     /**
@@ -138,25 +138,25 @@ class Router extends MethodForwarder
         $map = &$this->map[$this->getLocale()]; // reference
         foreach ($type_id_array as $type_id) {
             if (isset($map[$type_id])) {
-                echo 'WARNING: Please check tempTypeRoutes for type_id: '.$type_id.PHP_EOL;
+                echo 'WARNING: Please check tempTypeRoutes for type_id: ' . $type_id . PHP_EOL;
                 continue;
             }
             // Create temporary controller
-            $tempRouteName = 'temporarilyIgnored'.$type_id;
-            if (!class_exists('App\Http\Controllers\\'.$tempRouteName.'Controller')) {
+            $tempRouteName = 'temporarilyIgnored' . $type_id;
+            if (!class_exists('App\Http\Controllers\\' . $tempRouteName . 'Controller')) {
                 eval('namespace App\Http\Controllers {
-                    class '.$tempRouteName.'Controller extends \Illuminate\Routing\Controller {
+                    class ' . $tempRouteName . 'Controller extends \Illuminate\Routing\Controller {
                     }
                 }');
             }
-            parent::resource($tempRouteName, $tempRouteName.'Controller');
+            parent::resource($tempRouteName, $tempRouteName . 'Controller');
             $map[$type_id] = $tempRouteName;
         }
     }
 
-////
-//// Route override: Adds default values for methods
-////
+    ////
+    //// Route override: Adds default values for methods
+    ////
 
     /**
      * Adds conventions for controllers and 'only' option:
@@ -225,9 +225,9 @@ class Router extends MethodForwarder
     {
         $stack = $this->getGroupStack();
         $namespace = end($stack)['namespace'];
-        $class = $namespace.'\\'.$classBasename;
+        $class = $namespace . '\\' . $classBasename;
         if (!class_exists($class)) {
-            echo 'Controller not found: '.$class.PHP_EOL;
+            echo 'Controller not found: ' . $class . PHP_EOL;
             // Create all controllers:
             if (env('CREATE_CONTROLLERS')) {
                 \Artisan::call('make:controller', [
@@ -240,14 +240,14 @@ class Router extends MethodForwarder
         $validActions = ['index', 'show', 'create', 'store', 'update', 'destroy', 'edit'];
         $actions = array_intersect(get_class_methods($class), $validActions);
         if (!$actions) {
-            echo 'Controller has no actions: '.$class.PHP_EOL;
+            echo 'Controller has no actions: ' . $class . PHP_EOL;
         }
         return $actions;
     }
 
-////
-//// Localization: allows caching routes with localization
-////
+    ////
+    //// Localization: allows caching routes with localization
+    ////
 
     protected function getLocale()
     {
@@ -282,11 +282,11 @@ class Router extends MethodForwarder
         if ($this->locale === LaravelLocalization::getDefaultLocale()) {
             return $routeName;
         }
-        return $this->locale.'.'.$routeName;
+        return $this->locale . '.' . $routeName;
     }
-////
-//// Dynamic routes: Creates routes automatically from InterAdmin's sections
-////
+    ////
+    //// Dynamic routes: Creates routes automatically from InterAdmin's sections
+    ////
 
     /**
      * Creates routes automatically from InterAdmin's sections.
@@ -328,9 +328,9 @@ class Router extends MethodForwarder
         }
     }
 
-////
-//// Helpers: Get extra information from Laravel routes
-////
+    ////
+    //// Helpers: Get extra information from Laravel routes
+    ////
 
     /**
      * Returns a list of variable placeholders from routes.

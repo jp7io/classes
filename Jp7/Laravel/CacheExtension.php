@@ -2,7 +2,7 @@
 
 namespace Jp7\Laravel;
 
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Cache\FileStore;
 use Illuminate\Filesystem\Filesystem;
 
@@ -21,7 +21,7 @@ class CacheExtension
                 }
                 $tagStore = new FileStore(
                     $store->getFilesystem(),
-                    $store->getDirectory().'/_tag_'.$tag
+                    $store->getDirectory() . '/_tag_' . $tag
                 );
                 $instances[$tag] = Cache::repository($tagStore);
             }

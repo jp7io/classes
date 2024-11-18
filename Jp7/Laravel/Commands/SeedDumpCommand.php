@@ -4,7 +4,7 @@ namespace Jp7\Laravel\Commands;
 
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
-use Jp7\Interadmin\Type;
+use App\Models\Type;
 use Jp7\Interadmin\Query;
 use DB;
 
@@ -43,17 +43,17 @@ class SeedDumpCommand extends Command
     {
         $tables = $this->getTables();
         # Export schema
-        $options = " --tables ".implode(' ', $tables).
-            " --no-data".
+        $options = " --tables " . implode(' ', $tables) .
+            " --no-data" .
             " --skip-add-drop-table";
         $this->mysqldump($options, 'database/interadmin_schema.sql');
     }
 
     protected function dumpTipos()
     {
-        $options = " ".$this->config['prefix']."tipos".
-            " --where=\"deleted_at = '' AND mostrar <> ''\"".
-            " --skip-extended-insert".
+        $options = " " . $this->config['prefix'] . "tipos" .
+            " --where=\"deleted_at = '' AND mostrar <> ''\"" .
+            " --skip-extended-insert" .
             " --no-create-info";
         $this->mysqldump($options, 'database/interadmin_tipos.sql');
         $this->removeLogs('database/interadmin_tipos.sql');
@@ -63,9 +63,9 @@ class SeedDumpCommand extends Command
     {
         $tables = $this->getRecordsTables();
 
-        $options = " --tables ".implode(' ', $tables).
-            " --where=\"char_key <> '' AND publish <> '' AND deleted_at IS NULL AND type_id IN (".implode(',', $this->typeIds).")\"".
-            " --skip-extended-insert".
+        $options = " --tables " . implode(' ', $tables) .
+            " --where=\"char_key <> '' AND publish <> '' AND deleted_at IS NULL AND type_id IN (" . implode(',', $this->typeIds) . ")\"" .
+            " --skip-extended-insert" .
             " --no-create-info";
 
         $this->mysqldump($options, 'database/interadmin_records.sql');
@@ -76,15 +76,15 @@ class SeedDumpCommand extends Command
     {
         $tables = [];
         foreach ($this->typeIds as $typeId) {
-            $type = Type::getInstance($typeId);
+            $type = Type::find($typeId);
             $count = $type->records()->count();
             if ($count > $this->tooManyRecords) {
-                $this->error($type->nome.' ('.$typeId.') exports too many records: '.$count);
+                $this->error($type->nome . ' (' . $typeId . ') exports too many records: ' . $count);
             }
             foreach ($type->getRelationships() as $relation => $data) {
                 $query = $data['query'];
                 if ($query instanceof Query && !in_array($query->type()->type_id, $this->typeIds)) {
-                    $this->warn($type->nome.' ('.$typeId.') might require '.$relation.' ('.$query->type()->type_id.')');
+                    $this->warn($type->nome . ' (' . $typeId . ') might require ' . $relation . ' (' . $query->type()->type_id . ')');
                 }
             }
             $tables[] = $type->getInterAdminsTableName();
@@ -113,20 +113,20 @@ class SeedDumpCommand extends Command
     protected function getIgnoredTables()
     {
         return [
-            $this->config['prefix'].'migrations',
-            $this->config['prefix'].'jobs',
-            $this->config['prefix'].'failed_jobs',
-            $this->config['prefix'].'password_resets',
+            $this->config['prefix'] . 'migrations',
+            $this->config['prefix'] . 'jobs',
+            $this->config['prefix'] . 'failed_jobs',
+            $this->config['prefix'] . 'password_resets',
         ];
     }
 
     protected function mysqldump($options, $output)
     {
-        $command = "mysqldump -h ".$this->config['host'].
-            " -u ".$this->config['username'].
-            " -p".$this->config['password'].
-            " ".$this->config['database'].
-            $options." > ".$output;
+        $command = "mysqldump -h " . $this->config['host'] .
+            " -u " . $this->config['username'] .
+            " -p" . $this->config['password'] .
+            " " . $this->config['database'] .
+            $options . " > " . $output;
         if ($this->option('verbose')) {
             $this->comment($command);
         }
@@ -135,7 +135,7 @@ class SeedDumpCommand extends Command
         if ($error_code) {
             $this->error('Mysqldump failed');
         } else {
-            $this->info('Dumped: '.$output);
+            $this->info('Dumped: ' . $output);
         }
     }
 
