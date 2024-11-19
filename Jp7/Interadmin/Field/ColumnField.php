@@ -47,7 +47,11 @@ class ColumnField extends BaseField
         if (!isset($this->campo[$name])) {
             return;
         }
-        return $this->campo[$name];
+        $value = $this->campo[$name];
+        if ($name === 'nome' && is_numeric($value)) {
+            return Type::find($value);
+        }
+        return $value;
     }
 
     /**

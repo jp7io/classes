@@ -3,7 +3,7 @@
 namespace Jp7\Interadmin\Field;
 
 use Illuminate\Support\Facades\Cache;
-use Jp7\Interadmin\Record;
+use App\Models\Record;
 use App\Models\Type;
 use Jp7\Interadmin\Query\TypeQuery;
 use UnexpectedValueException;
@@ -86,7 +86,7 @@ trait SelectFieldTrait
         }
         if (!$this->hasTipo()) {
             //return $this->records()->whereIn('id', $ids)->get();
-            return $ids;
+            return $this->cachedRecords($ids);
         }
         if ($this->nome instanceof Type || $this->nome === 'all') {
             //return $this->tipos()->whereIn('type_id', $ids)->get();
@@ -140,7 +140,9 @@ trait SelectFieldTrait
         if (!$this->hasTipo()) {
             $cacheKey = 'cachedOptions,' . $this->nome->type_id;
             $resolve = function () {
-                return $this->toOptions($this->records()->get());
+                $type = Type::find($this->nome->type_id);
+                $records = $type->records()->get();
+                return $this->toOptions($records);
             };
             if ($this->filterCombo) {
                 return Cache::remember($cacheKey, 10, $resolve);
