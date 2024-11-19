@@ -86,7 +86,7 @@ trait SelectFieldTrait
         }
         if (!$this->hasTipo()) {
             //return $this->records()->whereIn('id', $ids)->get();
-            return $this->cachedRecords($ids);
+            return $ids;
         }
         if ($this->nome instanceof Type || $this->nome === 'all') {
             //return $this->tipos()->whereIn('type_id', $ids)->get();
