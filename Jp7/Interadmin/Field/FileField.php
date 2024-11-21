@@ -9,11 +9,6 @@ class FileField extends ColumnField
     protected $id = 'file';
     protected $config;
 
-    public function __construct($config)
-    {
-        $this->config = $config;
-    }
-
     public function getCellHtml()
     {
         return interadmin_files_preview(
