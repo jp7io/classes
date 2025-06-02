@@ -2,12 +2,12 @@
 
 namespace Jp7\Laravel;
 
-use Exception;
+use Throwable;
 use App;
 
 trait WhoopsHandlerTrait
 {
-    protected function convertExceptionToResponse(Exception $e)
+    protected function convertExceptionToResponse(Throwable $e)
     {
         if (config('app.debug')) {
             if (config('app.env') !== 'local' || App::runningInConsole()) {
