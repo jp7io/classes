@@ -196,11 +196,11 @@ trait SelectFieldTrait
     protected function toOptions($array)
     {
         $options = [];
-        if ($array[0] instanceof Type) {
+        if (!empty($array[0]) && $array[0] instanceof Type) {
             foreach ($array as $tipo) {
                 $options[$tipo->id_tipo] = e($tipo->getName());
             }
-        } elseif ($array[0] instanceof Record) {
+        } elseif (!empty($array[0]) && $array[0] instanceof Record) {
             foreach ($array as $record) {
                 $options[$record->id] = e($record->getStringValue() . ($record->isPublished() ? '': ' (despublicado)'));
             }
