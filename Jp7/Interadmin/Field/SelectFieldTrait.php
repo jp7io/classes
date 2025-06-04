@@ -233,7 +233,7 @@ trait SelectFieldTrait
 
     protected function addTipoTreeOptions(&$options, $map, $parent_id_tipo, $level = 0)
     {
-        if ($map[$parent_id_tipo]) {
+        if (!empty($map[$parent_id_tipo])) {
             foreach ($map[$parent_id_tipo] as $tipo) {
                 $prefix = ($level ? str_repeat('--', $level) . '> ' : ''); // ----> Nome
                 $options[$tipo->id_tipo] = $prefix.$tipo->getName();
