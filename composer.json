@@ -3,18 +3,16 @@
   "description": "JP7 Classes",
   "keywords": [],
   "license": "proprietary",
-  "repositories" : [
+  "repositories": [
     {
-        "type": "composer",
-        "url": "https://satis.jp7.io"
+      "type": "composer",
+      "url": "https://satis.jp7.io"
     }
   ],
-  "require": {
-
-  },
+  "require": {},
   "require-dev": {
-    "jp7io/classes-deprecated": "3.2.x-dev",
-    "illuminate/support": "~5.1",
+    "jp7io/classes-deprecated": "^3.2",
+    "illuminate/support": "^8.75",
     "phpunit/phpunit": "^4.8"
   },
   "autoload": {
@@ -25,9 +23,7 @@
       "Jp7/Laravel/functions.php"
     ]
   },
-  "scripts": {
-
-  },
+  "scripts": {},
   "config": {
     "preferred-install": "dist",
     "component-dir": "vendor/components-installed"

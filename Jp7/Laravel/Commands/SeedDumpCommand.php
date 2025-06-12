@@ -2,6 +2,7 @@
 
 namespace Jp7\Laravel\Commands;
 
+use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Jp7\Interadmin\Type;
 use Jp7\Interadmin\Query;
@@ -100,7 +101,7 @@ class SeedDumpCommand extends Command
     {
         $tables = DB::connection()->getDoctrineSchemaManager()->listTableNames();
         return array_filter($tables, function ($table) {
-            return !in_array($table, $this->getIgnoredTables()) && starts_with($table, $this->config['prefix']);
+            return !in_array($table, $this->getIgnoredTables()) && Str::startsWith($table, $this->config['prefix']);
         });
     }
 

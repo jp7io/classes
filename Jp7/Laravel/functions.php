@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Str;
+
 if (!function_exists('interadmin_data')) {
     /**
      * Converts 1024 to 1kB
@@ -32,7 +34,7 @@ if (!function_exists('interadmin_data')) {
         $string = str_replace('®', '', $string);
         $string = str_replace('&', 'e', $string);
 
-        return str_slug($string, $separator);
+        return Str::slug($string, $separator);
     }
 
     /**
@@ -228,7 +230,7 @@ if (!function_exists('interadmin_data')) {
             // JP7 in user agent for whitelisting in Firewall / Bot Blocker
             'user_agent' => $safariUserAgent.' JP7'
         ];
-        if (ends_with(parse_url($url)['host'], '.dev')) {
+        if (Str::endsWith(parse_url($url)['host'], '.dev')) {
             // Local development does not have SSL certificates
             $contextOptions += [
                 'ssl' => [

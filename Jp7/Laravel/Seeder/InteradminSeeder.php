@@ -2,6 +2,7 @@
 
 namespace Jp7\Laravel\Seeder;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use SplFileObject;
 use DB;
@@ -19,11 +20,11 @@ class InteradminSeeder extends Seeder
         $file = new SplFileObject($filepath);
         while (!$file->eof()) {
             $line = $file->fgets();
-            if (!starts_with($line, 'INSERT INTO')) {
-                if (starts_with($line, '--') ||
-                    starts_with($line, '/*') ||
-                    starts_with($line, 'LOCK TABLES') ||
-                    starts_with($line, 'UNLOCK TABLES') ||
+            if (!Str::startsWith($line, 'INSERT INTO')) {
+                if (Str::startsWith($line, '--') ||
+                    Str::startsWith($line, '/*') ||
+                    Str::startsWith($line, 'LOCK TABLES') ||
+                    Str::startsWith($line, 'UNLOCK TABLES') ||
                     !trim($line)) {
                     continue;
                 }

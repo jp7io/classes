@@ -22,8 +22,8 @@ class FieldGroup
             $html .= $first->openPanel();
         } else {
             $firstClass = (isset($first->nome_id) ? $first->nome_id.'-panel' : '');
-            $html .= '<div class="panel panel-default '.$firstClass.'">'.
-                        '<div class="panel-body">';
+            $html .= '<div class="card card-default '.$firstClass.'">'.
+                        '<div class="card-body">';
         }
 
         $html .= implode(PHP_EOL, array_map(function ($field) {

@@ -9,7 +9,7 @@
   * remove `blacklist` and `invalidate` from httpcache.php
   * use the ttl middleware from barryvdh on routes that were on blacklist: ->middleware('ttl:0')
   * use the DontCacheOldInput middleware if the return from old() forms should not be cached
-  * Add the snippet below if AJAX should cache independently: 
+  * Add the snippet below if AJAX should cache independently:
 ```php
 // Cache AJAX requests independently
 app()->singleton(\Symfony\Component\HttpKernel\HttpCache\Store::class, function ($app) {
@@ -61,8 +61,8 @@ app()->singleton(\Symfony\Component\HttpKernel\HttpCache\Store::class, function 
  * "werkint/jsmin": "~1.0.0”
 * Replace Jp7_InterAdmin by Jp7_Interadmin
 * Replace InterAdmin_ by Interadmin_
-* Replace startsWith($needle, $haystack) by starts_with($haystack, $needle)
-* Replace endsWith($needle, $haystack) by ends_with($haystack, $needle)
+* Replace startsWith($needle, $haystack) by Str::startsWith($haystack, $needle)
+* Replace endsWith($needle, $haystack) by Str::endsWith($haystack, $needle)
 * Replace jp7_replace_beginning() by replace_prefix()
 * Main table is interadmin_CLIENT_registros, it was interadmin_CLIENT
  * To prevent problems with legacy projects a VIEW named interadmin_CLIENT_registros was created
@@ -90,4 +90,3 @@ app()->singleton(\Symfony\Component\HttpKernel\HttpCache\Store::class, function 
 * getInterAdmins -> find
 * getInterAdminsByTags -> findByTags
 * getInterAdminsCount -> count
-

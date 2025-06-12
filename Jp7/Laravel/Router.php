@@ -2,11 +2,12 @@
 
 namespace Jp7\Laravel;
 
+use Illuminate\Support\Str;
 use Jp7\MethodForwarder;
 use Jp7\Interadmin\RecordClassMap;
 use Jp7\Interadmin\Type;
 use LaravelLocalization;
-use Route;
+use Illuminate\Support\Facades\Route;
 use Closure;
 use App;
 
@@ -213,7 +214,7 @@ class Router extends MethodForwarder
             $controller = 'Index';
         } else {
             $parts = explode('.', $name);
-            $parts = array_map('studly_case', $parts);
+            $parts = array_map('Str::studly', $parts);
             $controller = implode('\\', $parts);
         }
         $controller .= 'Controller';
@@ -384,7 +385,7 @@ class Router extends MethodForwarder
         $routeParts = [];
 
         foreach ($segments as $segment) {
-            if (starts_with($segment, '{')) {
+            if (Str::startsWith($segment, '{')) {
                 $parameter = $resolveParameter($type, $segment);
                 $breadcrumb[] = $parameter;
             } else {

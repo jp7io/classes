@@ -4,6 +4,7 @@ namespace Jp7\Laravel;
 
 use Throwable;
 use App;
+use Throwable;
 
 trait WhoopsHandlerTrait
 {
@@ -28,7 +29,7 @@ trait WhoopsHandlerTrait
      * @return \Illuminate\Http\Response
      * @see https://mattstauffer.co/blog/bringing-whoops-back-to-laravel-5
      */
-    protected function renderExceptionWithWhoops(Exception $e)
+    protected function renderExceptionWithWhoops(Throwable $e)
     {
         $whoops = new \Whoops\Run;
         $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
