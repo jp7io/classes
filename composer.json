@@ -12,8 +12,8 @@
   "require": {},
   "require-dev": {
     "jp7io/classes-deprecated": "^3.2",
-    "illuminate/support": "^8.75",
-    "phpunit/phpunit": "^4.8"
+    "illuminate/support": "^10.48",
+    "phpunit/phpunit": "^10.1"
   },
   "autoload": {
     "psr-4": {
