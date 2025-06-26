@@ -54,7 +54,7 @@ trait SelectFieldTrait
         if ($this->default && !is_numeric($this->default) && $this->nome instanceof Type) {
             $defaultArr = [];
             foreach (array_filter(explode(',', $this->default)) as $idString) {
-                $selectedObj = $this->nome->findByIdString($idString);
+                $selectedObj = $this->nome->records(['id_string' => $idString])->first();
                 if ($selectedObj) {
                     $defaultArr[] = $selectedObj->id;
                 }
