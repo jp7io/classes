@@ -2,6 +2,7 @@
 
 namespace Jp7\Interadmin\Field;
 
+use HtmlObject\Element;
 use HtmlObject\Input;
 
 class FileField extends ColumnField
@@ -10,30 +11,29 @@ class FileField extends ColumnField
 
     public function getCellHtml()
     {
-        return interadmin_arquivos_preview(
+        $preview = interadmin_arquivos_preview(
             $this->getText() ?: DEFAULT_PATH.'/img/px.png', // url
             '', // alt
             false, // presrc
             true // icon_small
         );
+        return Element::div($preview);
     }
 
     protected function getFormerField()
     {
+        $label = Element::label($this->campo['nome'])->class('control-label col-lg-2 col-sm-4 text-end');
         $input = parent::getFormerField();
-        $input->append($this->getSearchButton());
-        // TODO td.image_preview .image_preview_background
-        $input->append($this->getCellHtml()); // thumbnail
-        if ($this->xtra !== 'notext') {
-            $input->append($this->getCreditsHtml());
-        }
-        return $input;
+        $input = Element::div()->class('input-group')->nest([$input, $this->getSearchButton()]);
+        $inputWithCredits = Element::div()->class('input-with-credits w-100 d-flex flex-column gap-2')->nest([$input, $this->getCreditsHtml()]);
+        $inputWithPreview = Element::div()->class('d-flex gap-2')->nest([$label, $inputWithCredits, $this->getCellHtml()]);
+        return $inputWithPreview;
     }
 
     protected function getSearchButton()
     {
         $input = Input::button(null, 'Procurar...')
-            ->class('choose-file')
+            ->class('btn btn-outline-secondary choose-file')
             ->setAttribute('data-target', $this->nome_id.'_'.$this->index);
         $this->handleReadonly($input);
         return $input;
@@ -46,7 +46,8 @@ class FileField extends ColumnField
         $field->setIndex($this->index);
         $input = $field->getFormerField();
         $this->handleReadonly($input);
-        return '<div class="input-group"><span class="input-group-addon">Legenda:</span>'.
-            $input->raw().'</div>';
+        return Element::div('
+            <span class="input-group-text">Legenda:</span>'.
+            $input->raw())->class('input-group');
     }
 }
