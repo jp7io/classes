@@ -26,7 +26,7 @@ class FileField extends ColumnField
         $input = parent::getFormerField();
         $input = Element::div()->class('input-group')->nest([$input, $this->getSearchButton()]);
         $inputWithCredits = Element::div()->class('input-with-credits w-100 d-flex flex-column gap-2')->nest([$input, $this->getCreditsHtml()]);
-        $inputWithPreview = Element::div()->class('d-flex gap-2')->nest([$label, $inputWithCredits, $this->getCellHtml()]);
+        $inputWithPreview = Element::div()->class('file-field d-flex gap-2')->nest([$label, $inputWithCredits, $this->getCellHtml()]);
         return $inputWithPreview;
     }
 
