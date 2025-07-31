@@ -57,7 +57,7 @@ trait DateFieldTrait
 
     protected function getUpdateButton()
     {
-        $input = Input::button(null, 'Atualizar');
+        $input = Input::button(null, 'Atualizar')->class('btn btn-outline-secondary');
         $this->handleReadonly($input);
         return $input;
     }
