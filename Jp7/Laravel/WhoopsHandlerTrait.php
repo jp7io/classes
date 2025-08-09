@@ -2,7 +2,6 @@
 
 namespace Jp7\Laravel;
 
-use Throwable;
 use App;
 use Throwable;
 
