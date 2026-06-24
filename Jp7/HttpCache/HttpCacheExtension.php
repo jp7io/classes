@@ -22,13 +22,13 @@ class HttpCacheExtension extends HttpCache
 {
     private $kernel;
 
-    public function __construct(HttpKernelInterface $kernel, StoreInterface $store, SurrogateInterface $surrogate = null, array $options = array())
+    public function __construct(HttpKernelInterface $kernel, StoreInterface $store, ?SurrogateInterface $surrogate = null, array $options = array())
     {
         $this->kernel = $kernel;
         parent::__construct($kernel, $store, $surrogate, $options);
     }
 
-    public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+    public function handle(Request $request, int $type = HttpKernelInterface::MAIN_REQUEST, bool $catch = true): Response
     {
         $blacklisted = $this->matchesBlacklist($request) || $request->old();
         if (!$blacklisted) {
@@ -38,7 +38,7 @@ class HttpCacheExtension extends HttpCache
             if (!class_exists(SubRequestHandler::class)) {
                 return $this->pass($request, $catch); // Symfony < 3.3 / Laravel < 5.5
             }
-            return SubRequestHandler::handle($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $catch);  
+            return SubRequestHandler::handle($this->kernel, $request, HttpKernelInterface::MAIN_REQUEST, $catch);
         }
 
         if (config('httpcache.invalidate')) {

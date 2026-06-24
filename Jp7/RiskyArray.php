@@ -6,7 +6,7 @@ class RiskyArray implements \ArrayAccess
 {
     private $container = [];
 
-    public function __construct(array $array = null)
+    public function __construct(?array $array = null)
     {
         if ($array) {
             $this->container = &$array;

@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 class Store extends BaseStore
 {
     // Separate AJAX cache from normal cache
-    protected function generateCacheKey(Request $request)
+    protected function generateCacheKey(Request $request): string
     {
         return 'md'.hash('sha256', $request->getUri() . '#' . $request->isXmlHttpRequest());
     }
