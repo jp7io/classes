@@ -30,6 +30,10 @@ class FuncField extends ColumnField
         if (!is_callable($this->nome)) {
             return 'Function '.$this->nome.' not found.';
         }
+        // Legacy field functions rely on the global $id_tipo (the type being
+        // rendered) that the old bootstrap used to set. Restore that contract.
+        $previousIdTipo = $GLOBALS['id_tipo'] ?? null;
+        $GLOBALS['id_tipo'] = $this->type ? $this->type->id_tipo : null;
         try {
             ob_start();
             // http://wiki.jp7.com.br:81/jp7/InterAdmin:Special
@@ -43,6 +47,8 @@ class FuncField extends ColumnField
             }
             Log::error($e);
             return '(erro: '.$this->nome.')';
+        } finally {
+            $GLOBALS['id_tipo'] = $previousIdTipo;
         }
     }
 
