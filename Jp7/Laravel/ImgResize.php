@@ -134,7 +134,7 @@ class ImgResize
             $width = end($parts);
 
             if ($width >= static::$minSrcsetWidth) {
-                $srcs[] = static::url($img, $template) . " ${width}w";
+                $srcs[] = static::url($img, $template) . " {$width}w";
             }
         }
 
