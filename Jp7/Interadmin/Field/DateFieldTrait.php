@@ -5,7 +5,7 @@ namespace Jp7\Interadmin\Field;
 use Former;
 use HtmlObject\Input;
 use HtmlObject\Element;
-use Jp7_Date as Date;
+use Carbon\Carbon as Date;
 
 trait DateFieldTrait
 {
@@ -23,9 +23,12 @@ trait DateFieldTrait
     {
         $value = parent::getValue();
         if (!$value instanceof Date) {
-            $value = new Date($value ?: Date::EMPTY_DATE);
+            $value = new Date($value ?: '0000-00-00 00:00:00');
         }
-        if (!$value->isValid()) {
+        // Empty/zero date: Jp7_Date masked the year to "0000" while plain Carbon underflows
+        // to "-0001"; both cast to < 1, so this is valid whether $value is a (legacy)
+        // Jp7_Date instance or a plain Carbon.
+        if ((int) $value->format('Y') < 1) {
             return '';
         }
         return $value->format($format);

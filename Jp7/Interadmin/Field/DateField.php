@@ -3,7 +3,6 @@
 namespace Jp7\Interadmin\Field;
 
 use Illuminate\Support\Str;
-use Jp7_Date as Date;
 
 class DateField extends ColumnField
 {
