@@ -230,7 +230,8 @@ if (!function_exists('interadmin_data')) {
             // JP7 in user agent for whitelisting in Firewall / Bot Blocker
             'user_agent' => $safariUserAgent.' JP7'
         ];
-        if (Str::endsWith(parse_url($url)['host'], '.dev')) {
+        $host = parse_url($url, PHP_URL_HOST);
+        if ($host && Str::endsWith($host, '.dev')) {
             // Local development does not have SSL certificates
             $contextOptions += [
                 'ssl' => [
