@@ -22,11 +22,16 @@ trait SelectAjaxFieldTrait
 
     protected function buildSearch($query, $fields, $search)
     {
-        global $db;
+        $connection = \DB::connection();
+        if (!$connection->getPdo()) {
+            $connection->reconnect();
+        }
+        $pdo = $connection->getPdo();
+
         $pattern = '%'.str_replace(' ', '%', $search).'%';
         $whereOr = [];
         foreach ($fields as $field) {
-            $whereOr[] = $field.' LIKE '.$db->qstr($pattern);
+            $whereOr[] = $field.' LIKE '.$pdo->quote($pattern);
         }
         if (is_numeric($search)) {
             $whereOr[] = 'id_tipo = '.intval($search);
@@ -34,7 +39,7 @@ trait SelectAjaxFieldTrait
 
         $order = [];
         foreach ($fields as $field) {
-            $order[] = $field.' LIKE '.$db->qstr($search.'%').' DESC'; // starts with
+            $order[] = $field.' LIKE '.$pdo->quote($search.'%').' DESC'; // starts with
         }
         $order = array_merge($order, $fields);
 
