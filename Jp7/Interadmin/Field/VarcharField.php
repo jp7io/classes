@@ -95,7 +95,9 @@ class VarcharField extends ColumnField
         } elseif ($this->isNumeric()) {
             // Remove Former HTML5 Validation
             // Because we accept numbers in Brazilian format: 1,99 instead of 1.99
-            $input->pattern('[+-]?[0-9]+([0-9,.]*[0-9]+)?');
+            // `-` is escaped because the pattern attribute is compiled with the `v` flag,
+            // which rejects a bare `-` inside a character class (see FloatField).
+            $input->pattern('[+\-]?[0-9]+([0-9,.]*[0-9]+)?');
         } elseif ($this->isTel()) {
             $input->type('tel');
         } elseif ($this->isColor()) {
