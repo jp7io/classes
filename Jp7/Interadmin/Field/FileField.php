@@ -20,13 +20,25 @@ class FileField extends ColumnField
         return Element::div($preview);
     }
 
+    /**
+     * Every other field is rendered by Former as `.mb-3.row` with a `.col-form-label.col-lg-2`
+     * label and a `.col-lg-10` field column. This one hand-builds its row because it carries a
+     * thumbnail the grid has no slot for -- and it used to build a DIFFERENT row: a bare flex
+     * box with no grid gutters and no bottom margin, so a file field sat 12px right of every
+     * field above and below it, its label text 20px further right still, with no gap under it.
+     *
+     * Same grid as everyone else now; the thumbnail rides along inside the field column, which
+     * is the one part that stays flex. The classes JS hooks on (.file-field, .input-with-credits,
+     * .image_preview_background) are unchanged, as is their nesting relative to each other.
+     */
     protected function getFormerField()
     {
-        $label = Element::label($this->campo['nome'])->class('control-label col-lg-2 col-sm-4 text-end');
+        $label = Element::label($this->campo['nome'])->class('col-form-label col-lg-2 col-sm-4');
         $input = parent::getFormerField();
         $input = Element::div()->class('input-group')->nest([$input, $this->getSearchButton()]);
-        $inputWithCredits = Element::div()->class('input-with-credits w-100 d-flex flex-column gap-2')->nest([$input, $this->getCreditsHtml()]);
-        $inputWithPreview = Element::div()->class('file-field d-flex gap-2')->nest([$label, $inputWithCredits, $this->getCellHtml()]);
+        $inputWithCredits = Element::div()->class('input-with-credits flex-fill d-flex flex-column gap-2')->nest([$input, $this->getCreditsHtml()]);
+        $column = Element::div()->class('col-lg-10 col-sm-8 d-flex gap-2')->nest([$inputWithCredits, $this->getCellHtml()]);
+        $inputWithPreview = Element::div()->class('file-field mb-3 row')->nest([$label, $column]);
         return $inputWithPreview;
     }
 
