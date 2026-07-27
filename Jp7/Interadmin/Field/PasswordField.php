@@ -29,7 +29,15 @@ class PasswordField extends ColumnField
     public function getRules()
     {
         $rules = parent::getRules();
-        if ($this->getValue()) {
+        // An `obrigatorio` password is required when CREATING a record only. On an existing
+        // one the box means "change the password", and leaving it empty is the only way the
+        // form can say "keep the current one" -- so requiring it makes every other field on
+        // the record unreachable.
+        //
+        // Keyed on the record, not on getValue(): a record saved WITHOUT a password (ci has
+        // 691 such users) used to fall through to `required` and could not be saved at all.
+        // The save path drops an empty value rather than writing it.
+        if ($this->record && $this->record->id) {
             // Remove required
             if (isset($rules[$this->getRuleName()])) {
                 $rules[$this->getRuleName()] = array_diff($rules[$this->getRuleName()], ['required']);
