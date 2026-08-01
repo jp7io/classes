@@ -2,6 +2,7 @@
 
 namespace Jp7\Laravel;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Jp7\Interadmin\Downloadable;
 //use Storage;
@@ -80,7 +81,7 @@ class ImgResize
         } else {
             // Normal image with src=""
             // Prepend template to classes for CSS use
-            $options['class'] = trim(array_get($options, 'class').' '.$template);
+            $options['class'] = trim(Arr::get($options, 'class').' '.$template);
 
             $url = static::url($img, $template, $alt);
             $element = ImgResizeElement::create($url, $alt, $options);

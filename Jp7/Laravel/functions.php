@@ -30,6 +30,10 @@ if (!function_exists('interadmin_data')) {
 
     function to_slug($string, $separator = '-')
     {
+        // Callers pass unset record/type fields straight in, and those are NULL rather than
+        // ''. Since PHP 8.1 that is a deprecation on every str_* below, not a silent cast.
+        $string = (string) $string;
+
         $string = str_replace('/', '-', $string);
         $string = str_replace('®', '', $string);
         $string = str_replace('&', 'e', $string);
@@ -276,6 +280,10 @@ if (!function_exists('toId')) {
      */
     function toId($string, $tofile = false, $separador = '')
     {
+        // Same as to_slug(): an unset field arrives as NULL, which every preg_* below
+        // deprecates rather than casting.
+        $string = (string) $string;
+
         // Check if there are diacritics before replacing them
         if (preg_match('/[^a-zA-Z0-9-\/ _.,]/', $string)) {
             $string = preg_replace('/[áàãâäÁÀÃÂÄª]/u', 'a', $string);

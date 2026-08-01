@@ -3,32 +3,32 @@
 namespace Tests\Interadmin;
 
 use Jp7_Interadmin_Upload as Upload;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
-class UploadImgixTest extends \PHPUnit_Framework_TestCase
+class UploadImgixTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         Upload::setAdapter(new \Jp7_Interadmin_Upload_Imgix);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
 
     }
 
-     /**
-     * @dataProvider storageProvider
-     */
+    #[DataProvider('storageProvider')]
     public function testUrlStorage($filePath, $expected, $template = null)
     {
         global $config;
         $config = (object) [
             'storage' => [
-                'host' => $this->storageHost(),
+                'host' => self::storageHost(),
                 'path' => ''
             ],
             'imgix' => [
-                'host' => $this->imgixHost(),
+                'host' => self::imgixHost(),
                 'templates' => [
                     'original' => [],
                     'thumb_interadmin' => ['w' => 40, 'h' => 40]
@@ -42,18 +42,18 @@ class UploadImgixTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $url);
     }
 
-    public function storageProvider()
+    public static function storageProvider()
     {
         return [
-            ['../../upload/mediabox/00202630.jpeg', 'http://'.$this->imgixHost().'/upload/mediabox/00202630.jpeg'],
-            ['../../upload/mediabox/00202630.png', 'http://'.$this->imgixHost().'/upload/mediabox/00202630.png'],
-            ['../../upload/mediabox/00202630.jpeg', 'http://'.$this->imgixHost().'/upload/mediabox/00202630.jpeg?w=40&h=40', 'thumb_interadmin'],
-            ['../../upload/mediabox/00202630.jpeg?v=2', 'http://'.$this->imgixHost().'/upload/mediabox/00202630.jpeg?v=2&w=40&h=40', 'thumb_interadmin'],
-            ['../../upload/mediabox/00202630.pdf', 'http://'.$this->storageHost().'/upload/mediabox/00202630.pdf'],
-            ['../../upload/mediabox/00202630.pdf?v=2', 'http://'.$this->storageHost().'/upload/mediabox/00202630.pdf?v=2'],
+            ['../../upload/mediabox/00202630.jpeg', 'http://'.self::imgixHost().'/upload/mediabox/00202630.jpeg'],
+            ['../../upload/mediabox/00202630.png', 'http://'.self::imgixHost().'/upload/mediabox/00202630.png'],
+            ['../../upload/mediabox/00202630.jpeg', 'http://'.self::imgixHost().'/upload/mediabox/00202630.jpeg?w=40&h=40', 'thumb_interadmin'],
+            ['../../upload/mediabox/00202630.jpeg?v=2', 'http://'.self::imgixHost().'/upload/mediabox/00202630.jpeg?v=2&w=40&h=40', 'thumb_interadmin'],
+            ['../../upload/mediabox/00202630.pdf', 'http://'.self::storageHost().'/upload/mediabox/00202630.pdf'],
+            ['../../upload/mediabox/00202630.pdf?v=2', 'http://'.self::storageHost().'/upload/mediabox/00202630.pdf?v=2'],
             ['_default/file.css', '_default/file.css'],
-            [$this->externalUrl().'/upload/image.jpg', $this->externalUrl().'/upload/image.jpg'],
-            [$this->externalUrl().'/upload/image.jpg', $this->externalUrl().'/upload/image.jpg', 'thumb_interadmin']
+            [self::externalUrl().'/upload/image.jpg', self::externalUrl().'/upload/image.jpg'],
+            [self::externalUrl().'/upload/image.jpg', self::externalUrl().'/upload/image.jpg', 'thumb_interadmin']
         ];
     }
 
@@ -65,17 +65,17 @@ class UploadImgixTest extends \PHPUnit_Framework_TestCase
         return Upload::url($filePath);
     }
 
-    private function storageHost()
+    private static function storageHost()
     {
         return 'storage.fakeurl.com';
     }
 
-    private function imgixHost()
+    private static function imgixHost()
     {
         return 'client.imgix.net';
     }
 
-    private function externalUrl()
+    private static function externalUrl()
     {
         return 'http://www.external.com';
     }

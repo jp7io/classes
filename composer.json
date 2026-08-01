@@ -5,15 +5,17 @@
   "license": "proprietary",
   "repositories": [
     {
-      "type": "composer",
-      "url": "https://satis.jp7.io"
+      "type": "vcs",
+      "url": "git@github.com:jp7io/classes-deprecated"
     }
   ],
-  "require": {},
+  "require": {
+    "php": "^8.4"
+  },
   "require-dev": {
     "jp7io/classes-deprecated": "^3.2",
-    "illuminate/support": "^10.48",
-    "phpunit/phpunit": "^10.1"
+    "illuminate/support": "^12.0",
+    "phpunit/phpunit": "^12.5"
   },
   "autoload": {
     "psr-4": {

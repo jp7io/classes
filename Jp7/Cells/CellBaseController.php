@@ -2,6 +2,7 @@
 
 namespace Jp7\Cells;
 
+use Illuminate\Support\Str;
 use Illuminate\View\Factory;
 use Jp7\Laravel\Controller;
 
@@ -32,7 +33,7 @@ abstract class CellBaseController extends \Torann\Cells\CellBaseController
         parent::__construct($view, $caching_disabled);
         // CoC - name is always snake_case of the class name
         $reflection = new \ReflectionClass($this);
-        $this->name = snake_case(substr($reflection->getShortName(), 4), '-');
+        $this->name = Str::snake(substr($reflection->getShortName(), 4), '-');
 
         if (class_exists('Debugbar', false)) {
             \Debugbar::startMeasure('Cell '.$this->name);

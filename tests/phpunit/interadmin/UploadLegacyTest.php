@@ -3,28 +3,29 @@
 namespace Tests\Interadmin;
 
 use Jp7_Interadmin_Upload as Upload;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
-class UploadLegacyTest extends \PHPUnit_Framework_TestCase
+class UploadLegacyTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         Upload::setAdapter(new \Jp7_Interadmin_Upload_Legacy);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
 
     }
 
-    /**
-     * @dataProvider legacyProvider
-     */
+    #[DataProvider('legacyProvider')]
     public function testUrlLegacy($filePath, $expected, $template = null)
     {
         global $config;
         $config = (object) [
             'storage' => [
-                'host' => $this->appHost(),
+                'host' => self::appHost(),
                 'path' => ''
             ]
         ];
@@ -34,31 +35,29 @@ class UploadLegacyTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $url);
     }
 
-    public function legacyProvider()
+    public static function legacyProvider()
     {
         return [
-            ['../../upload/mediabox/00202630.jpeg', 'http://'.$this->appHost().'/upload/mediabox/00202630.jpeg'],
-            ['../../upload/mediabox/00202630.png', 'http://'.$this->appHost().'/upload/mediabox/00202630.png'],
-            ['../../upload/mediabox/00202630.jpeg', 'http://'.$this->appHost().'/upload/mediabox/00202630.jpeg?size=40x40', 'thumb_interadmin'],
-            ['../../upload/mediabox/00202630.jpeg?v=2', 'http://'.$this->appHost().'/upload/mediabox/00202630.jpeg?v=2&size=40x40', 'thumb_interadmin'],
-            ['../../upload/mediabox/00202630.pdf', 'http://'.$this->appHost().'/upload/mediabox/00202630.pdf'],
-            ['../../upload/mediabox/00202630.pdf?v=2', 'http://'.$this->appHost().'/upload/mediabox/00202630.pdf?v=2'],
+            ['../../upload/mediabox/00202630.jpeg', 'http://'.self::appHost().'/upload/mediabox/00202630.jpeg'],
+            ['../../upload/mediabox/00202630.png', 'http://'.self::appHost().'/upload/mediabox/00202630.png'],
+            ['../../upload/mediabox/00202630.jpeg', 'http://'.self::appHost().'/upload/mediabox/00202630.jpeg?size=40x40', 'thumb_interadmin'],
+            ['../../upload/mediabox/00202630.jpeg?v=2', 'http://'.self::appHost().'/upload/mediabox/00202630.jpeg?v=2&size=40x40', 'thumb_interadmin'],
+            ['../../upload/mediabox/00202630.pdf', 'http://'.self::appHost().'/upload/mediabox/00202630.pdf'],
+            ['../../upload/mediabox/00202630.pdf?v=2', 'http://'.self::appHost().'/upload/mediabox/00202630.pdf?v=2'],
             ['_default/file.css', '_default/file.css'],
-            [$this->externalUrl().'/upload/image.jpg', $this->externalUrl().'/upload/image.jpg'],
-            [$this->externalUrl().'/upload/image.jpg', $this->externalUrl().'/upload/image.jpg', 'thumb_interadmin']
+            [self::externalUrl().'/upload/image.jpg', self::externalUrl().'/upload/image.jpg'],
+            [self::externalUrl().'/upload/image.jpg', self::externalUrl().'/upload/image.jpg', 'thumb_interadmin']
         ];
     }
 
-    /**
-     * @group path
-     * @dataProvider legacyProviderWithPath
-     */
+    #[Group('path')]
+    #[DataProvider('legacyProviderWithPath')]
     public function testUrlLegacyWithPath($filePath, $expected, $template = null)
     {
         global $config;
         $config = (object) [
             'storage' => [
-                'host' => $this->appHost(),
+                'host' => self::appHost(),
                 'path' => 'client'
             ]
         ];
@@ -67,18 +66,18 @@ class UploadLegacyTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $url);
     }
 
-    public function legacyProviderWithPath()
+    public static function legacyProviderWithPath()
     {
         return [
-            ['../../upload/mediabox/00202630.jpeg', 'http://'.$this->appHost().'/client/upload/mediabox/00202630.jpeg'],
-            ['../../upload/mediabox/00202630.png', 'http://'.$this->appHost().'/client/upload/mediabox/00202630.png'],
-            ['../../upload/mediabox/00202630.jpeg', 'http://'.$this->appHost().'/client/upload/mediabox/00202630.jpeg?size=40x40', 'thumb_interadmin'],
-            ['../../upload/mediabox/00202630.jpeg?v=2', 'http://'.$this->appHost().'/client/upload/mediabox/00202630.jpeg?v=2&size=40x40', 'thumb_interadmin'],
-            ['../../upload/mediabox/00202630.pdf', 'http://'.$this->appHost().'/client/upload/mediabox/00202630.pdf'],
-            ['../../upload/mediabox/00202630.pdf?v=2', 'http://'.$this->appHost().'/client/upload/mediabox/00202630.pdf?v=2'],
+            ['../../upload/mediabox/00202630.jpeg', 'http://'.self::appHost().'/client/upload/mediabox/00202630.jpeg'],
+            ['../../upload/mediabox/00202630.png', 'http://'.self::appHost().'/client/upload/mediabox/00202630.png'],
+            ['../../upload/mediabox/00202630.jpeg', 'http://'.self::appHost().'/client/upload/mediabox/00202630.jpeg?size=40x40', 'thumb_interadmin'],
+            ['../../upload/mediabox/00202630.jpeg?v=2', 'http://'.self::appHost().'/client/upload/mediabox/00202630.jpeg?v=2&size=40x40', 'thumb_interadmin'],
+            ['../../upload/mediabox/00202630.pdf', 'http://'.self::appHost().'/client/upload/mediabox/00202630.pdf'],
+            ['../../upload/mediabox/00202630.pdf?v=2', 'http://'.self::appHost().'/client/upload/mediabox/00202630.pdf?v=2'],
             ['_default/file.css', '_default/file.css'],
-            [$this->externalUrl().'/upload/image.jpg', $this->externalUrl().'/upload/image.jpg'],
-            [$this->externalUrl().'/upload/image.jpg', $this->externalUrl().'/upload/image.jpg', 'thumb_interadmin']
+            [self::externalUrl().'/upload/image.jpg', self::externalUrl().'/upload/image.jpg'],
+            [self::externalUrl().'/upload/image.jpg', self::externalUrl().'/upload/image.jpg', 'thumb_interadmin']
         ];
     }
 
@@ -90,12 +89,12 @@ class UploadLegacyTest extends \PHPUnit_Framework_TestCase
         return Upload::url($filePath);
     }
 
-    private function appHost()
+    private static function appHost()
     {
         return 'www.app.com.br';
     }
 
-    private function externalUrl()
+    private static function externalUrl()
     {
         return 'http://www.external.com';
     }

@@ -2,6 +2,7 @@
 
 namespace Jp7\Laravel\Controller;
 
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use View;
 use Exception;
@@ -101,7 +102,7 @@ trait DynamicViewTrait
      */
     protected function findViewName($method)
     {
-        $action = str_replace('_', '-', snake_case($method));
+        $action = str_replace('_', '-', Str::snake($method));
 
         $viewNames = [
             $this->makeViewName(get_class($this), $action),
@@ -149,7 +150,7 @@ trait DynamicViewTrait
     protected function studlyToSlug($class, $separator = '.')
     {
         $toSlug = function ($string) {
-            return str_replace('_', '-', snake_case($string));
+            return str_replace('_', '-', Str::snake($string));
         };
         $slugArray = array_map($toSlug, explode('\\', $class));
 
