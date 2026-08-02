@@ -137,17 +137,37 @@ class ColumnField extends BaseField
         return $this->readonly || !$this->hasPermissions();
     }
 
+    /**
+     * Whether the acting user may edit this field.
+     *
+     * Reads the authenticated user instead of the `global $s_user` array the InterAdmin
+     * admin used to publish. That array was only ever a copy of this same user, built by
+     * Interadmin_Login::getUserData(), and it is being retired -- this method was the last
+     * live reader of it anywhere, which is what the "Tempfix" note in the host app's
+     * LegacySessionUser middleware refers to.
+     *
+     * The host app's authenticated user must expose isSa(), isAdmin() and permissionTipo().
+     * This package deliberately does not name that class -- it has no dependency on any
+     * host's namespace -- so the requirement is stated here rather than type-hinted. A host
+     * whose user model predates those accessors gets a "call to undefined method" when a
+     * form renders. That is the intended failure: a permission check that degraded quietly
+     * would hand out edit rights, not withhold them.
+     */
     protected function hasPermissions()
     {
-        global $s_user;
-        if (!$this->permissoes || $s_user['sa']) {
+        $user = auth()->user();
+
+        if (!$this->permissoes || $user?->isSa()) {
             return true;
         }
-        if ((string) $this->permissoes === (string) $s_user['tipo']) {
+        // Null-safe, matching what it replaces: $s_user was [] with nobody logged in, so
+        // every subscript read as null. `permissoes` is non-empty by the guard above, so an
+        // absent user still compares false here rather than matching.
+        if ((string) $this->permissoes === (string) $user?->permissionTipo()) {
             // By select with the user type, used by CI Intercambio
             return true;
         }
-        if ($this->permissoes === 'admin' && $s_user['admin']) {
+        if ($this->permissoes === 'admin' && $user?->isAdmin()) {
             return true;
         }
         return false;
