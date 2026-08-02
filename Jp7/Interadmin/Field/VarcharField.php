@@ -40,6 +40,24 @@ class VarcharField extends ColumnField
             $rules[$name][] = 'cpf';
         } elseif ($this->isCnpj()) {
             $rules[$name][] = 'cnpj';
+        // The four below had no server rule until 2026-08-02: masked in the browser, accepted
+        // unconditionally here. Each was measured against ci's stored values first, because a rule
+        // added to this method can make an EXISTING record unsaveable -- the form posts every
+        // field, so an untouched one is validated too. `telefone` and `ll` reject nothing real
+        // (`telefone`'s 48 rejects are all SQL-injection probes from a public form); `cor` rejects
+        // 52 rows of one repurposed column, which is the deliberate cost. Empty values are skipped
+        // by Laravel for all of them, so `required` stays the only thing that makes a field
+        // mandatory. Full sweep: docs/frontend.md, "the four xtras that had no server rule".
+        } elseif ($this->isTel()) {
+            $rules[$name][] = 'telefone';
+        } elseif ($this->isLatLong()) {
+            $rules[$name][] = 'll';
+        } elseif ($this->isColor()) {
+            $rules[$name][] = 'cor';
+        } elseif ($this->isUrl()) {
+            // Laravel's own rule. Former's LiveValidation knows this name, so it also renders
+            // type="url" -- the only one of the four that changes the markup.
+            $rules[$name][] = 'url';
         }
         if ($this->tamanho) {
             $rules[$name][] = 'max:'.$this->tamanho;
@@ -85,6 +103,16 @@ class VarcharField extends ColumnField
     protected function isColor()
     {
         return $this->xtra === 'cor';
+    }
+
+    protected function isLatLong()
+    {
+        return $this->xtra === 'll';
+    }
+
+    protected function isUrl()
+    {
+        return $this->xtra === 'url';
     }
 
     protected function getFormerField()
