@@ -15,19 +15,33 @@ class SelectMultiField extends ColumnField
     const XTRA_RECORD_SEARCH = 'X';
     const XTRA_TYPE_SEARCH = 'X_tipos';
 
+    /** How many related records a list cell shows before it starts hiding them. */
+    private const CELL_LIMIT = 5;
+
+    /**
+     * The rest are behind a toggle, and the toggle targets this cell's own id.
+     *
+     * The class selector this used to carry would have toggled every row on the page at once --
+     * "would have", because the markup was still Bootstrap 3 (`data-toggle`, `.collapse.in`) and
+     * nothing in the app read it, so the sixth related record onwards was simply unreachable.
+     */
     public function getCellHtml()
     {
         $textArray = $this->getTextArray(true);
-        $visibleArray = array_slice($textArray, 0, 5);
-        $expandableArray = array_slice($textArray, 5);
+        $visible = array_slice($textArray, 0, self::CELL_LIMIT);
+        $hidden = array_slice($textArray, self::CELL_LIMIT);
 
-        return $expandableArray ?
-            '<div data-toggle="collapse" data-target=".select_multi_expand">'.
-                implode('<br>', $visibleArray).
-                '<div class="select_multi_expand collapse in">...</div>'.
-                '<div class="select_multi_expand collapse">'.implode('<br>', $expandableArray).'</div>'.
-            '</div>' :
-            implode('<br>', $visibleArray);
+        if (!$hidden) {
+            return implode('<br>', $visible);
+        }
+        $id = 'select-multi-'.$this->tipo.'-'.(int) ($this->record->id ?? 0);
+
+        return implode('<br>', $visible).
+            '<div class="collapse" id="'.$id.'">'.implode('<br>', $hidden).'</div>'.
+            '<button type="button" class="btn btn-link btn-sm p-0 collapsed" data-bs-toggle="collapse"'.
+                ' data-bs-target="#'.$id.'" aria-expanded="false" aria-controls="'.$id.'">'.
+                '+'.count($hidden).
+            '</button>';
     }
 
     public function getText()
@@ -44,7 +58,7 @@ class SelectMultiField extends ColumnField
         return $array;
     }
 
-    public function hasTipo()
+    public function hasTipo(): bool
     {
         return in_array($this->xtra, [self::XTRA_TYPE, self::XTRA_TYPE_SEARCH]);
     }
@@ -95,7 +109,10 @@ class SelectMultiField extends ColumnField
         }
 
         foreach ($this->getOptions() as $key => $value) {
-            $checkboxes[$value.'<s>'.$key.'</s>'] = [ // s = avoid collision
+            // Former keys a checkbox by its LABEL, so two records that read the same would
+            // collapse into one box. The id rides along hidden to keep the key unique --
+            // .option-key is display:none in pages/record-create-edit.scss.
+            $checkboxes[$value.'<span class="option-key">'.$key.'</span>'] = [
                 'value' => $key, // ID
                 'checked' => in_array($key, $ids),
                 'required' => false // HTML5 validation can't handle multiple checkboxes

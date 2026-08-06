@@ -39,7 +39,7 @@ class SelectField extends ColumnField
         return $this->formatText($related, $html);
     }
 
-    public function hasTipo()
+    public function hasTipo(): bool
     {
         return in_array($this->xtra, [self::XTRA_TYPE, self::XTRA_TYPE_AJAX, self::XTRA_TYPE_RADIO]);
     }

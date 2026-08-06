@@ -11,22 +11,31 @@ class TitField extends ColumnField
 
     public function openPanel()
     {
-        $class = ($this->xtra === self::XTRA_VISIBLE) ? 'show' : '';
         return '<div class="card card-default '.$this->id.'-panel '.$this->nome_id.'-panel">'.
                     $this->getEditTag().
-                    '<div id="collapse'.$this->tipo.$this->index.'" class="panel-collapse collapse '.$class.'" role="tabpanel">
-                        <div class="card-body">';
+                    '<div id="'.$this->getPanelId().'" class="collapse'.
+                        ($this->isOpen() ? ' show' : '').'">'.
+                        '<div class="card-body">';
     }
 
+    /**
+     * A real <button>, not an anchor wearing role="button": there is nowhere to navigate to, and
+     * only a button announces itself as pressable without being told to. aria-expanded is what
+     * says which way the section is currently folded -- Bootstrap keeps it in step from here on.
+     */
     public function getEditTag()
     {
-        $class = ($this->xtra === self::XTRA_VISIBLE) ? '' : 'collapsed';
+        $open = $this->isOpen();
+
         return '<div class="card-header">'.
             '<h4 class="card-title">'.
-                '<a role="button" class="'.$class.'" data-bs-toggle="collapse" href="#collapse'.$this->tipo.$this->index.'" '.
-                    'aria-controls="collapse'.$this->tipo.$this->index.'" title="'.$this->tipo.'">'.
-                    $this->getLabel().
-                '</a>'.
+                '<button type="button" class="'.($open ? '' : 'collapsed').'"'.
+                    ' data-bs-toggle="collapse" data-bs-target="#'.$this->getPanelId().'"'.
+                    ' aria-expanded="'.($open ? 'true' : 'false').'"'.
+                    ' aria-controls="'.$this->getPanelId().'"'.
+                    ' title="'.e($this->tipo).'">'.
+                    e($this->getLabel()).
+                '</button>'.
             '</h4>'.
         '</div>';
     }
@@ -36,5 +45,19 @@ class TitField extends ColumnField
         return '    </div>
                 </div>
             </div>';
+    }
+
+    protected function isOpen(): bool
+    {
+        return $this->xtra === self::XTRA_VISIBLE;
+    }
+
+    /**
+     * The two parts are separated, because concatenating them straight lets tit_1 at index 10 and
+     * tit_11 at index 0 land on the same id.
+     */
+    protected function getPanelId(): string
+    {
+        return 'collapse-'.$this->tipo.'-'.(int) $this->index;
     }
 }

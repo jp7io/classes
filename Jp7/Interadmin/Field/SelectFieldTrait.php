@@ -7,10 +7,24 @@ use Jp7\Interadmin\Type;
 use Jp7\Interadmin\Query\TypeQuery;
 use UnexpectedValueException;
 use Cache;
+use Lang;
 
+/**
+ * Everything a select-shaped field does with the type or the records on the other end.
+ *
+ * Besides hasTipo() below, this reads four values off the `campo` blob through ColumnField's
+ * __get -- `nome` (a Type, a type id, or the literal 'all'), `where`, `default` and `label` --
+ * which a trait cannot declare. A user of this trait is a ColumnField.
+ */
 trait SelectFieldTrait
 {
     protected $filterCombo = false;
+
+    /**
+     * Whether the options are TYPES rather than records of one type. Half the methods here fork
+     * on it, so it is declared rather than left to fail at render time on a class that forgot.
+     */
+    abstract public function hasTipo(): bool;
 
     public function getLabel()
     {
@@ -129,7 +143,7 @@ trait SelectFieldTrait
                 }
                 $cached[$key] = $found;
                 // getAttributes: less serialized data
-                Cache::put($prefix.','.$id, $found ? $record->getAttributes() : false, 10);
+                Cache::put($prefix.','.$id, $found ? $found->getAttributes() : false, 10);
             }
         }
         return new \Jp7\Interadmin\Collection(array_values(array_filter($cached)));
@@ -180,12 +194,15 @@ trait SelectFieldTrait
 
     protected function tipos()
     {
-        global $lang;
+        // The same translated-column suffix Type::getName() reads, instead of the `$lang` global
+        // it used to reach for. Both resolve to the object Tenant::readClientEnv builds; this one
+        // does not need it to still be in scope.
+        $suffix = Lang::get('interadmin.suffix');
 
         $query = new TypeQuery;
-        $query->select('nome'.$lang->prefix, 'parent_id_tipo')
+        $query->select('nome'.$suffix, 'parent_id_tipo')
             ->published()
-            ->orderByRaw('admin,ordem,nome'.$lang->prefix);
+            ->orderByRaw('admin,ordem,nome'.$suffix);
         // only children tipos
         if ($this->nome instanceof Type) {
             $query->where('parent_id_tipo', $this->nome->id_tipo);

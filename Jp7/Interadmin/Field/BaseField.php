@@ -84,6 +84,14 @@ abstract class BaseField implements FieldInterface
         return Element::td($input)->class($this->id);
     }
 
+    /**
+     * Lock an input a user may not change. Declared here because getEditTag()/getMassEditTag()
+     * call it; only fields that carry a `readonly` or `permissoes` flag have anything to do.
+     */
+    protected function handleReadonly($input)
+    {
+    }
+
     public function getFilterTag()
     {
         return '';
@@ -113,14 +121,30 @@ abstract class BaseField implements FieldInterface
             ->value($this->getValue());
     }
 
-    protected function getFormerName()
+    /**
+     * The record property this field reads and writes.
+     */
+    protected function getColumn(): string
     {
-        return $this->id.(is_null($this->index) ? '' : '['.$this->index.']');
+        return $this->id;
     }
 
-    protected function getFormerId()
+    /**
+     * The stem of the field's DOM id, which is the human-readable alias where a field has one.
+     */
+    protected function getIdentifier(): string
     {
-        return $this->id.(is_null($this->index) ? '' : '_'.$this->index);
+        return $this->id;
+    }
+
+    protected function getFormerName(): string
+    {
+        return $this->getColumn().(is_null($this->index) ? '' : '['.$this->index.']');
+    }
+
+    protected function getFormerId(): string
+    {
+        return $this->getIdentifier().(is_null($this->index) ? '' : '_'.$this->index);
     }
 
     protected function getRuleName()
@@ -135,7 +159,7 @@ abstract class BaseField implements FieldInterface
 
     protected function getValue()
     {
-        $column = $this->id;
+        $column = $this->getColumn();
         $value = $this->record ? $this->record->$column : null;
         if (empty($this->record->id) && !$value) {
             $value = $this->getDefaultValue();

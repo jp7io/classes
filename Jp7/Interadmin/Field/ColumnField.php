@@ -2,7 +2,6 @@
 
 namespace Jp7\Interadmin\Field;
 
-use Illuminate\Support\Str;
 use Jp7\Interadmin\Type;
 
 /**
@@ -89,35 +88,46 @@ class ColumnField extends BaseField
         if ($this->ajuda) {
             $input->help($this->ajuda);
         }
-        // Title is just for information
-        $input->getLabel()->setAttribute('title', $this->nome_id.' ('.$this->tipo.', xtra: '.$this->xtra.')');
-        $input->onGroupAddClass($this->id);
-        $input->onGroupAddClass($this->nome_id.'-group');
-        if ($this->separador) {
-            $input->onGroupAddClass('has-separator');
+        $input->getLabel()->setAttribute('title', $this->getLabelTitle());
+        foreach ($this->getGroupClasses() as $class) {
+            $input->onGroupAddClass($class);
         }
         $this->handleReadonly($input);
         return $input;
     }
 
-    protected function getFormerName()
+    /**
+     * The classes Former's field group carries, so a row built by hand can be given the same ones
+     * and be styled and scripted as the field it is. `required` is not among them: Former derives
+     * that from the rules the form was opened with (see getRules()).
+     *
+     * @return string[]
+     */
+    protected function getGroupClasses(): array
     {
-        return $this->tipo.(is_null($this->index) ? '' : '['.$this->index.']');
-    }
-
-    protected function getFormerId()
-    {
-        return $this->nome_id.(is_null($this->index) ? '' : '_'.$this->index);
-    }
-
-    protected function getValue()
-    {
-        $column = $this->tipo;
-        $value = $this->record ? $this->record->$column : null;
-        if (empty($this->record->id) && !$value) {
-            $value = $this->getDefaultValue();
+        $classes = [$this->id, $this->nome_id.'-group'];
+        if ($this->separador) {
+            $classes[] = 'has-separator';
         }
-        return $value;
+        return $classes;
+    }
+
+    /**
+     * The physical column behind the label, so an editor can find the field in the type.
+     */
+    protected function getLabelTitle(): string
+    {
+        return $this->nome_id.' ('.$this->tipo.', xtra: '.$this->xtra.')';
+    }
+
+    protected function getColumn(): string
+    {
+        return $this->tipo;
+    }
+
+    protected function getIdentifier(): string
+    {
+        return $this->nome_id;
     }
 
     protected function getDefaultValue()
@@ -186,7 +196,7 @@ class ColumnField extends BaseField
 
     public function getOrderSql($direction)
     {
-        if (Str::startsWith($this->tipo, 'func_')) {
+        if (str_starts_with($this->tipo, 'func_')) {
             return ''; // func is not a real column
         }
         return $this->tipo.' '.$direction;

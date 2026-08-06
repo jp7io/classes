@@ -20,31 +20,32 @@ trait SelectAjaxFieldTrait
         throw new UnexpectedValueException('Not implemented');
     }
 
-    protected function buildSearch($query, $fields, $search)
+    /**
+     * Match the search against every field the combo shows, best prefix match first.
+     *
+     * The WHERE goes through the query builder, which escapes the term itself. ORDER BY still has
+     * to be raw -- ranking by `field LIKE 'term%'` is an expression, not a comparison the builder
+     * models -- so that one term is quoted through the connection's own PDO.
+     *
+     * @param string[] $fields Column names, or `relation.column` paths from getSearchableFields().
+     */
+    protected function buildSearch($query, array $fields, string $search)
     {
-        $connection = \DB::connection();
-        if (!$connection->getPdo()) {
-            $connection->reconnect();
-        }
-        $pdo = $connection->getPdo();
-
         $pattern = '%'.str_replace(' ', '%', $search).'%';
-        $whereOr = [];
-        foreach ($fields as $field) {
-            $whereOr[] = $field.' LIKE '.$pdo->quote($pattern);
-        }
-        if (is_numeric($search)) {
-            $whereOr[] = 'id_tipo = '.intval($search);
-        }
 
-        $order = [];
-        foreach ($fields as $field) {
-            $order[] = $field.' LIKE '.$pdo->quote($search.'%').' DESC'; // starts with
-        }
-        $order = array_merge($order, $fields);
+        $query->where(function ($group) use ($fields, $pattern, $search) {
+            foreach ($fields as $field) {
+                $group->orWhere($field, 'like', $pattern);
+            }
+            if (is_numeric($search)) {
+                $group->orWhere('id_tipo', (int) $search);
+            }
+        });
 
-        return $query->whereRaw('('.implode(' OR ', $whereOr).')')
-            ->orderByRaw(implode(', ', $order))
+        $startsWith = \DB::connection()->getPdo()->quote($search.'%');
+        $order = array_map(fn ($field) => $field.' LIKE '.$startsWith.' DESC', $fields);
+
+        return $query->orderByRaw(implode(', ', array_merge($order, $fields)))
             ->limit(100);
     }
 
