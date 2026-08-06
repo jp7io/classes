@@ -21,17 +21,12 @@ class FileField extends ColumnField
 
     /**
      * The one field that builds its own row, because the thumbnail has no slot in Former's grid.
+     * Every group concern is therefore this class's to apply, from the helpers the Former path
+     * uses -- classes, the label's `for` and title, the help span, readonly and required.
      *
-     * Everything Former would otherwise put on the group is applied here from the same helpers
-     * the Former path uses, so a file field is not a second dialect: the group classes, the
-     * label's `for` and title, and the help text as the `.form-text` partials/field-help.js
-     * looks for. Bypassing Former also means bypassing the readonly and required handling its
-     * group does, so both are spelled out below.
-     *
-     * The classes JS hooks on -- .file-field, .input-with-credits, .image_preview_background --
-     * and their nesting relative to each other are load-bearing: partials/init-file.js walks
-     * from the button to the preview, and partials/field-help.js keys the corner placement of
-     * the (?) button off the same shape.
+     * .file-field, .input-with-credits and .image_preview_background must keep their nesting:
+     * partials/init-file.js walks from the button to the preview, and partials/field-help.js
+     * puts the (?) in the thumbnail's corner by the same shape.
      */
     public function getEditTag()
     {
@@ -92,13 +87,11 @@ class FileField extends ColumnField
 
     protected function getSearchButton()
     {
-        // A literal <button>, like the date field's "Atualizar" beside it. An <input type=button>
-        // cannot hold markup and is the odd one out among the form's controls.
+        // data-field-id rather than data-target, which is Bootstrap's own spelling for a
+        // collapse/modal target: this names the input the picker fills. partials/init-file.js.
         $button = Element::create('button', 'Procurar...')
             ->class('btn btn-outline-secondary choose-file')
             ->setAttribute('type', 'button')
-            // data-field-id, not the data-target this used to carry: that is Bootstrap's own
-            // spelling for a collapse/modal target, and this names the input the picker fills.
             ->setAttribute('data-field-id', $this->getFormerId());
         $this->handleReadonly($button);
         return $button;
