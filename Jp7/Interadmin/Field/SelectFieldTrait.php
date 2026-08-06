@@ -143,7 +143,7 @@ trait SelectFieldTrait
                 }
                 $cached[$key] = $found;
                 // getAttributes: less serialized data
-                Cache::put($prefix.','.$id, $found ? $found->getAttributes() : false, 10);
+                Cache::put($prefix.','.$id, $found ? $found->getAttributes() : false, 600);
             }
         }
         return new \Jp7\Interadmin\Collection(array_values(array_filter($cached)));
@@ -157,7 +157,7 @@ trait SelectFieldTrait
                 return $this->toOptions($this->records()->get());
             };
             if ($this->filterCombo) {
-                return Cache::remember($cacheKey, 10, $resolve);
+                return Cache::remember($cacheKey, 600, $resolve);
             } else {
                 return $resolve();
             }
