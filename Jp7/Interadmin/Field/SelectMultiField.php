@@ -3,6 +3,9 @@
 namespace Jp7\Interadmin\Field;
 
 use Former;
+use Former\Form\Fields\Checkbox;
+use HtmlObject\Element;
+use HtmlObject\Input;
 
 class SelectMultiField extends ColumnField
 {
@@ -17,6 +20,9 @@ class SelectMultiField extends ColumnField
 
     /** How many related records a list cell shows before it starts hiding them. */
     private const CELL_LIMIT = 5;
+
+    /** What the card renders, kept from getFormerField() so its header can count the options. */
+    private $checkboxes = [];
 
     /**
      * The rest are behind a toggle, and the toggle targets this cell's own id.
@@ -65,7 +71,75 @@ class SelectMultiField extends ColumnField
 
     public function getEditTag()
     {
-        return $this->getPushInput().parent::getEditTag();
+        $input = $this->getFormerField();
+        if (!$input instanceof Checkbox) {
+            // A search variant is a select2, and a field with no options falls back to a text box.
+            return $this->getPushInput().$this->applyGroupSettings($input->label($this->getLabel()));
+        }
+        $this->handleReadonly($input);
+
+        return $this->getPushInput().$this->getRowHtml($input);
+    }
+
+    /**
+     * The options are a card with a sticky "Todos" header, and both are rendered here rather than
+     * by partials/init-checkboxes.js: built in JS they arrived a frame after first paint, so every
+     * panel below the field dropped by the header's height as the page finished loading.
+     */
+    protected function getRowHtml($input): string
+    {
+        $card = Element::div($this->getSelectAllHtml().$input->render())->class('field-help-body');
+        // Where Former puts it on every other field: in the column, in a plain div, after the
+        // control -- partials/field-help.js reads that shape to build the (?) button.
+        $help = $this->ajuda ? Element::div(Element::span($this->ajuda)->class('form-text')) : '';
+        $column = Element::div($card.$help)->class('col-lg-10 col-sm-8');
+
+        return Element::div($this->getLabelHtml().$column)
+            ->class(implode(' ', $this->getRowClasses($input)));
+    }
+
+    /**
+     * Former marks a required group from the rules the form was opened with, so a row built by
+     * hand has to ask the field whether those rules reached it.
+     */
+    protected function getRowClasses($input): array
+    {
+        $classes = array_merge(['mb-3', 'row', 'has-checkboxes'], $this->getGroupClasses());
+        if ($input->isRequired()) {
+            $classes[] = 'required';
+        }
+        return $classes;
+    }
+
+    protected function getLabelHtml()
+    {
+        return Element::label($this->getLabel())
+            ->class('col-form-label col-lg-2 col-sm-4 pt-0')
+            ->setAttribute('for', $this->getFormerName())
+            ->setAttribute('title', $this->getLabelTitle());
+    }
+
+    /**
+     * "Todos" plus the count. Nameless, so it never posts -- partials/init-checkboxes.js wires it
+     * to the options below and keeps the count in step.
+     */
+    protected function getSelectAllHtml(): string
+    {
+        $id = 'select-all-'.$this->getFormerId();
+        $checked = count(array_filter(array_column($this->checkboxes, 'checked')));
+
+        $box = Input::create('checkbox', null, null, [
+            'class' => 'form-check-input',
+            'id' => $id,
+            'checked' => $this->checkboxes && $checked === count($this->checkboxes),
+            'disabled' => (bool) $this->isReadonly(),
+        ]);
+        $label = Element::label('Todos')->class('form-check-label')->setAttribute('for', $id);
+
+        return (string) Element::div(
+            Element::div($box.$label)->class('form-check').
+            Element::span($checked.' selecionado(s)')
+        )->class('select-all');
     }
 
     protected function getPushInput()
@@ -80,7 +154,7 @@ class SelectMultiField extends ColumnField
     protected function getFormerField()
     {
         $field = Former::checkboxes($this->getFormerName().'[]'); // [] makes it "grouped"
-        $checkboxes = $this->getCheckboxes($field);
+        $this->checkboxes = $checkboxes = $this->getCheckboxes($field);
         if (!$checkboxes) {
             // BUG: empty options render a ghost checkbox
             return Former::text($this->getFormerName().'[]')->readonly();
@@ -105,7 +179,7 @@ class SelectMultiField extends ColumnField
         // Problem with populate from POST: https://github.com/formers/former/issues/364
         $ids = $field->getValue();
         if (!$ids) {
-            $ids = array_filter(explode(',', $this->getValue()));
+            $ids = array_filter(explode(',', (string) $this->getValue()));
         }
 
         foreach ($this->getOptions() as $key => $value) {

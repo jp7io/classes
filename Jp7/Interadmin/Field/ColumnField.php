@@ -84,7 +84,17 @@ class ColumnField extends BaseField
 
     public function getEditTag()
     {
-        $input = parent::getEditTag();
+        return $this->applyGroupSettings(parent::getEditTag());
+    }
+
+    /**
+     * Everything the field's GROUP carries beyond the control. Split out of getEditTag() so a
+     * field whose variants render different rows can still put each one through this contract
+     * without asking for the Former field a second time -- a second getFormerField() means a
+     * second options query, and a second run of Former's per-name id counter.
+     */
+    protected function applyGroupSettings($input)
+    {
         if ($this->ajuda) {
             $input->help($this->ajuda);
         }
