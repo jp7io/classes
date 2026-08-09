@@ -3,6 +3,7 @@
 namespace Jp7\Interadmin\Field;
 
 use HtmlObject\Element;
+use Interadmin\Files\FilePreview;
 
 class FileField extends ColumnField
 {
@@ -10,13 +11,9 @@ class FileField extends ColumnField
 
     public function getCellHtml()
     {
-        $preview = interadmin_arquivos_preview(
-            $this->getText() ?: DEFAULT_PATH.'/img/px.png', // url
-            '', // alt
-            false, // presrc
-            true // icon_small
-        );
-        return Element::div($preview);
+        $preview = FilePreview::render($this->getText() ?: DEFAULT_PATH.'/img/px.png');
+
+        return Element::div((string) $preview);
     }
 
     /**
