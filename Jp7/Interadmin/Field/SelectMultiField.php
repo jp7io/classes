@@ -88,7 +88,10 @@ class SelectMultiField extends ColumnField
      */
     protected function getRowHtml($input): string
     {
-        $card = Element::div($this->getSelectAllHtml().$input->render())->class('field-help-body');
+        $card = Element::div($this->getSelectAllHtml().$input->render())
+            ->class('field-help-body')
+            ->setAttribute('role', 'group')
+            ->setAttribute('aria-labelledby', $this->getLabelId());
         // Where Former puts it on every other field: in the column, in a plain div, after the
         // control -- partials/field-help.js reads that shape to build the (?) button.
         $help = $this->ajuda ? Element::div(Element::span($this->ajuda)->class('form-text')) : '';
@@ -111,12 +114,25 @@ class SelectMultiField extends ColumnField
         return $classes;
     }
 
+    /**
+     * A span rather than a <label>, because a checkbox list has no one control to label: Former
+     * ids each box `<name>[]`, `<name>[]2`, ... and the browser reports a <label> that reaches
+     * none of them -- with or without a `for` -- as a form field with no label at all. The card
+     * is a named `role="group"` instead, which is what carries the name to a screen reader.
+     * The classes are the ones Former's own label would carry; see form.scss for the two rules
+     * that follow them.
+     */
     protected function getLabelHtml()
     {
-        return Element::label($this->getLabel())
+        return Element::span($this->getLabel())
             ->class('col-form-label col-lg-2 col-sm-4 pt-0')
-            ->setAttribute('for', $this->getFormerName())
+            ->setAttribute('id', $this->getLabelId())
             ->setAttribute('title', $this->getLabelTitle());
+    }
+
+    private function getLabelId(): string
+    {
+        return $this->getFormerId().'-label';
     }
 
     /**
