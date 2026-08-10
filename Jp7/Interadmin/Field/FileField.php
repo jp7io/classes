@@ -2,8 +2,11 @@
 
 namespace Jp7\Interadmin\Field;
 
+use Former;
 use HtmlObject\Element;
+use Interadmin\Files\FileOrigin;
 use Interadmin\Files\FilePreview;
+use Interadmin\Files\StoredPath;
 
 class FileField extends ColumnField
 {
@@ -36,9 +39,22 @@ class FileField extends ColumnField
             ->nest([$this->getLabelHtml(), $column]);
     }
 
+    /**
+     * The input shows the storage key; the `../../` sentinel in front of it is spelled by
+     * Interadmin\Files\StoredPath and never by an editor. getValue() itself is left alone --
+     * getText() feeds it to the thumbnail, which addresses the file by its stored path.
+     * RecordController::prepareFormData() puts the sentinel back on the way in.
+     *
+     * forceValue(), because value() is documented to lose to the populator and the record IS
+     * populated (Jp7\Former\FormerExtension) -- so it left every stored path untouched. Forcing
+     * would in turn discard what the user typed after a failed validation, hence the posted
+     * value is asked for first; display() is a no-op on one, having no sentinel to strip.
+     */
     protected function getFormerField()
     {
         $input = parent::getFormerField();
+        $posted = Former::getPost($this->getFormerName());
+        $input->forceValue(StoredPath::display($posted ?? $this->getValue()));
         $this->handleReadonly($input);
         return $input;
     }
@@ -70,7 +86,7 @@ class FileField extends ColumnField
         $children = [
             Element::div()
                 ->class('input-group')
-                ->nest([$this->getFormerField(), $this->getSearchButton()]),
+                ->nest([$this->getOriginHtml(), $this->getFormerField(), $this->getSearchButton()]),
             $this->getCreditsHtml(),
         ];
         if ($this->ajuda) {
@@ -80,6 +96,11 @@ class FileField extends ColumnField
         return Element::div()
             ->class('input-with-credits flex-fill d-flex flex-column gap-2')
             ->nest($children);
+    }
+
+    protected function getOriginHtml()
+    {
+        return FileOrigin::element($this->getValue());
     }
 
     protected function getSearchButton()
