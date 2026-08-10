@@ -129,7 +129,7 @@ class FileField extends ColumnField
         $this->handleReadonly($input);
 
         return Element::div()->class('input-group')->nest([
-            Element::span('Legenda:')->class('input-group-text'),
+            Element::span('Legenda')->class('input-group-text'),
             $input,
         ]);
     }
