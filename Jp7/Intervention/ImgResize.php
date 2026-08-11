@@ -14,12 +14,12 @@ class ImgResize extends BaseImgResize
         }
         */
         $uploadPath = self::storageUrl() . '/upload/';
-        $cachePath = self::storageUrl() . '/imagecache/' .$template.'/';
+        $cachePath = self::storageUrl() . '/' . ImageCacheController::ROOT . '/' . $template . '/';
         return replace_prefix($uploadPath, $cachePath, $url);
     }
 
     protected static function getAllTemplates()
     {
-        return array_keys(config('imagecache.templates'));
+        return array_keys(config('imagecache.templates') ?? []);
     }
 }

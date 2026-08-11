@@ -12,6 +12,13 @@ use Storage;
  */
 class ImageCacheController extends BaseController
 {
+    /**
+     * Where a rendered image lands. It is also what Interadmin\Files\Adapter\Intervention builds
+     * URLs against, in another repo, with nothing linking the two spellings -- so a change here
+     * is a change there.
+     */
+    public const ROOT = 'derivatives';
+
     public function create($template, $filepath)
     {
         try {
@@ -31,7 +38,7 @@ class ImageCacheController extends BaseController
         }
         $img->encode();
 
-        $saveOn = 'imagecache/'.$template.'/'.$filepath;
+        $saveOn = self::ROOT.'/'.$template.'/'.$filepath;
         Storage::put($saveOn, $img->__toString(), 'public');
 
         return $img->response();
@@ -39,9 +46,10 @@ class ImageCacheController extends BaseController
 
     public function clear($file)
     {
-        $templates = array_keys(config('imagecache.templates'));
+        // No config file declares these anywhere, and array_keys(null) is fatal on PHP 8.
+        $templates = array_keys(config('imagecache.templates') ?? []);
         foreach ($templates as $template) {
-            $deleteAt = 'imagecache/'.$template.'/'.$file;
+            $deleteAt = self::ROOT.'/'.$template.'/'.$file;
             if (Storage::has($deleteAt)) {
                 Storage::delete($deleteAt);
             }

@@ -9,7 +9,7 @@ use Jp7\Interadmin\Downloadable;
 use InvalidArgumentException;
 
 /*
-Dynamic resize of images: imagecache/<template>/0001.jpg
+Dynamic resize of images: derivatives/<template>/0001.jpg
 Download external images to resize them the best way possible
 Lazy loading images: data-src="...""
 ... with fallback for non-js users: <noscript>
