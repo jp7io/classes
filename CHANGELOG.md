@@ -1,6 +1,9 @@
 ## 3.3
 * Several improvements to eager load relations (see Jp7/CollectionUtil.php)
 * Deprecate jp7_collect(), use collect() instead.
+* Dropped the jp7io/classes-deprecated dev dependency. Nothing here used it at runtime; it only
+  supported tests for Jp7_Interadmin_Upload, which no live project calls (interadmin replaced it
+  with Interadmin\Files\FileUrl). Those tests were replaced by ones for Jp7\Imgix\ImgResize.
 
 ## 3.2.2
 * Small fixes for Laravel 5.7

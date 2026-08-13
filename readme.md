@@ -28,7 +28,7 @@ See: https://docs.google.com/document/d/1vWUk7g9HonOo8szRJn90r9c1rsWFzxDC3GfQ1s1
 Since version 3.2 (March, 2017) this package was split into 3 other:
 
 * [classes](https://github.com/jp7internet/classes) - Current general classes used by our projects
-* [classes-deprecated](https://github.com/jp7internet/classes-deprecated) - Obsolete and should be removed ASAP
+* [classes-deprecated](https://github.com/jp7io/classes-deprecated) - Obsolete. No longer a dependency of this package since 3.3; still required by legacy projects that use `Jp7_` classes directly.
 * [interadmin-orm](https://github.com/jp7internet/interadmin-orm) - ORM (handles queries from InterAdmin database)
 
 

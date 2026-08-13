@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5048ccdfab94079cd9d18e23856c3965",
+    "content-hash": "d4c1b585dfa8a4bbc70e82888e455bbd",
     "packages": [],
     "packages-dev": [
         {
@@ -496,44 +496,6 @@
                 "source": "https://github.com/laravel/framework"
             },
             "time": "2026-07-13T16:08:36+00:00"
-        },
-        {
-            "name": "jp7io/classes-deprecated",
-            "version": "v3.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jp7io/classes-deprecated.git",
-                "reference": "5aa0fff3aaa69db1b2a175f0e629989e1f38c6f0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jp7io/classes-deprecated/zipball/5aa0fff3aaa69db1b2a175f0e629989e1f38c6f0",
-                "reference": "5aa0fff3aaa69db1b2a175f0e629989e1f38c6f0",
-                "shasum": ""
-            },
-            "suggest": {
-                "adodb/adodb-php": "~5.0 (Deprecated) For legacy ORM v2 without Laravel",
-                "werkint/jsmin": "~1.0.0 (Deprecated) JS Minification library",
-                "zendframework/zendframework1": "1.12.0 (Deprecated) For legacy ZF1 applications"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "legacy"
-                ],
-                "psr-0": {
-                    "Jp7_": ""
-                }
-            },
-            "license": [
-                "proprietary"
-            ],
-            "description": "JP7 Classes Deprecated",
-            "support": {
-                "source": "https://github.com/jp7io/classes-deprecated/tree/v3.2.1",
-                "issues": "https://github.com/jp7io/classes-deprecated/issues"
-            },
-            "time": "2017-10-03T13:40:15+00:00"
         },
         {
             "name": "myclabs/deep-copy",

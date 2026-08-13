@@ -3,17 +3,10 @@
   "description": "JP7 Classes",
   "keywords": [],
   "license": "proprietary",
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "git@github.com:jp7io/classes-deprecated"
-    }
-  ],
   "require": {
     "php": "^8.4"
   },
   "require-dev": {
-    "jp7io/classes-deprecated": "^3.2",
     "illuminate/support": "^12.0",
     "phpunit/phpunit": "^12.5"
   },
