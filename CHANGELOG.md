@@ -1,4 +1,5 @@
 ## 3.3
+* PHP 8.5 floor, illuminate/support ^13.0
 * Several improvements to eager load relations (see Jp7/CollectionUtil.php)
 * Deprecate jp7_collect(), use collect() instead.
 * Dropped the jp7io/classes-deprecated dev dependency. Nothing here used it at runtime; it only
