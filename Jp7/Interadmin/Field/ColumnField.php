@@ -137,7 +137,10 @@ class ColumnField extends BaseField
 
     protected function getIdentifier(): string
     {
-        return $this->nome_id;
+        // A field built in code rather than parsed out of `campos` carries no alias: ci's
+        // Ci\Field\Passeios\Roteiros hands SelectField only `nome` and `tipo`. The column is
+        // the identifier those have, and __get() returns null rather than '' for a missing key.
+        return $this->nome_id ?: $this->getColumn();
     }
 
     protected function getDefaultValue()
