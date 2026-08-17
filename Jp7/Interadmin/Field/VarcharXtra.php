@@ -23,6 +23,7 @@ enum VarcharXtra: string
     case LatLong = 'll';
     case Url = 'url';
     case Color = 'cor';
+    case Hora = 'hora';
 
     /**
      * The validation rule this format implies, run by RecordController on every save.
@@ -49,6 +50,11 @@ enum VarcharXtra: string
             // type="url" -- the only one here that changes the markup by itself.
             self::Url => 'url',
             self::Id => null,
+            // Measured before being left null, like the four above: 78 of ci's 2,794 stored
+            // opening hours are not HH:MM -- "Office" (30), "00h00" (14), "0000" (13). The form
+            // posts every field, so an HH:MM rule would make those lojas unsaveable on a save
+            // that touched something else entirely. The mask guides new input instead.
+            self::Hora => null,
         };
     }
 
