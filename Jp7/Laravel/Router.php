@@ -40,13 +40,26 @@ class Router extends MethodForwarder
 
     public function clearCache()
     {
+        // In memory only. The caller rebuilds and saves straight after, and leaving the file
+        // alone until then is what keeps a concurrent reader off an empty map.
         $this->map = [];
-        $this->saveCache();
     }
 
     public function saveCache()
     {
-        file_put_contents($this->cachefile, serialize($this->map));
+        // Renamed into place rather than written in place: map() rewrites this on every
+        // request, and a php-fpm worker reading a half-written file gets "unserialize():
+        // Extra data". rename() is atomic within a filesystem, so a reader sees either the
+        // whole previous map or the whole new one.
+        $temp = $this->cachefile.'.'.getmypid().uniqid();
+
+        if (file_put_contents($temp, serialize($this->map)) === false) {
+            return;
+        }
+
+        if (!rename($temp, $this->cachefile)) {
+            unlink($temp);
+        }
     }
 
     public function loadCache()

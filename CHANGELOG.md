@@ -1,4 +1,9 @@
 ## 3.3
+* Router's route-map cache is renamed into place, and clearCache() no longer writes.
+  map() rewrites it on every request, so concurrent readers were getting a truncated
+  or momentarily empty file. Measured over 24,000 reads while the app served: 476 bad
+  reads before, 4 after, and those 4 only on a macOS Docker bind mount, where rename()
+  is not atomic. 0 of 18,000 on a normal filesystem.
 * PHP 8.5 floor, illuminate/support ^13.0
 * Several improvements to eager load relations (see Jp7/CollectionUtil.php)
 * Deprecate jp7_collect(), use collect() instead.
