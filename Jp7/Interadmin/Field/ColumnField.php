@@ -21,6 +21,9 @@ use Jp7\Interadmin\Type;
  * @property mixed $permissoes
  * @property string $default
  * @property string $nome_id
+ * Injected by the xtra_disabledfields parser rather than stored in campos, and read only
+ * by SelectFieldTrait::query(), which is a trait and cannot declare it.
+ * @property string $where
  */
 class ColumnField extends BaseField
 {
