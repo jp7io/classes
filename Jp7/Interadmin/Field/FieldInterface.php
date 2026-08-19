@@ -20,6 +20,20 @@ interface FieldInterface
     public function setType(Type $type);
 
     /**
+     * Which repeat of a multi-value field this is. Beside setRecord()/setType() because the
+     * Factory's callers set all three, and the return type they get is this interface.
+     */
+    public function setIndex($index);
+
+    /**
+     * The WHERE fragment this field's filter contributes, or '' -- the SQL counterpart of
+     * getFilterTag(), and read straight off the Factory's return value by Export.
+     *
+     * @return string
+     */
+    public function getFilterSql();
+
+    /**
      * Returns object for <th> tag
      *
      * @return Element

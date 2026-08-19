@@ -68,7 +68,9 @@ trait SelectFieldTrait
         if ($this->default && !is_numeric($this->default) && $this->nome instanceof Type) {
             $defaultArr = [];
             foreach (array_filter(explode(',', $this->default)) as $idString) {
-                $selectedObj = $this->nome->records(['id_string' => $idString])->first();
+                // records() takes no arguments, so an options array here is discarded in
+                // silence and first() answers with whichever record comes first.
+                $selectedObj = $this->nome->records()->where('id_string', $idString)->first();
                 if ($selectedObj) {
                     $defaultArr[] = $selectedObj->id;
                 }
@@ -84,7 +86,7 @@ trait SelectFieldTrait
      * Returns only the current selected option, all the other options will be
      * provided by the AJAX search
      * @return array
-     * @throws Exception
+     * @throws \UnexpectedValueException
      */
     protected function getCurrentRecords()
     {
