@@ -51,7 +51,9 @@ class Router extends MethodForwarder
 
     public function loadCache()
     {
-        $this->map = unserialize(file_get_contents($this->cachefile));
+        // The map is nested arrays of strings, so no class may come back out of it: unserialize()
+        // over a file is an object-injection sink otherwise.
+        $this->map = unserialize(file_get_contents($this->cachefile), ['allowed_classes' => false]);
     }
 
 ////
