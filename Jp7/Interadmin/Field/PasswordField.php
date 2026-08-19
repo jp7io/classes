@@ -8,7 +8,7 @@ class PasswordField extends ColumnField
 {
     protected $id = 'password';
 
-    public function getText()
+    public function getText(): string
     {
         return $this->getValue() ? '******' : '';
     }
@@ -26,7 +26,7 @@ class PasswordField extends ColumnField
         return $input;
     }
 
-    public function getRules()
+    public function getRules(): array
     {
         $rules = parent::getRules();
         // An `obrigatorio` password is required when CREATING a record only. On an existing

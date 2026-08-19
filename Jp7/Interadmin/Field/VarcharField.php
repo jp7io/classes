@@ -6,7 +6,7 @@ class VarcharField extends ColumnField
 {
     protected $id = 'varchar';
 
-    public function getRules()
+    public function getRules(): array
     {
         $rules = parent::getRules();
         $name = $this->getRuleName();
@@ -50,7 +50,7 @@ class VarcharField extends ColumnField
         return $input->data_type($this->xtra ?: false);
     }
 
-    public function hasMassEdit()
+    public function hasMassEdit(): bool
     {
         return true;
     }
@@ -61,7 +61,7 @@ class VarcharField extends ColumnField
      * a block <div> inside a <span> and buried the swatch in a grey addon. It is a button in
      * substance too: partials/colorpicker.js hangs the picker off it.
      */
-    protected function getColorpickerHtml()
+    protected function getColorpickerHtml(): string
     {
         return '<button type="button" class="btn btn-outline-secondary colorpicker-button"'.
             ' aria-label="Escolher cor"></button>';

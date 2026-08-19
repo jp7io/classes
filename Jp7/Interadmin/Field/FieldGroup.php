@@ -9,12 +9,12 @@ class FieldGroup
      */
     protected $fields;
 
-    public function add(FieldInterface $field)
+    public function add(FieldInterface $field): void
     {
         $this->fields[] = $field;
     }
 
-    public function getEditTag()
+    public function getEditTag(): string
     {
         $html = '';
         $first = $this->fields[0];
@@ -26,7 +26,7 @@ class FieldGroup
                         '<div class="card-body">';
         }
 
-        $html .= implode(PHP_EOL, array_map(function ($field) {
+        $html .= implode(PHP_EOL, array_map(function (FieldInterface $field): string {
             // (string) is needed to force render
             // Former wants object to be created and rendered before creating next object
             // Without (string) the group doesn't get the class "required"

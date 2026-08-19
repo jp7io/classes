@@ -27,10 +27,7 @@ use Jp7\Interadmin\Type;
  */
 class ColumnField extends BaseField
 {
-    /**
-     * @var array
-     */
-    protected $campo;
+    protected array $campo;
 
     /**
      * @param array $campo
@@ -44,10 +41,10 @@ class ColumnField extends BaseField
      * @param string $name
      * @return mixed
      */
-    public function __get($name)
+    public function __get(string $name): mixed
     {
         if (!isset($this->campo[$name])) {
-            return;
+            return null;
         }
         return $this->campo[$name];
     }
@@ -56,7 +53,7 @@ class ColumnField extends BaseField
      * @param string $name
      * @return bool
      */
-    public function __isset($name)
+    public function __isset(string $name)
     {
         return isset($this->campo[$name]);
     }
@@ -65,7 +62,7 @@ class ColumnField extends BaseField
      * @param string $name
      * @return void
      */
-    public function __unset($name)
+    public function __unset(string $name)
     {
         unset($this->campo[$name]);
     }
@@ -158,7 +155,7 @@ class ColumnField extends BaseField
         }
     }
 
-    public function isReadonly()
+    public function isReadonly(): bool
     {
         return $this->readonly || !$this->hasPermissions();
     }
@@ -179,7 +176,7 @@ class ColumnField extends BaseField
      * form renders. That is the intended failure: a permission check that degraded quietly
      * would hand out edit rights, not withhold them.
      */
-    protected function hasPermissions()
+    protected function hasPermissions(): bool
     {
         $user = auth()->user();
 
@@ -199,7 +196,7 @@ class ColumnField extends BaseField
         return false;
     }
 
-    public function getRules()
+    public function getRules(): array
     {
         $rules = [];
         if ($this->isReadonly()) {
@@ -210,7 +207,7 @@ class ColumnField extends BaseField
         return $rules;
     }
 
-    public function getOrderSql($direction)
+    public function getOrderSql($direction): string
     {
         if (str_starts_with($this->tipo, 'func_')) {
             return ''; // func is not a real column

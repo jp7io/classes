@@ -18,17 +18,17 @@ class SelectField extends ColumnField
     const XTRA_TYPE_RADIO = 'radio_tipos';
     const XTRA_TYPE_AJAX = 'ajax_tipos';
 
-    public function getCellHtml()
+    public function getCellHtml(): string
     {
         return $this->formatTextRelated(true);
     }
 
-    public function getText()
+    public function getText(): string
     {
         return $this->formatTextRelated(false);
     }
 
-    protected function formatTextRelated($html)
+    protected function formatTextRelated($html): string
     {
         $currentRecords = $this->getCurrentRecords();
         if (count($currentRecords)) {
@@ -44,7 +44,7 @@ class SelectField extends ColumnField
         return in_array($this->xtra, [self::XTRA_TYPE, self::XTRA_TYPE_AJAX, self::XTRA_TYPE_RADIO]);
     }
 
-    public function hasMassEdit()
+    public function hasMassEdit(): bool
     {
         return true;
     }

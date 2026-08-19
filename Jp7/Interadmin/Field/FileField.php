@@ -98,7 +98,7 @@ class FileField extends ColumnField
             ->nest($children);
     }
 
-    protected function getOriginHtml()
+    protected function getOriginHtml(): Element
     {
         return FileOrigin::element($this->getValue());
     }

@@ -10,22 +10,22 @@ class FuncField extends ColumnField
 {
     protected $id = 'func';
 
-    public function getText()
+    public function getText(): string
     {
         return strip_tags($this->getCellHtml());
     }
 
-    public function getHeaderHtml()
+    public function getHeaderHtml(): string
     {
         return $this->getFuncHtml('', 'header');
     }
 
-    public function getCellHtml()
+    public function getCellHtml(): string
     {
         return $this->getFuncHtml($this->getValue(), 'list');
     }
 
-    protected function getFuncHtml($value, $parte)
+    protected function getFuncHtml($value, $parte): string
     {
         if (!is_callable($this->nome)) {
             return 'Function '.$this->nome.' not found.';
@@ -67,7 +67,7 @@ class FuncField extends ColumnField
         return $this->label;
     }
 
-    public function getEditTag()
+    public function getEditTag(): string
     {
         $html = trim($this->getFuncHtml($this->getValue(), 'edit'));
 

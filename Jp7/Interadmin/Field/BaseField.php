@@ -25,7 +25,7 @@ abstract class BaseField implements FieldInterface
      */
     protected $index = null;
 
-    public function setRecord($record)
+    public function setRecord($record): void
     {
         assert(is_object($record) || is_null($record));
         $this->record = $record;
@@ -36,7 +36,7 @@ abstract class BaseField implements FieldInterface
         $this->type = $type;
     }
 
-    public function setIndex($index)
+    public function setIndex($index): void
     {
         $this->index = $index;
     }

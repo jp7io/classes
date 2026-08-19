@@ -6,7 +6,7 @@ class FloatField extends ColumnField
 {
     protected $id = 'float';
 
-    public function getRules()
+    public function getRules(): array
     {
         $rules = parent::getRules();
         $rules[$this->getRuleName()][] = 'numeric';
@@ -31,7 +31,7 @@ class FloatField extends ColumnField
         return parent::getFormerField()->pattern('[+\-]?\d*\.?\d+');
     }
 
-    public function hasMassEdit()
+    public function hasMassEdit(): bool
     {
         return true;
     }

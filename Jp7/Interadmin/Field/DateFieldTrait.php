@@ -18,7 +18,7 @@ trait DateFieldTrait
         return $this->formatValue('Y-m-d'.($this->isDatetime() ? '\TH:i' : ''));
     }
 
-    protected function formatValue($format)
+    protected function formatValue(string $format): string
     {
         $value = parent::getValue();
         if (!$value instanceof Date) {
@@ -59,7 +59,7 @@ trait DateFieldTrait
         return Element::td((string) $input)->class('date');
     }
 
-    public function hasMassEdit()
+    public function hasMassEdit(): bool
     {
         return true;
     }

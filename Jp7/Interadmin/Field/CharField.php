@@ -11,7 +11,7 @@ class CharField extends ColumnField
     const XTRA_UNCHECKED = '0';
     const XTRA_CHECKED = 'S';
 
-    public function getCellHtml()
+    public function getCellHtml(): string
     {
         return $this->getValue() ? '&bull;' : '';
     }
@@ -47,7 +47,7 @@ class CharField extends ColumnField
         }
     }
 
-    public function hasMassEdit()
+    public function hasMassEdit(): bool
     {
         return true;
     }

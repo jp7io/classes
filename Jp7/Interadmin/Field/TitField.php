@@ -9,7 +9,7 @@ class TitField extends ColumnField
     const XTRA_VISIBLE = '0';
     const XTRA_HIDDEN = 'hidden';
 
-    public function openPanel()
+    public function openPanel(): string
     {
         return '<div class="card card-default '.$this->id.'-panel '.$this->nome_id.'-panel">'.
                     $this->getEditTag().
@@ -23,7 +23,7 @@ class TitField extends ColumnField
      * only a button announces itself as pressable without being told to. aria-expanded is what
      * says which way the section is currently folded -- Bootstrap keeps it in step from here on.
      */
-    public function getEditTag()
+    public function getEditTag(): string
     {
         $open = $this->isOpen();
 
@@ -40,7 +40,7 @@ class TitField extends ColumnField
         '</div>';
     }
 
-    public function closePanel()
+    public function closePanel(): string
     {
         return '    </div>
                 </div>

@@ -33,7 +33,7 @@ trait SelectAjaxFieldTrait
     {
         $pattern = '%'.str_replace(' ', '%', $search).'%';
 
-        $query->where(function ($group) use ($fields, $pattern, $search) {
+        $query->where(function ($group) use ($fields, $pattern, $search): void {
             foreach ($fields as $field) {
                 $group->orWhere($field, 'like', $pattern);
             }
@@ -43,13 +43,13 @@ trait SelectAjaxFieldTrait
         });
 
         $startsWith = \DB::connection()->getPdo()->quote($search.'%');
-        $order = array_map(fn ($field) => $field.' LIKE '.$startsWith.' DESC', $fields);
+        $order = array_map(fn (string $field): string => $field.' LIKE '.$startsWith.' DESC', $fields);
 
         return $query->orderByRaw(implode(', ', array_merge($order, $fields)))
             ->limit(100);
     }
 
-    protected function getSearchableFields()
+    protected function getSearchableFields(): array
     {
         $campos = $this->nome->getCampos();
         $searchable = [];
@@ -66,7 +66,7 @@ trait SelectAjaxFieldTrait
         return $searchable;
     }
 
-    protected function toJsonOptions($array)
+    protected function toJsonOptions($array): array
     {
         $options = [];
         foreach ($this->toOptions($array) as $id => $text) {

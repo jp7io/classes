@@ -22,7 +22,7 @@ class DateField extends ColumnField
     $S_form_xtra_arr['calendar_nocombo_date']="Calendário S/ Combo S/ Hora";
     */
 
-    protected function isDatetime()
+    protected function isDatetime(): bool
     {
         return empty($this->xtra) || // date_publish in some situations
             Str::endsWith($this->xtra, '_datetime') ||

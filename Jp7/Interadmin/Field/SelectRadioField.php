@@ -14,7 +14,7 @@ class SelectRadioField extends SelectField
                 ->check($this->getValue());
     }
 
-    protected function getRadios()
+    protected function getRadios(): array
     {
         $radios = [];
         if (!$this->obrigatorio) {

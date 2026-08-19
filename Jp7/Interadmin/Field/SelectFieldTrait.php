@@ -40,7 +40,7 @@ trait SelectFieldTrait
         throw new UnexpectedValueException('Not implemented');
     }
 
-    protected function formatText($related, $html)
+    protected function formatText($related, $html): string
     {
         list($value, $status) = $this->valueAndStatus($related);
         if ($html) {
@@ -49,7 +49,7 @@ trait SelectFieldTrait
         return $value.($status ? '' : ' [unpublished]');
     }
 
-    protected function valueAndStatus($related)
+    protected function valueAndStatus($related): array
     {
         if ($related instanceof Type) {
             return [$related->getName(), true];
@@ -118,7 +118,7 @@ trait SelectFieldTrait
         throw new UnexpectedValueException('Not implemented');
     }
 
-    protected function cachedRecords($ids)
+    protected function cachedRecords($ids): \Jp7\Interadmin\Collection
     {
         $prefix = 'cachedRecords,'.$this->nome->id_tipo;
         $cached = [];
@@ -194,7 +194,7 @@ trait SelectFieldTrait
         return $query;
     }
 
-    protected function tipos()
+    protected function tipos(): TypeQuery
     {
         // The same translated-column suffix Type::getName() reads, instead of the `$lang` global
         // it used to reach for. Both resolve to the object Tenant::readClientEnv builds; this one
@@ -212,6 +212,9 @@ trait SelectFieldTrait
         return $query;
     }
 
+    /**
+     * @return string[]
+     */
     protected function toOptions($array)
     {
         $options = [];
@@ -239,7 +242,7 @@ trait SelectFieldTrait
         return $options;
     }
 
-    protected function toTreeOptions($tipos)
+    protected function toTreeOptions($tipos): array
     {
         $map = [];
         foreach ($tipos as $tipo) {
@@ -250,7 +253,7 @@ trait SelectFieldTrait
         return $options;
     }
 
-    protected function addTipoTreeOptions(&$options, $map, $parent_id_tipo, $level = 0)
+    protected function addTipoTreeOptions(array &$options, array $map, $parent_id_tipo, $level = 0)
     {
         if (!empty($map[$parent_id_tipo])) {
             foreach ($map[$parent_id_tipo] as $tipo) {

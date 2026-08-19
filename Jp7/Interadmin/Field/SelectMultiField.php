@@ -22,7 +22,7 @@ class SelectMultiField extends ColumnField
     private const CELL_LIMIT = 5;
 
     /** What the card renders, kept from getFormerField() so its header can count the options. */
-    private $checkboxes = [];
+    private array $checkboxes = [];
 
     /**
      * The rest are behind a toggle, and the toggle targets this cell's own id.
@@ -31,7 +31,7 @@ class SelectMultiField extends ColumnField
      * "would have", because the markup was still Bootstrap 3 (`data-toggle`, `.collapse.in`) and
      * nothing in the app read it, so the sixth related record onwards was simply unreachable.
      */
-    public function getCellHtml()
+    public function getCellHtml(): string
     {
         $textArray = $this->getTextArray(true);
         $visible = array_slice($textArray, 0, self::CELL_LIMIT);
@@ -50,12 +50,12 @@ class SelectMultiField extends ColumnField
             '</button>';
     }
 
-    public function getText()
+    public function getText(): string
     {
         return implode(",\n", $this->getTextArray(false));
     }
 
-    protected function getTextArray($html)
+    protected function getTextArray($html): array
     {
         $array = [];
         foreach ($this->getCurrentRecords() as $related) {
@@ -69,7 +69,7 @@ class SelectMultiField extends ColumnField
         return in_array($this->xtra, [self::XTRA_TYPE, self::XTRA_TYPE_SEARCH]);
     }
 
-    public function getEditTag()
+    public function getEditTag(): string
     {
         $input = $this->getFormerField();
         if (!$input instanceof Checkbox) {
@@ -158,7 +158,7 @@ class SelectMultiField extends ColumnField
         )->class('select-all');
     }
 
-    protected function getPushInput()
+    protected function getPushInput(): string
     {
         // Push checkbox / Former can't handle this on multiple checkboxes
         if ($this->isReadonly()) {
@@ -189,7 +189,7 @@ class SelectMultiField extends ColumnField
         return $selectField->getFilterTag();
     }
 
-    protected function getCheckboxes($field)
+    protected function getCheckboxes($field): array
     {
         $checkboxes = [];
         // Problem with populate from POST: https://github.com/formers/former/issues/364
