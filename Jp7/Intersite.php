@@ -51,6 +51,12 @@ class Intersite
      * @var string
      */
     public $lang_default = 'pt-br';
+    /**
+     * Partners credited beside the copyright in InterAdmin's menu, as ['name' => , 'url' => ].
+     *
+     * @var array
+     */
+    public $partners = [];
 
     protected static $instance = null;
 
