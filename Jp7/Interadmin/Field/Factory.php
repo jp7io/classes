@@ -40,7 +40,12 @@ class Factory
         $tipo = empty($campo['tipo_de_campo']) ? $campo['tipo'] : $campo['tipo_de_campo'].'_';
         $prefix = $this->getPrefix($tipo, $campo['xtra'] ?? '');
 
-        if (($prefix === 'special' || $prefix === 'func') && str_contains($campo['nome'], '\\')) {
+        // A field class is namespaced and holds no `::`. `Ci\Field\Produtos` is one;
+        // `Interadmin\CustomField::field` is a callable carrying the same backslash, and
+        // instantiating it is "Class not found" on the record form and the list.
+        if (($prefix === 'special' || $prefix === 'func')
+            && str_contains($campo['nome'], '\\')
+            && !str_contains($campo['nome'], '::')) {
             // Special as object implements FieldInterface
             // Special as callable should be deprecated in favor of object
             $class = $campo['nome'];
