@@ -175,7 +175,7 @@ trait SelectFieldTrait
 
     protected function records($ordered = true)
     {
-        $camposCombo = $this->nome->getCamposCombo();
+        $camposCombo = $this->nome->getComboFieldNames();
         if (!$camposCombo) {
             $camposCombo = ['id'];
         }
