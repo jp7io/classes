@@ -40,7 +40,7 @@ class CollectionUtil
             $first = reset($array);
 
             $tipo = $first->getType();
-            $retornos = $tipo->find([
+            $results = $tipo->find([
                 'class' => 'Jp7\\Interadmin\\Record',
                 'fields' => $fields,
                 'fields_alias' => $fields_alias,
@@ -48,8 +48,8 @@ class CollectionUtil
                 'order' => 'FIELD(id,'.implode(',', $array).')',
                 //'debug' => true
             ]);
-            foreach ($retornos as $key => $retorno) {
-                $array[$key]->attributes = $retorno->attributes + $array[$key]->attributes;
+            foreach ($results as $key => $result) {
+                $array[$key]->attributes = $result->attributes + $array[$key]->attributes;
             }
         }
     }

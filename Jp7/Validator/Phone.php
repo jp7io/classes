@@ -13,7 +13,7 @@ namespace Jp7\Validator;
  *
  * 15 is E.164's maximum; there is no legitimate number above it.
  */
-class Telefone
+class Phone
 {
     public function validate($attribute, $value, $parameters)
     {

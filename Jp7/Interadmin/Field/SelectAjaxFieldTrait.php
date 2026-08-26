@@ -54,13 +54,13 @@ trait SelectAjaxFieldTrait
         $campos = $this->nome->getFields();
         $searchable = [];
 
-        foreach ($this->nome->getComboFieldNames() as $campoCombo) {
-            if ($campos[$campoCombo]['nome'] instanceof Type) {
-                foreach ($campos[$campoCombo]['nome']->getComboFieldNames() as $campoCombo2) {
-                    $searchable[] = $campoCombo.'.'.$campoCombo2;
+        foreach ($this->nome->getComboFieldNames() as $comboColumn) {
+            if ($campos[$comboColumn]['nome'] instanceof Type) {
+                foreach ($campos[$comboColumn]['nome']->getComboFieldNames() as $subComboColumn) {
+                    $searchable[] = $comboColumn.'.'.$subComboColumn;
                 }
             } else {
-                $searchable[] = $campoCombo;
+                $searchable[] = $comboColumn;
             }
         }
         return $searchable;

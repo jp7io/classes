@@ -19,11 +19,11 @@ enum VarcharXtra: string
     case Cep = 'cep';
     case Cpf = 'cpf';
     case Cnpj = 'cnpj';
-    case Telefone = 'telefone';
+    case Phone = 'telefone';
     case LatLong = 'll';
     case Url = 'url';
     case Color = 'cor';
-    case Hora = 'hora';
+    case Time = 'hora';
 
     /**
      * The validation rule this format implies, run by RecordController on every save.
@@ -43,7 +43,7 @@ enum VarcharXtra: string
             self::Cep => 'cep',
             self::Cpf => 'cpf',
             self::Cnpj => 'cnpj',
-            self::Telefone => 'telefone',
+            self::Phone => 'telefone',
             self::LatLong => 'll',
             self::Color => 'cor',
             // Laravel's own rule. Former's LiveValidation knows this name, so it also renders
@@ -54,7 +54,7 @@ enum VarcharXtra: string
             // opening hours are not HH:MM -- "Office" (30), "00h00" (14), "0000" (13). The form
             // posts every field, so an HH:MM rule would make those lojas unsaveable on a save
             // that touched something else entirely. The mask guides new input instead.
-            self::Hora => null,
+            self::Time => null,
         };
     }
 
@@ -72,7 +72,7 @@ enum VarcharXtra: string
     {
         return match ($this) {
             self::Email, self::IdEmail => 'email',
-            self::Telefone => 'tel',
+            self::Phone => 'tel',
             default => null,
         };
     }

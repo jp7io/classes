@@ -141,18 +141,18 @@ class FormerExtension
         }
 
         $name = $aliases[$alias];
-        $campo = $campos[$name];
+        $fieldDefinition = $campos[$name];
 
         // Set label
         if (!Lang::has('validation.attributes.'.$alias)) {
             // FIXME FieldUtil::getFieldHeader roda funcoes special_
-            $label = $campo['label'] ?: FieldUtil::getFieldHeader($campo);
+            $label = $fieldDefinition['label'] ?: FieldUtil::getFieldHeader($fieldDefinition);
             $field->label($label);
         }
 
         // Populate options
         if (Str::startsWith($name, 'select_')) {
-            $this->populateOptions($field, $campo['nome']);
+            $this->populateOptions($field, $fieldDefinition['nome']);
         }
         // Fix date format
         if ($field->getType() === 'date' && $field->getValue() instanceof DateTime) {
@@ -180,19 +180,19 @@ class FormerExtension
         return trim($name, '.');
     }
 
-    private function populateOptions($field, $campoType)
+    private function populateOptions($field, $optionsType)
     {
         if ($field->getType() === 'select') {
-            $field->options(function () use ($campoType) {
+            $field->options(function () use ($optionsType) {
                 $options = [];
-                foreach ($campoType->records()->get() as $record) {
+                foreach ($optionsType->records()->get() as $record) {
                     $options[$record->id] = $record->getName();
                 }
                 return $options;
             });
         } elseif ($field->getType() === 'radios') {
             $radios = [];
-            foreach ($campoType->records()->get() as $record) {
+            foreach ($optionsType->records()->get() as $record) {
                 if (!$name = $record->getName()) {
                     throw new UnexpectedValueException('getName() returned empty value for Record ID: '.$record->id);
                 }

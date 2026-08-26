@@ -14,7 +14,7 @@ namespace Jp7\Validator;
  * value -- it reports `#000000` -- so every record with the colour left blank would acquire black
  * on its next save.
  */
-class Cor
+class Color
 {
     public function validate($attribute, $value, $parameters)
     {
