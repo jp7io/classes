@@ -69,7 +69,7 @@ class SelectField extends ColumnField
         $blank = Element::create('option', '(vazio)')->setAttribute('value', 'blank');
         $field->prependChild($blank, $blank->getAttribute('value'));
         
-        return $field->name('filtro_'.$this->getFormerName())
+        return $field->name('filter_'.$this->getFormerName())
             ->removeClass('form-control')
             ->addClass('filter-select')
             ->data_allow_blank()
