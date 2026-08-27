@@ -174,48 +174,4 @@ class Intersite
 
         return $code;
     }
-
-    /* Old globals */
-    /*
-    $oldtypes = array(
-        self::PRODUCAO => 'Principal',
-        self::QA => 'QA',
-        self::DESENVOLVIMENTO => 'Local'
-    );
-    $GLOBALS['c_url'] = $this->url;
-    $GLOBALS['c_server_type'] = $oldtypes[$this->server->type];
-    $GLOBALS['c_site'] = $this->name_id;
-    $GLOBALS['c_menu'] = $this->menu;
-    $GLOBALS['c_cache'] = $this->cache;
-    $GLOBALS['c_cache_delay'] = $this->cache_delay;
-    $GLOBALS['db_prefix'] = 'interadmin_' . $this->name_id;
-    $GLOBALS['c_cliente_url_path'] = $GLOBALS['c_path'] = jp7_path($this->server->path);
-    $GLOBALS['c_analytics'] = $this->google_analytics;
-    $GLOBALS['googlemaps_key'] = $this->google_maps;
-    $GLOBALS['c_w3c'] = true;
-    $GLOBALS['c_doc_root'] = jp7_doc_root();
-    // DB
-    $GLOBALS['db_type'] = $this->db->type;
-    $GLOBALS['db_host'] = $this->db->host;
-    $GLOBALS['db_name'] = $this->db->name;
-    $GLOBALS['db_user'] = $this->db->user;
-    $GLOBALS['db_pass'] = $this->db->pass;
-    // FTP
-    $GLOBALS['ftp']['host'] = $this->server->ftp;
-    $GLOBALS['ftp']['user'] = $this->server->user;
-    $GLOBALS['ftp']['pass'] = $this->server->pass;
-    // InterAdmin
-    $GLOBALS['c_publish'] = $this->interadmin_preview;
-    $GLOBALS['c_remote'] = $this->interadmin_remote;
-    $GLOBALS['c_cliente_title'] = $this->name;
-    $GLOBALS['c_nobackup'] = $this->nobackup;
-    foreach ($this->servers as $host => $server) {
-        $GLOBALS['c_cliente_domains'][] = $host;
-        $GLOBALS['c_cliente_domains'] = array_merge($GLOBALS['c_cliente_domains'], (array) $server->aliases);
-    }
-    foreach($this->langs as $sigla => $lang) {
-        $GLOBALS['c_lang'][] = array($sigla, $lang->name, (bool) $lang->multibyte);
-    }
-    $GLOBALS['c_lang_default'] = $this->lang_default;
-    */
 }

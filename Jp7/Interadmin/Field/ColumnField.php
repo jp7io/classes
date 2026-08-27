@@ -163,12 +163,6 @@ class ColumnField extends BaseField
     /**
      * Whether the acting user may edit this field.
      *
-     * Reads the authenticated user instead of the `global $s_user` array the InterAdmin
-     * admin used to publish. That array was only ever a copy of this same user, built by
-     * Interadmin_Login::getUserData(), and it is being retired -- this method was the last
-     * live reader of it anywhere, which is what the "Tempfix" note in the host app's
-     * LegacySessionUser middleware refers to.
-     *
      * The host app's authenticated user must expose isSa(), isAdmin() and permissionTipo().
      * This package deliberately does not name that class -- it has no dependency on any
      * host's namespace -- so the requirement is stated here rather than type-hinted. A host
