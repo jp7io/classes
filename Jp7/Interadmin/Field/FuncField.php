@@ -8,6 +8,15 @@ use Log;
 
 class FuncField extends ColumnField
 {
+    /**
+     * The key composed into the $campo a handler receives: the id_tipo of the type this field
+     * belongs to, which is the field's OWN type rather than the list's.
+     *
+     * ⚠ It must not collide with a `campos` attribute name -- that array is otherwise entirely
+     * the field's stored definition, and a handler reads both out of it.
+     */
+    public const FIELD_ID_TIPO = 'field_id_tipo';
+
     protected $id = 'func';
 
     public function getText(): string
@@ -30,15 +39,16 @@ class FuncField extends ColumnField
         if (!is_callable($this->nome)) {
             return 'Function '.$this->nome.' not found.';
         }
-        // Legacy field functions rely on the global $id_tipo (the type being
-        // rendered) that the old bootstrap used to set. Restore that contract.
+        // Kept until every reader is on the key above: a handler still declaring the bare name
+        // has no other way to learn which type it is rendering for.
         $previousIdTipo = $GLOBALS['id_tipo'] ?? null;
         $GLOBALS['id_tipo'] = $this->type ? $this->type->id_tipo : null;
         try {
             ob_start();
             // http://wiki.jp7.com.br:81/jp7/InterAdmin:Special
             // callable(array $campo, mixed $value, string $parte, stdClass $record)
-            $response = call_user_func($this->nome, $this->campo, $value, $parte, $this->record);
+            $campo = $this->campo + [self::FIELD_ID_TIPO => $this->type ? (int) $this->type->id_tipo : null];
+            $response = call_user_func($this->nome, $campo, $value, $parte, $this->record);
             $response .= ob_get_clean();
             return $response;
         } catch (Throwable $e) {
