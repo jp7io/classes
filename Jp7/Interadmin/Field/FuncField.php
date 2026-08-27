@@ -39,10 +39,6 @@ class FuncField extends ColumnField
         if (!is_callable($this->nome)) {
             return 'Function '.$this->nome.' not found.';
         }
-        // Kept until every reader is on the key above: a handler still declaring the bare name
-        // has no other way to learn which type it is rendering for.
-        $previousIdTipo = $GLOBALS['id_tipo'] ?? null;
-        $GLOBALS['id_tipo'] = $this->type ? $this->type->id_tipo : null;
         try {
             ob_start();
             // http://wiki.jp7.com.br:81/jp7/InterAdmin:Special
@@ -57,8 +53,6 @@ class FuncField extends ColumnField
             }
             Log::error($e);
             return '(erro: '.$this->nome.')';
-        } finally {
-            $GLOBALS['id_tipo'] = $previousIdTipo;
         }
     }
 
