@@ -4,7 +4,7 @@ LARAVEL 4
 */
 namespace Jp7\Former;
 
-use Jp7\Interadmin\Record;
+use Jp7\InterAdmin\Record;
 use Request;
 use Redirect;
 use Validator;

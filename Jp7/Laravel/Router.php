@@ -4,15 +4,15 @@ namespace Jp7\Laravel;
 
 use Illuminate\Support\Str;
 use Jp7\MethodForwarder;
-use Jp7\Interadmin\RecordClassMap;
-use Jp7\Interadmin\Type;
+use Jp7\InterAdmin\RecordClassMap;
+use Jp7\InterAdmin\Type;
 use LaravelLocalization;
 use Illuminate\Support\Facades\Route;
 use Closure;
 use App;
 
 /**
- * Maps Interadmin sections to Laravel routes
+ * Maps InterAdmin sections to Laravel routes
  */
 class Router extends MethodForwarder
 {

@@ -9,7 +9,7 @@
 * Deprecate jp7_collect(), use collect() instead.
 * Dropped the jp7io/classes-deprecated dev dependency. Nothing here used it at runtime; it only
   supported tests for Jp7_Interadmin_Upload, which no live project calls (interadmin replaced it
-  with Interadmin\Files\FileUrl). Those tests were replaced by ones for Jp7\Imgix\ImgResize.
+  with InterAdmin\Files\FileUrl). Those tests were replaced by ones for Jp7\Imgix\ImgResize.
 
 ## 3.2.2
 * Small fixes for Laravel 5.7
@@ -46,7 +46,7 @@ app()->singleton(\Symfony\Component\HttpKernel\HttpCache\Store::class, function 
 * Move getUrl() out of the ORM
 
 ## 3.0
-* Merged both ORMs: InterAdmin (original branch) and Jp7/Interadmin/Record (laravel branch)
+* Merged both ORMs: InterAdmin (original branch) and Jp7/InterAdmin/Record (laravel branch)
 
 ### Changes to projects which used InterAdmin/InterAdminTipo:
  * Removed methods deprecated on 2.1.1 (like getInterAdmins)
@@ -59,7 +59,7 @@ app()->singleton(\Symfony\Component\HttpKernel\HttpCache\Store::class, function 
  * Default aliases are generated in snake_case now (if empty). To use old aliases you must manually define them.
  * ORM depends on new configuration: /config/interadmin.php and /resources/lang/pt-BR/interadmin.php
 
-### Changes to projects which used Jp7/Interadmin/Record
+### Changes to projects which used Jp7/InterAdmin/Record
  * Attributes are stored internally without alias / use getAliasedAttributes() if needed
 
 ## 2.7
@@ -78,14 +78,14 @@ app()->singleton(\Symfony\Component\HttpKernel\HttpCache\Store::class, function 
 
 ### Changes to projects which used branch laravel:
  * InterSite -> Jp7\Intersite
- * InterAdmin -> Jp7\Interadmin\Record
- * InterAdminAbstract -> Jp7\Interadmin\RecordAbstract
- * InterAdminTipo -> Jp7\Interadmin\Type
- * InterAdminArquivo -> Jp7\Interadmin\FileRecord
- * InterAdminArquivoBanco -> Jp7\Interadmin\FileDatabase
- * InterAdminLog -> Jp7\Interadmin\Log
- * InterAdminField -> Jp7\Interadmin\FieldUtil
- * InterAdminFieldFile -> Jp7\Interadmin\FileField
+ * InterAdmin -> Jp7\InterAdmin\Record
+ * InterAdminAbstract -> Jp7\InterAdmin\RecordAbstract
+ * InterAdminTipo -> Jp7\InterAdmin\Type
+ * InterAdminArquivo -> Jp7\InterAdmin\FileRecord
+ * InterAdminArquivoBanco -> Jp7\InterAdmin\FileDatabase
+ * InterAdminLog -> Jp7\InterAdmin\Log
+ * InterAdminField -> Jp7\InterAdmin\FieldUtil
+ * InterAdminFieldFile -> Jp7\InterAdmin\FileField
  * Change config suffix in resources/lang/en/interadmin.php from \_en to en\_
 
 ## 2.6

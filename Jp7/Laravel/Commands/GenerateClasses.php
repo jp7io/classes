@@ -3,9 +3,9 @@
 namespace Jp7\Laravel\Commands;
 
 use Illuminate\Console\Command;
-use Jp7\Interadmin\DynamicLoader;
-use Jp7\Interadmin\RecordClassMap;
-use Jp7\Interadmin\TypeClassMap;
+use Jp7\InterAdmin\DynamicLoader;
+use Jp7\InterAdmin\RecordClassMap;
+use Jp7\InterAdmin\TypeClassMap;
 
 class GenerateClasses extends Command
 {

@@ -48,7 +48,7 @@ if (!function_exists('interadmin_data')) {
      */
     function interadmin_data($record = null)
     {
-        if ($record instanceof \Jp7\Interadmin\RecordAbstract) {
+        if ($record instanceof \Jp7\InterAdmin\RecordAbstract) {
             echo ' data-ia="'.$record->id.':'.$record->id_tipo.'"';
         } elseif ($record && getenv('APP_DEBUG')) {
             throw new InvalidArgumentException('@ia expects a Record, instance of '.get_class($record).' given');
@@ -177,7 +177,7 @@ if (!function_exists('interadmin_data')) {
                         '\1</a>';
                     $html = preg_replace('/>(' . $method . ')</', '/>' . $link . '<', $html);
                 }
-                if ($object instanceof \Jp7\Interadmin\Record) {
+                if ($object instanceof \Jp7\InterAdmin\Record) {
                     $html .= '<br /><br /><b>' . get_class($object) . ' Relationships: </b> ' . implode(', ', array_keys($object->getType()->getRelationships()));
                 }
                 echo $html;
@@ -212,7 +212,7 @@ if (!function_exists('interadmin_data')) {
      */
     function jp7_collect($arr = null)
     {
-        return new \Jp7\Interadmin\Collection($arr);
+        return new \Jp7\InterAdmin\Collection($arr);
     }
 
     function trans_route($name, $parameters = [], $absolute = true)

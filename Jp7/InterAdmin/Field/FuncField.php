@@ -1,6 +1,6 @@
 <?php
 
-namespace Jp7\Interadmin\Field;
+namespace Jp7\InterAdmin\Field;
 
 use Illuminate\Support\Str;
 use Throwable;

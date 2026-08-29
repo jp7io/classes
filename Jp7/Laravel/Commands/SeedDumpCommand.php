@@ -4,8 +4,8 @@ namespace Jp7\Laravel\Commands;
 
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
-use Jp7\Interadmin\Type;
-use Jp7\Interadmin\Query;
+use Jp7\InterAdmin\Type;
+use Jp7\InterAdmin\Query;
 use DB;
 
 class SeedDumpCommand extends Command

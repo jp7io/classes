@@ -17,6 +17,6 @@ return [
         'host' => env('STORAGE_HOST', $defaultAppHost),
         'scheme' => 'https',
     ],
-    // Which host Interadmin can be found on
+    // Which host InterAdmin can be found on
     'host' => env('INTERADMIN_HOST', 'interadmin.jp7.com.br')
 ];

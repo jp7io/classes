@@ -1,6 +1,6 @@
 <?php
 
-namespace Jp7\Interadmin\Field;
+namespace Jp7\InterAdmin\Field;
 
 // Only used by Norsul
 class TimeField extends ColumnField

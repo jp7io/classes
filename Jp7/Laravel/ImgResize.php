@@ -4,7 +4,7 @@ namespace Jp7\Laravel;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Jp7\Interadmin\Downloadable;
+use Jp7\InterAdmin\Downloadable;
 //use Storage;
 use InvalidArgumentException;
 

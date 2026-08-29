@@ -94,7 +94,7 @@ class Intersite
      *
      * @param string $type Type of the server, such as self::PRODUCAO, self::QA or self::DESENVOLVIMENTO.
      *
-     * @return Jp7\Interadmin\Record
+     * @return Jp7\InterAdmin\Record
      */
     public function getFirstServerByType($type)
     {

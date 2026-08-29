@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jp7\Interadmin\Field;
+namespace Jp7\InterAdmin\Field;
 
 /**
  * The formats a varchar field can be declared as, in the type editor's "Xtra" column.

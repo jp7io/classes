@@ -3,19 +3,19 @@
 namespace Jp7\Laravel\Controller;
 
 use Jp7\Laravel\RouterFacade as Router;
-use Jp7\Interadmin\Record;
+use Jp7\InterAdmin\Record;
 use ReflectionMethod;
 use Exception;
 
 trait RecordTrait
 {
     /**
-     * @var \Jp7\Interadmin\Query\BaseQuery
+     * @var \Jp7\InterAdmin\Query\BaseQuery
      */
     protected $scope = null;
     protected $recordActions = ['show', 'edit', 'update', 'destroy'];
     /**
-     * @var \Jp7\Interadmin\Type
+     * @var \Jp7\InterAdmin\Type
      */
     public $type = null;
     /**

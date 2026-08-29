@@ -1,12 +1,12 @@
 <?php
 
-namespace Jp7\Interadmin\Field;
+namespace Jp7\InterAdmin\Field;
 
 use Former;
 use HtmlObject\Element;
-use Interadmin\Files\FileOrigin;
-use Interadmin\Files\FilePreview;
-use Interadmin\Files\StoredPath;
+use InterAdmin\Files\FileOrigin;
+use InterAdmin\Files\FilePreview;
+use InterAdmin\Files\StoredPath;
 
 class FileField extends ColumnField
 {
@@ -41,7 +41,7 @@ class FileField extends ColumnField
 
     /**
      * The input shows the storage key; the `../../` sentinel in front of it is spelled by
-     * Interadmin\Files\StoredPath and never by an editor. getValue() itself is left alone --
+     * InterAdmin\Files\StoredPath and never by an editor. getValue() itself is left alone --
      * getText() feeds it to the thumbnail, which addresses the file by its stored path.
      * RecordController::prepareFormData() puts the sentinel back on the way in.
      *

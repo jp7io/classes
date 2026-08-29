@@ -1,10 +1,10 @@
 <?php
 
-namespace Jp7\Interadmin\Field;
+namespace Jp7\InterAdmin\Field;
 
-use Jp7\Interadmin\Record;
-use Jp7\Interadmin\Type;
-use Jp7\Interadmin\Query\TypeQuery;
+use Jp7\InterAdmin\Record;
+use Jp7\InterAdmin\Type;
+use Jp7\InterAdmin\Query\TypeQuery;
 use UnexpectedValueException;
 use Cache;
 use Lang;
@@ -106,7 +106,7 @@ trait SelectFieldTrait
         }
         if ($this->nome instanceof Type || $this->nome === 'all') {
             //return $this->tipos()->whereIn('id_tipo', $ids)->get();
-            $cached = new \Jp7\Interadmin\Collection();
+            $cached = new \Jp7\InterAdmin\Collection();
             foreach ($ids as $id_tipo) {
                 $type = Type::getInstance($id_tipo);
                 if ($type->nome !== null) { // deleted types
@@ -118,7 +118,7 @@ trait SelectFieldTrait
         throw new UnexpectedValueException('Not implemented');
     }
 
-    protected function cachedRecords($ids): \Jp7\Interadmin\Collection
+    protected function cachedRecords($ids): \Jp7\InterAdmin\Collection
     {
         $prefix = 'cachedRecords,'.$this->nome->id_tipo;
         $cached = [];
@@ -148,7 +148,7 @@ trait SelectFieldTrait
                 Cache::put($prefix.','.$id, $found ? $found->getAttributes() : false, 600);
             }
         }
-        return new \Jp7\Interadmin\Collection(array_values(array_filter($cached)));
+        return new \Jp7\InterAdmin\Collection(array_values(array_filter($cached)));
     }
 
     protected function getOptions()

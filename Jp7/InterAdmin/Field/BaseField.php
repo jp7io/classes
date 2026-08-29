@@ -1,10 +1,10 @@
 <?php
 
-namespace Jp7\Interadmin\Field;
+namespace Jp7\InterAdmin\Field;
 
 use HtmlObject\Element;
 use Former;
-use Jp7\Interadmin\Type;
+use Jp7\InterAdmin\Type;
 
 abstract class BaseField implements FieldInterface
 {

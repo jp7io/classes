@@ -2,7 +2,7 @@
 
 namespace Jp7;
 
-use Jp7\Interadmin\Relation;
+use Jp7\InterAdmin\Relation;
 
 /**
  * Class for handling collections of objects.
@@ -41,7 +41,7 @@ class CollectionUtil
 
             $tipo = $first->getType();
             $results = $tipo->find([
-                'class' => 'Jp7\\Interadmin\\Record',
+                'class' => 'Jp7\\InterAdmin\\Record',
                 'fields' => $fields,
                 'fields_alias' => $fields_alias,
                 'where' => ['id IN ('.implode(',', $array).')'],

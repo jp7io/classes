@@ -1,8 +1,8 @@
 <?php
 
-namespace Jp7\Interadmin\Field;
+namespace Jp7\InterAdmin\Field;
 
-use Jp7\Interadmin\Type;
+use Jp7\InterAdmin\Type;
 
 /**
  * @property string $tipo

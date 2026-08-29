@@ -1,12 +1,12 @@
 <?php
 
-namespace Jp7\Interadmin\Field;
+namespace Jp7\InterAdmin\Field;
 
 use Illuminate\Support\Str;
 
 class Factory
 {
-    protected $namespace = 'Jp7\\Interadmin\\Field\\';
+    protected $namespace = 'Jp7\\InterAdmin\\Field\\';
     /*
     protected $map = [
         'text' => [],
@@ -41,7 +41,7 @@ class Factory
         $prefix = $this->getPrefix($tipo, $field['xtra'] ?? '');
 
         // A field class is namespaced and holds no `::`. `Ci\Field\Produtos` is one;
-        // `Interadmin\CustomField::field` is a callable carrying the same backslash, and
+        // `InterAdmin\CustomField::field` is a callable carrying the same backslash, and
         // instantiating it is "Class not found" on the record form and the list.
         if (($prefix === 'special' || $prefix === 'func')
             && str_contains($field['nome'], '\\')

@@ -2,8 +2,8 @@
 
 namespace Jp7\Laravel;
 
-use Jp7\Interadmin\Type;
-use Jp7\Interadmin\Record;
+use Jp7\InterAdmin\Type;
+use Jp7\InterAdmin\Record;
 use Jp7\Laravel\RouterFacade as r;
 use BadMethodCallException;
 use URL;

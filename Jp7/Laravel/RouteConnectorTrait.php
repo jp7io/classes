@@ -3,7 +3,7 @@
 namespace Jp7\Laravel;
 
 use Illuminate\Routing\Router;
-use Jp7\Interadmin\RecordClassMap;
+use Jp7\InterAdmin\RecordClassMap;
 
 trait RouteConnectorTrait
 {
@@ -17,14 +17,14 @@ trait RouteConnectorTrait
         if (env('SKIP_ROUTES') || !RecordClassMap::getInstance()->getClasses()) {
             return;
         }
-        // Clear Interadmin route map - allows route:cache to work
+        // Clear InterAdmin route map - allows route:cache to work
         RouterFacade::clearCache();
 
         // Normal Laravel routing
         $this->mapApiRoutes();
         $this->mapWebRoutes();
 
-        // Save new Interadmin route map
+        // Save new InterAdmin route map
         RouterFacade::saveCache();
     }
 }
