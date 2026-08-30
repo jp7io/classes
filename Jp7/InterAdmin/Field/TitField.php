@@ -11,7 +11,7 @@ class TitField extends ColumnField
 
     public function openPanel(): string
     {
-        return '<div class="card card-default '.$this->id.'-panel '.$this->nome_id.'-panel">'.
+        return '<div class="card card-default '.$this->id.'-panel '.$this->name_id.'-panel">'.
                     $this->getEditTag().
                     '<div id="'.$this->getPanelId().'" class="collapse'.
                         ($this->isOpen() ? ' show' : '').'">'.
@@ -33,7 +33,7 @@ class TitField extends ColumnField
                     ' data-bs-toggle="collapse" data-bs-target="#'.$this->getPanelId().'"'.
                     ' aria-expanded="'.($open ? 'true' : 'false').'"'.
                     ' aria-controls="'.$this->getPanelId().'"'.
-                    ' title="'.e($this->tipo).'">'.
+                    ' title="'.e($this->type).'">'.
                     e($this->getLabel()).
                 '</button>'.
             '</h4>'.
@@ -58,6 +58,6 @@ class TitField extends ColumnField
      */
     protected function getPanelId(): string
     {
-        return 'collapse-'.$this->tipo.'-'.(int) $this->index;
+        return 'collapse-'.$this->type.'-'.(int) $this->index;
     }
 }

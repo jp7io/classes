@@ -67,7 +67,7 @@ class FileField extends ColumnField
     protected function getRowClasses(): array
     {
         $classes = array_merge(['file-field', 'mb-3', 'row'], $this->getGroupClasses());
-        if ($this->obrigatorio) {
+        if ($this->required) {
             $classes[] = 'required';
         }
         return $classes;
@@ -89,8 +89,8 @@ class FileField extends ColumnField
                 ->nest([$this->getOriginHtml(), $this->getFormerField(), $this->getSearchButton()]),
             $this->getCreditsHtml(),
         ];
-        if ($this->ajuda) {
-            $children[] = Element::span($this->ajuda)->class('form-text');
+        if ($this->help) {
+            $children[] = Element::span($this->help)->class('form-text');
         }
 
         return Element::div()
@@ -118,10 +118,10 @@ class FileField extends ColumnField
     protected function getCreditsHtml()
     {
         $field = new VarcharField([
-            'tipo' => $this->tipo.'_text',
+            'type' => $this->type.'_text',
             // Without an alias the credits box is id="_0" on every file field, so any type with
             // two of them renders duplicate ids -- 190 of ci's types do.
-            'nome_id' => $this->nome_id.'_text',
+            'name_id' => $this->name_id.'_text',
         ]);
         $field->setRecord($this->record);
         $field->setIndex($this->index);

@@ -31,10 +31,10 @@ trait SelectFieldTrait
         if ($this->label) {
             return $this->label;
         }
-        if ($this->nome instanceof Type) {
-            return $this->nome->getName();
+        if ($this->name instanceof Type) {
+            return $this->name->getName();
         }
-        if ($this->nome === 'all') {
+        if ($this->name === 'all') {
             return 'Tipos';
         }
         throw new UnexpectedValueException('Not implemented');
@@ -65,12 +65,12 @@ trait SelectFieldTrait
 
     protected function getDefaultValue()
     {
-        if ($this->default && !is_numeric($this->default) && $this->nome instanceof Type) {
+        if ($this->default && !is_numeric($this->default) && $this->name instanceof Type) {
             $defaultArr = [];
             foreach (array_filter(explode(',', $this->default)) as $idString) {
                 // records() takes no arguments, so an options array here is discarded in
                 // silence and first() answers with whichever record comes first.
-                $selectedObj = $this->nome->records()->where('id_string', $idString)->first();
+                $selectedObj = $this->name->records()->where('id_string', $idString)->first();
                 if ($selectedObj) {
                     $defaultArr[] = $selectedObj->id;
                 }
@@ -92,7 +92,7 @@ trait SelectFieldTrait
     {
         $ids = explode(',', $this->getValue());
         $ids = array_values(array_filter(array_filter($ids), 'is_numeric'));
-        $old = old($this->tipo);
+        $old = old($this->type);
         if ($old) {
             // previous POST values needs to be available for Former to select it
             $ids = array_unique(array_merge($ids, $old));
@@ -104,7 +104,7 @@ trait SelectFieldTrait
             //return $this->records()->whereIn('id', $ids)->get();
             return $this->cachedRecords($ids);
         }
-        if ($this->nome instanceof Type || $this->nome === 'all') {
+        if ($this->name instanceof Type || $this->name === 'all') {
             //return $this->tipos()->whereIn('type_id', $ids)->get();
             $cached = new \Jp7\InterAdmin\Collection();
             foreach ($ids as $type_id) {
@@ -120,7 +120,7 @@ trait SelectFieldTrait
 
     protected function cachedRecords($ids): \Jp7\InterAdmin\Collection
     {
-        $prefix = 'cachedRecords,'.$this->nome->type_id;
+        $prefix = 'cachedRecords,'.$this->name->type_id;
         $cached = [];
         foreach ($ids as $key => $id) {
             $attributes = Cache::get($prefix.','.$id);
@@ -129,7 +129,7 @@ trait SelectFieldTrait
                 $cached[$key] = null;
             } elseif ($attributes) {
                 // cached
-                $cached[$key] = Record::getInstance($id, [], $this->nome);
+                $cached[$key] = Record::getInstance($id, [], $this->name);
                 $cached[$key]->setRawAttributes($attributes);
             }
         }
@@ -154,7 +154,7 @@ trait SelectFieldTrait
     protected function getOptions()
     {
         if (!$this->hasTipo()) {
-            $cacheKey = 'cachedOptions,'.$this->nome->type_id;
+            $cacheKey = 'cachedOptions,'.$this->name->type_id;
             $resolve = function () {
                 return $this->toOptions($this->records()->get());
             };
@@ -164,10 +164,10 @@ trait SelectFieldTrait
                 return $resolve();
             }
         }
-        if ($this->nome instanceof Type) {
+        if ($this->name instanceof Type) {
             return $this->toOptions($this->tipos()->get());
         }
-        if ($this->nome === 'all') {
+        if ($this->name === 'all') {
             return $this->toTreeOptions($this->tipos()->get());
         }
         throw new UnexpectedValueException('Not implemented');
@@ -175,11 +175,11 @@ trait SelectFieldTrait
 
     protected function records($ordered = true)
     {
-        $camposCombo = $this->nome->getComboFieldNames();
+        $camposCombo = $this->name->getComboFieldNames();
         if (!$camposCombo) {
             $camposCombo = ['id'];
         }
-        $query = $this->nome->records();
+        $query = $this->name->records();
         // used later by isPublished()
         $camposPublished = ['char_key', 'parent_id', 'publish', 'deleted', 'date_publish', 'date_expire'];
         $query->select(array_merge($camposCombo, $camposPublished))
@@ -206,8 +206,8 @@ trait SelectFieldTrait
             ->published()
             ->orderByRaw('admin,ordem,name'.$suffix);
         // only children tipos
-        if ($this->nome instanceof Type) {
-            $query->where('parent_type_id', $this->nome->type_id);
+        if ($this->name instanceof Type) {
+            $query->where('parent_type_id', $this->name->type_id);
         }
         return $query;
     }

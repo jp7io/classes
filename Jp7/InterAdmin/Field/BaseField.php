@@ -17,9 +17,15 @@ abstract class BaseField implements FieldInterface
      */
     protected $record;
     /**
+     * The Type this field belongs to.
+     *
+     * ⚠ NOT `$type`: ColumnField's `__get()` resolves an unknown property from the `campos` row,
+     * and that row's first entry is `type` -- so a property called `$type` would answer the Type
+     * object inside the hierarchy and the column string outside it.
+     *
      * @var Type
      */
-    protected $type;
+    protected $ownerType;
     /**
      * @var int|null
      */
@@ -33,7 +39,7 @@ abstract class BaseField implements FieldInterface
 
     public function setType(Type $type)
     {
-        $this->type = $type;
+        $this->ownerType = $type;
     }
 
     public function setIndex($index): void

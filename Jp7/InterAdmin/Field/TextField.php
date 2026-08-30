@@ -27,7 +27,7 @@ class TextField extends ColumnField
             ->id($this->getFormerId())
             ->value($this->getValue())
             ->data_html($this->xtra ?: false)
-            ->rows($this->tamanho ?: 5);
+            ->rows($this->size ?: 5);
     }
     /*
     public function getMassEditTag()

@@ -36,15 +36,15 @@ class FuncField extends ColumnField
 
     protected function getFuncHtml($value, $parte): string
     {
-        if (!is_callable($this->nome)) {
-            return 'Function '.$this->nome.' not found.';
+        if (!is_callable($this->name)) {
+            return 'Function '.$this->name.' not found.';
         }
         try {
             ob_start();
             // http://wiki.jp7.com.br:81/jp7/InterAdmin:Special
             // callable(array $campo, mixed $value, string $parte, stdClass $record)
-            $campo = $this->campo + [self::FIELD_TYPE_ID => $this->type ? (int) $this->type->type_id : null];
-            $response = call_user_func($this->nome, $campo, $value, $parte, $this->record);
+            $campo = $this->campo + [self::FIELD_TYPE_ID => $this->ownerType ? (int) $this->ownerType->type_id : null];
+            $response = call_user_func($this->name, $campo, $value, $parte, $this->record);
             $response .= ob_get_clean();
             return $response;
         } catch (Throwable $e) {
@@ -52,7 +52,7 @@ class FuncField extends ColumnField
                 throw $e;
             }
             Log::error($e);
-            return '(erro: '.$this->nome.')';
+            return '(erro: '.$this->name.')';
         }
     }
 
@@ -61,8 +61,8 @@ class FuncField extends ColumnField
         if ($this->default) {
             return $this->default;
         }
-        if (isset($_POST[$this->tipo])) {
-            return $_POST[$this->tipo][0];
+        if (isset($_POST[$this->type])) {
+            return $_POST[$this->type][0];
         }
     }
 
@@ -83,10 +83,12 @@ class FuncField extends ColumnField
 
     public function searchOptions($search)
     {
-        $relation = str_replace(['_ids', '_id'], '', $this->nome_id);
-        $data = $this->type->getRelationshipData($relation);
+        $relation = str_replace(['_ids', '_id'], '', $this->name_id);
+        $data = $this->ownerType->getRelationshipData($relation);
         $field = new SelectAjaxField([
-            'nome' => $data['tipo']
+            // ⚠ $data is getRelationshipData()'s array, whose `tipo` is a Type object; the key
+            // being built is the campos row's `name`, which for a select_ holds that same Type.
+            'name' => $data['tipo']
         ] + $this->campo);
         return $field->searchOptions($search);
     }

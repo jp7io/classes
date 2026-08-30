@@ -40,7 +40,7 @@ class SelectMultiField extends ColumnField
         if (!$hidden) {
             return implode('<br>', $visible);
         }
-        $id = 'select-multi-'.$this->tipo.'-'.(int) ($this->record->id ?? 0);
+        $id = 'select-multi-'.$this->type.'-'.(int) ($this->record->id ?? 0);
 
         return implode('<br>', $visible).
             '<div class="collapse" id="'.$id.'">'.implode('<br>', $hidden).'</div>'.
@@ -94,7 +94,7 @@ class SelectMultiField extends ColumnField
             ->setAttribute('aria-labelledby', $this->getLabelId());
         // Where Former puts it on every other field: in the column, in a plain div, after the
         // control -- partials/field-help.js reads that shape to build the (?) button.
-        $help = $this->ajuda ? Element::div(Element::span($this->ajuda)->class('form-text')) : '';
+        $help = $this->help ? Element::div(Element::span($this->help)->class('form-text')) : '';
         $column = Element::div($card.$help)->class('col-lg-10 col-sm-8');
 
         return Element::div($this->getLabelHtml().$column)
@@ -185,7 +185,7 @@ class SelectMultiField extends ColumnField
     {
         $selectField = new SelectField($this->campo);
         $selectField->setRecord($this->record);
-        $selectField->setType($this->type);
+        $selectField->setType($this->ownerType);
         return $selectField->getFilterTag();
     }
 

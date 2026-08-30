@@ -5,22 +5,22 @@ namespace Jp7\InterAdmin\Field;
 use Jp7\InterAdmin\Type;
 
 /**
- * @property string $tipo
- * @property Type|string $nome
- * @property string $ajuda
- * @property string|int $tamanho
- * @property string|bool $obrigatorio    'S' or ''
- * @property string $separador
+ * @property string $type
+ * @property Type|string $name
+ * @property string $help
+ * @property string|int $size
+ * @property string|bool $required    'S' or ''
+ * @property string $separator
  * @property string $xtra
- * @property string|bool $lista     'S' or ''
+ * @property string|bool $list     'S' or ''
  * @property numeric $orderby
  * @property string|bool $combo     'S' or ''
  * @property string|bool $readonly  'S' or ''
  * @property string|bool $form      'S' or ''
  * @property string $label
- * @property mixed $permissoes
+ * @property mixed $permissions
  * @property string $default
- * @property string $nome_id
+ * @property string $name_id
  * Injected by the xtra_disabledfields parser rather than stored in campos, and read only
  * by SelectFieldTrait::query(), which is a trait and cannot declare it.
  * @property string $where
@@ -69,12 +69,12 @@ class ColumnField extends BaseField
 
     public function getHeaderTag()
     {
-        return parent::getHeaderTag()->title($this->tipo);
+        return parent::getHeaderTag()->title($this->type);
     }
 
     public function getLabel()
     {
-        return $this->nome;
+        return $this->name;
     }
 
     public function getText()
@@ -95,8 +95,8 @@ class ColumnField extends BaseField
      */
     protected function applyGroupSettings($input)
     {
-        if ($this->ajuda) {
-            $input->help($this->ajuda);
+        if ($this->help) {
+            $input->help($this->help);
         }
         $input->getLabel()->setAttribute('title', $this->getLabelTitle());
         foreach ($this->getGroupClasses() as $class) {
@@ -115,8 +115,8 @@ class ColumnField extends BaseField
      */
     protected function getGroupClasses(): array
     {
-        $classes = [$this->id, $this->nome_id.'-group'];
-        if ($this->separador) {
+        $classes = [$this->id, $this->name_id.'-group'];
+        if ($this->separator) {
             $classes[] = 'has-separator';
         }
         return $classes;
@@ -127,12 +127,12 @@ class ColumnField extends BaseField
      */
     protected function getLabelTitle(): string
     {
-        return $this->nome_id.' ('.$this->tipo.', xtra: '.$this->xtra.')';
+        return $this->name_id.' ('.$this->type.', xtra: '.$this->xtra.')';
     }
 
     protected function getColumn(): string
     {
-        return $this->tipo;
+        return $this->type;
     }
 
     protected function getIdentifier(): string
@@ -140,7 +140,7 @@ class ColumnField extends BaseField
         // A field built in code rather than parsed out of `campos` carries no alias: ci's
         // Ci\Field\Passeios\Roteiros hands SelectField only `nome` and `tipo`. The column is
         // the identifier those have, and __get() returns null rather than '' for a missing key.
-        return $this->nome_id ?: $this->getColumn();
+        return $this->name_id ?: $this->getColumn();
     }
 
     protected function getDefaultValue()
@@ -174,17 +174,17 @@ class ColumnField extends BaseField
     {
         $user = auth()->user();
 
-        if (!$this->permissoes || $user?->isSa()) {
+        if (!$this->permissions || $user?->isSa()) {
             return true;
         }
         // Null-safe, matching what it replaces: $s_user was [] with nobody logged in, so
         // every subscript read as null. `permissoes` is non-empty by the guard above, so an
         // absent user still compares false here rather than matching.
-        if ((string) $this->permissoes === (string) $user?->permissionTipo()) {
+        if ((string) $this->permissions === (string) $user?->permissionTipo()) {
             // By select with the user type, used by CI Intercambio
             return true;
         }
-        if ($this->permissoes === 'admin' && $user?->isAdmin()) {
+        if ($this->permissions === 'admin' && $user?->isAdmin()) {
             return true;
         }
         return false;
@@ -195,7 +195,7 @@ class ColumnField extends BaseField
         $rules = [];
         if ($this->isReadonly()) {
             $rules[$this->getRuleName()][] = 'not_present';
-        } elseif ($this->obrigatorio) {
+        } elseif ($this->required) {
             $rules[$this->getRuleName()][] = 'required';
         }
         return $rules;
@@ -203,9 +203,9 @@ class ColumnField extends BaseField
 
     public function getOrderSql($direction): string
     {
-        if (str_starts_with($this->tipo, 'func_')) {
+        if (str_starts_with($this->type, 'func_')) {
             return ''; // func is not a real column
         }
-        return $this->tipo.' '.$direction;
+        return $this->type.' '.$direction;
     }
 }

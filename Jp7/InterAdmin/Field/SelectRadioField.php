@@ -17,7 +17,7 @@ class SelectRadioField extends SelectField
     protected function getRadios(): array
     {
         $radios = [];
-        if (!$this->obrigatorio) {
+        if (!$this->required) {
             $radios['(nenhum)'] = ['value' => '', 'checked' => true];
         }
         foreach ($this->getOptions() as $key => $value) {

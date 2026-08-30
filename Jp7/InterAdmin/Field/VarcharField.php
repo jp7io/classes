@@ -13,13 +13,13 @@ class VarcharField extends ColumnField
         $xtra = $this->getXtra();
 
         if ($xtra?->isUnique()) {
-            $rules[$name][] = $this->record->getUniqueRule($this->tipo);
+            $rules[$name][] = $this->record->getUniqueRule($this->type);
         }
         if ($rule = $xtra?->rule()) {
             $rules[$name][] = $rule;
         }
-        if ($this->tamanho) {
-            $rules[$name][] = 'max:'.$this->tamanho;
+        if ($this->size) {
+            $rules[$name][] = 'max:'.$this->size;
         }
         return $rules;
     }

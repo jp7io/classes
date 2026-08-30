@@ -37,19 +37,19 @@ class Factory
     public function makeField(array $field)
     {
         // tipo_de_campo -> only used in a few specials / xtra_disabledfields
-        $tipo = empty($field['tipo_de_campo']) ? $field['tipo'] : $field['tipo_de_campo'].'_';
+        $tipo = empty($field['field_type']) ? $field['type'] : $field['field_type'].'_';
         $prefix = $this->getPrefix($tipo, $field['xtra'] ?? '');
 
         // A field class is namespaced and holds no `::`. `Ci\Field\Produtos` is one;
         // `InterAdmin\CustomField::field` is a callable carrying the same backslash, and
         // instantiating it is "Class not found" on the record form and the list.
         if (($prefix === 'special' || $prefix === 'func')
-            && str_contains($field['nome'], '\\')
-            && !str_contains($field['nome'], '::')) {
+            && str_contains($field['name'], '\\')
+            && !str_contains($field['name'], '::')) {
             // Special as object implements FieldInterface
             // Special as callable should be deprecated in favor of object
-            $class = $field['nome'];
-            $field['nome'] = $field['nome_original'] ?? $field['nome'];
+            $class = $field['name'];
+            $field['name'] = $field['nome_original'] ?? $field['name'];
         } else {
             $class = $this->namespace . Str::studly($prefix).'Field';
         }

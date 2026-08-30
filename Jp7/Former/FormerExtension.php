@@ -152,7 +152,7 @@ class FormerExtension
 
         // Populate options
         if (Str::startsWith($name, 'select_')) {
-            $this->populateOptions($field, $fieldDefinition['nome']);
+            $this->populateOptions($field, $fieldDefinition['name']);
         }
         // Fix date format
         if ($field->getType() === 'date' && $field->getValue() instanceof DateTime) {

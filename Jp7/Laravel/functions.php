@@ -260,7 +260,7 @@ if (!function_exists('interadmin_tipos_campos_encode')) {
     {
         $s = '';
         foreach ($campos as $value) {
-            unset($value['ordem']);
+            unset($value['order']);
             $s .= implode('{,}', $value).'{;}';
         }
         return $s;

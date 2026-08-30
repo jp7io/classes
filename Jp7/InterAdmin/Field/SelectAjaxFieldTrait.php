@@ -13,7 +13,7 @@ trait SelectAjaxFieldTrait
             $query = $this->buildSearch($this->records(false), $this->getSearchableFields(), $search);
             return $this->toJsonOptions($query->get());
         }
-        if ($this->nome instanceof Type || $this->nome === 'all') {
+        if ($this->name instanceof Type || $this->name === 'all') {
             $query = $this->buildSearch($this->tipos(), ['name'], $search);
             return $this->toJsonOptions($query->get());
         }
@@ -51,12 +51,12 @@ trait SelectAjaxFieldTrait
 
     protected function getSearchableFields(): array
     {
-        $campos = $this->nome->getFields();
+        $campos = $this->name->getFields();
         $searchable = [];
 
-        foreach ($this->nome->getComboFieldNames() as $comboColumn) {
-            if ($campos[$comboColumn]['nome'] instanceof Type) {
-                foreach ($campos[$comboColumn]['nome']->getComboFieldNames() as $subComboColumn) {
+        foreach ($this->name->getComboFieldNames() as $comboColumn) {
+            if ($campos[$comboColumn]['name'] instanceof Type) {
+                foreach ($campos[$comboColumn]['name']->getComboFieldNames() as $subComboColumn) {
                     $searchable[] = $comboColumn.'.'.$subComboColumn;
                 }
             } else {
