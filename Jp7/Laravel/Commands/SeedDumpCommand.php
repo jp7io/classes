@@ -64,7 +64,7 @@ class SeedDumpCommand extends Command
         $tables = $this->getRecordsTables();
 
         $options = " --tables ".implode(' ', $tables).
-            " --where=\"char_key <> '' AND publish <> '' AND deleted = '' AND id_tipo IN (".implode(',', $this->typeIds).")\"".
+            " --where=\"char_key <> '' AND publish <> '' AND deleted = '' AND type_id IN (".implode(',', $this->typeIds).")\"".
             " --skip-extended-insert".
             " --no-create-info";
 
@@ -79,12 +79,12 @@ class SeedDumpCommand extends Command
             $type = Type::getInstance($typeId);
             $count = $type->records()->count();
             if ($count > $this->tooManyRecords) {
-                $this->error($type->nome.' ('.$typeId.') exports too many records: '.$count);
+                $this->error($type->name.' ('.$typeId.') exports too many records: '.$count);
             }
             foreach ($type->getRelationships() as $relation => $data) {
                 $query = $data['query'];
-                if ($query instanceof Query && !in_array($query->type()->id_tipo, $this->typeIds)) {
-                    $this->warn($type->nome.' ('.$typeId.') might require '.$relation.' ('.$query->type()->id_tipo.')');
+                if ($query instanceof Query && !in_array($query->type()->type_id, $this->typeIds)) {
+                    $this->warn($type->name.' ('.$typeId.') might require '.$relation.' ('.$query->type()->type_id.')');
                 }
             }
             $tables[] = $type->getInterAdminsTableName();

@@ -57,7 +57,7 @@ trait RecordTrait
 
         if ($type = end($breadcrumb)) {
             $parent = $type->getParent();
-            if ($parent instanceof Record && !$parent->hasChildrenTipo($type->id_tipo)) {
+            if ($parent instanceof Record && !$parent->hasChildrenTipo($type->type_id)) {
                 throw new Exception('It seems this route has a special structure.'.
                     ' You need to define a custom setScope() to handle this.');
             }

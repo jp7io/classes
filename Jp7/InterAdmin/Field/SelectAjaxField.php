@@ -10,7 +10,7 @@ class SelectAjaxField extends SelectField
     {
         return parent::getFormerField()
                 ->data_ajax()
-                ->data_id_tipo($this->type->id_tipo);
+                ->data_id_tipo($this->type->type_id);
     }
 
     protected function getOptions()

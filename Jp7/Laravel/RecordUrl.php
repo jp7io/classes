@@ -24,7 +24,7 @@ class RecordUrl
     {
         $route = $type->getRoute($action);
         if (!$route) {
-            throw new BadMethodCallException('There is no route for id_tipo: '.$type->id_tipo.
+            throw new BadMethodCallException('There is no route for type_id: '.$type->type_id.
                 ', action: '.$action.'. Called on '.get_class($type));
         }
 
@@ -60,7 +60,7 @@ class RecordUrl
     {
         $route = $record->getRoute($action);
         if (!$route) {
-            throw new BadMethodCallException('There is no route for id_tipo: '.$record->id_tipo.
+            throw new BadMethodCallException('There is no route for type_id: '.$record->type_id.
                  ', action: '.$action.'. Called on '.get_class($record));
         }
 

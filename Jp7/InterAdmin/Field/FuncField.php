@@ -9,7 +9,7 @@ use Log;
 class FuncField extends ColumnField
 {
     /**
-     * The key composed into the $campo a handler receives: the id_tipo of the type this field
+     * The key composed into the $campo a handler receives: the type_id of the type this field
      * belongs to, which is the field's OWN type rather than the list's.
      *
      * ⚠ It must not collide with a `campos` attribute name -- that array is otherwise entirely
@@ -43,7 +43,7 @@ class FuncField extends ColumnField
             ob_start();
             // http://wiki.jp7.com.br:81/jp7/InterAdmin:Special
             // callable(array $campo, mixed $value, string $parte, stdClass $record)
-            $campo = $this->campo + [self::FIELD_ID_TIPO => $this->type ? (int) $this->type->id_tipo : null];
+            $campo = $this->campo + [self::FIELD_ID_TIPO => $this->type ? (int) $this->type->type_id : null];
             $response = call_user_func($this->nome, $campo, $value, $parte, $this->record);
             $response .= ob_get_clean();
             return $response;

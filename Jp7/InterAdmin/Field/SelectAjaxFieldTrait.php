@@ -14,7 +14,7 @@ trait SelectAjaxFieldTrait
             return $this->toJsonOptions($query->get());
         }
         if ($this->nome instanceof Type || $this->nome === 'all') {
-            $query = $this->buildSearch($this->tipos(), ['nome'], $search);
+            $query = $this->buildSearch($this->tipos(), ['name'], $search);
             return $this->toJsonOptions($query->get());
         }
         throw new UnexpectedValueException('Not implemented');
@@ -38,7 +38,7 @@ trait SelectAjaxFieldTrait
                 $group->orWhere($field, 'like', $pattern);
             }
             if (is_numeric($search)) {
-                $group->orWhere('id_tipo', (int) $search);
+                $group->orWhere('type_id', (int) $search);
             }
         });
 

@@ -332,13 +332,13 @@ class Router extends MethodForwarder
             }
         }
         if (!$isRoot) {
-            if (!$this->hasType($section->id_tipo)) {
+            if (!$this->hasType($section->type_id)) {
                 // won't enter here if there is already a route for this type
                 $controllerClass = $section->getControllerBasename();
                 Route::resource($section->getSlug(), $controllerClass, [
                     'only' => $this->getControllerActions($controllerClass)
                 ]);
-                $this->addType($section->id_tipo, $controllerClass);
+                $this->addType($section->type_id, $controllerClass);
             }
         }
     }
