@@ -35,7 +35,7 @@ class SeedDumpCommand extends Command
     public function handle()
     {
         $this->dumpSchema();
-        $this->dumpTipos();
+        $this->dumpTypes();
         $this->dumpRecords();
     }
 
@@ -49,7 +49,7 @@ class SeedDumpCommand extends Command
         $this->mysqldump($options, 'database/interadmin_schema.sql');
     }
 
-    protected function dumpTipos()
+    protected function dumpTypes()
     {
         $options = " ".$this->config['prefix']."tipos".
             " --where=\"deleted_tipo = '' AND mostrar <> ''\"".

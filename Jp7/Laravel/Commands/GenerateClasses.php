@@ -42,9 +42,9 @@ class GenerateClasses extends Command
         $contents = '';
 
         $classes = array_unique(RecordClassMap::getInstance()->getClasses());
-        $classesTipos = array_unique(TypeClassMap::getInstance()->getClasses());
+        $classesTypes = array_unique(TypeClassMap::getInstance()->getClasses());
 
-        $missingClasses = array_filter(array_merge($classes, $classesTipos), function ($class) {
+        $missingClasses = array_filter(array_merge($classes, $classesTypes), function ($class) {
             return !class_exists($class);
         });
         sort($missingClasses);
