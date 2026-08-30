@@ -212,7 +212,7 @@ class Router extends MethodForwarder
         if (isset($options['type_id'])) {
             if (!is_numeric($options['type_id'])) {
                 // Get type_id from class
-                $options['type_id'] = RecordClassMap::getInstance()->getClassIdTipo($options['type_id']);
+                $options['type_id'] = RecordClassMap::getInstance()->getClassTypeId($options['type_id']);
             }
             $this->addType($options['type_id'], $controller); // Maps [type_id => route basename]
         }
