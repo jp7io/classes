@@ -37,8 +37,8 @@ class Factory
     public function makeField(array $field)
     {
         // tipo_de_campo -> only used in a few specials / xtra_disabledfields
-        $tipo = empty($field['field_type']) ? $field['type'] : $field['field_type'].'_';
-        $prefix = $this->getPrefix($tipo, $field['xtra'] ?? '');
+        $type = empty($field['field_type']) ? $field['type'] : $field['field_type'].'_';
+        $prefix = $this->getPrefix($type, $field['xtra'] ?? '');
 
         // A field class is namespaced and holds no `::`. `Ci\Field\Produtos` is one;
         // `InterAdmin\CustomField::field` is a callable carrying the same backslash, and
@@ -57,11 +57,11 @@ class Factory
         return new $class($field);
     }
 
-    protected function getPrefix($tipo, $xtra): string
+    protected function getPrefix($type, $xtra): string
     {
-        $prefix = explode('_', $tipo)[0];
+        $prefix = explode('_', $type)[0];
         if ($prefix === 'select') {
-            if (Str::startsWith($tipo, 'select_multi_')) {
+            if (Str::startsWith($type, 'select_multi_')) {
                 $prefix .= '_multi'; // SelectMultiField
                 if (in_array($xtra, [SelectMultiField::XTRA_RECORD_SEARCH, SelectMultiField::XTRA_TYPE_SEARCH])) {
                     $prefix .= '_ajax'; // SelectMultiAjaxField

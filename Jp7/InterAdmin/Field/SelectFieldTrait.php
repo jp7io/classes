@@ -219,8 +219,8 @@ trait SelectFieldTrait
     {
         $options = [];
         if (!empty($array[0]) && $array[0] instanceof Type) {
-            foreach ($array as $tipo) {
-                $options[$tipo->type_id] = e($tipo->getName());
+            foreach ($array as $type) {
+                $options[$type->type_id] = e($type->getName());
             }
         } elseif (!empty($array[0]) && $array[0] instanceof Record) {
             foreach ($array as $record) {
@@ -242,11 +242,11 @@ trait SelectFieldTrait
         return $options;
     }
 
-    protected function toTreeOptions($tipos): array
+    protected function toTreeOptions($types): array
     {
         $map = [];
-        foreach ($tipos as $tipo) {
-            $map[$tipo->parent_type_id][] = $tipo;
+        foreach ($types as $type) {
+            $map[$type->parent_type_id][] = $type;
         }
         $options = [];
         $this->addTipoTreeOptions($options, $map, 0);
@@ -256,10 +256,10 @@ trait SelectFieldTrait
     protected function addTipoTreeOptions(array &$options, array $map, $parent_type_id, $level = 0)
     {
         if (!empty($map[$parent_type_id])) {
-            foreach ($map[$parent_type_id] as $tipo) {
+            foreach ($map[$parent_type_id] as $type) {
                 $prefix = ($level ? str_repeat('--', $level) . '> ' : ''); // ----> Nome
-                $options[$tipo->type_id] = $prefix.$tipo->getName();
-                $this->addTipoTreeOptions($options, $map, $tipo->type_id, $level + 1);
+                $options[$type->type_id] = $prefix.$type->getName();
+                $this->addTipoTreeOptions($options, $map, $type->type_id, $level + 1);
             }
         }
     }

@@ -39,8 +39,8 @@ class CollectionUtil
         if (count($array) > 0) {
             $first = reset($array);
 
-            $tipo = $first->getType();
-            $results = $tipo->find([
+            $type = $first->getType();
+            $results = $type->find([
                 'class' => 'Jp7\\InterAdmin\\Record',
                 'fields' => $fields,
                 'fields_alias' => $fields_alias,
