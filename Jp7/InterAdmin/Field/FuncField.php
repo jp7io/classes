@@ -15,7 +15,7 @@ class FuncField extends ColumnField
      * ⚠ It must not collide with a `campos` attribute name -- that array is otherwise entirely
      * the field's stored definition, and a handler reads both out of it.
      */
-    public const FIELD_ID_TIPO = 'field_type_id';
+    public const FIELD_TYPE_ID = 'field_type_id';
 
     protected $id = 'func';
 
@@ -43,7 +43,7 @@ class FuncField extends ColumnField
             ob_start();
             // http://wiki.jp7.com.br:81/jp7/InterAdmin:Special
             // callable(array $campo, mixed $value, string $parte, stdClass $record)
-            $campo = $this->campo + [self::FIELD_ID_TIPO => $this->type ? (int) $this->type->type_id : null];
+            $campo = $this->campo + [self::FIELD_TYPE_ID => $this->type ? (int) $this->type->type_id : null];
             $response = call_user_func($this->nome, $campo, $value, $parte, $this->record);
             $response .= ob_get_clean();
             return $response;
