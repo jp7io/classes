@@ -202,12 +202,12 @@ trait SelectFieldTrait
         $suffix = Lang::get('interadmin.suffix');
 
         $query = new TypeQuery;
-        $query->select('name'.$suffix, 'parent_id_tipo')
+        $query->select('name'.$suffix, 'parent_type_id')
             ->published()
             ->orderByRaw('admin,ordem,name'.$suffix);
         // only children tipos
         if ($this->nome instanceof Type) {
-            $query->where('parent_id_tipo', $this->nome->type_id);
+            $query->where('parent_type_id', $this->nome->type_id);
         }
         return $query;
     }
@@ -246,17 +246,17 @@ trait SelectFieldTrait
     {
         $map = [];
         foreach ($tipos as $tipo) {
-            $map[$tipo->parent_id_tipo][] = $tipo;
+            $map[$tipo->parent_type_id][] = $tipo;
         }
         $options = [];
         $this->addTipoTreeOptions($options, $map, 0);
         return $options;
     }
 
-    protected function addTipoTreeOptions(array &$options, array $map, $parent_id_tipo, $level = 0)
+    protected function addTipoTreeOptions(array &$options, array $map, $parent_type_id, $level = 0)
     {
-        if (!empty($map[$parent_id_tipo])) {
-            foreach ($map[$parent_id_tipo] as $tipo) {
+        if (!empty($map[$parent_type_id])) {
+            foreach ($map[$parent_type_id] as $tipo) {
                 $prefix = ($level ? str_repeat('--', $level) . '> ' : ''); // ----> Nome
                 $options[$tipo->type_id] = $prefix.$tipo->getName();
                 $this->addTipoTreeOptions($options, $map, $tipo->type_id, $level + 1);
