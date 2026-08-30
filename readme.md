@@ -16,7 +16,7 @@ General classes used by our projects.
 
 For info about:
 
-* Mapping id_tipo on route
+* Mapping type_id on route
 * How getUrl() works
 * How to customize getUrl()
 

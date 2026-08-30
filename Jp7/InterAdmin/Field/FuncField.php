@@ -15,7 +15,7 @@ class FuncField extends ColumnField
      * ⚠ It must not collide with a `campos` attribute name -- that array is otherwise entirely
      * the field's stored definition, and a handler reads both out of it.
      */
-    public const FIELD_ID_TIPO = 'field_id_tipo';
+    public const FIELD_ID_TIPO = 'field_type_id';
 
     protected $id = 'func';
 

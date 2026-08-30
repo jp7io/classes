@@ -107,8 +107,8 @@ trait SelectFieldTrait
         if ($this->nome instanceof Type || $this->nome === 'all') {
             //return $this->tipos()->whereIn('type_id', $ids)->get();
             $cached = new \Jp7\InterAdmin\Collection();
-            foreach ($ids as $id_tipo) {
-                $type = Type::getInstance($id_tipo);
+            foreach ($ids as $type_id) {
+                $type = Type::getInstance($type_id);
                 if ($type->name !== null) { // deleted types
                     $cached[] = $type;
                 }
