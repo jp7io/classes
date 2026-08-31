@@ -248,18 +248,19 @@ if (!function_exists('interadmin_data')) {
         return file_get_contents($url, false, $context);
     }
 }
-if (!function_exists('interadmin_tipos_campos_encode')) {
+if (!function_exists('interadmin_type_fields_encode')) {
     /**
-     * Transforma array de campos em string separada por ; e {,} no formato do InterAdmin.
+     * Packs a field-definition array back into the type's `fields` blob: '{,}' between a
+     * field's attributes, '{;}' after each field.
      *
-     * @param array $campos
+     * @param array $fieldDefinitions
      *
      * @return string
      */
-    function interadmin_tipos_campos_encode($campos)
+    function interadmin_type_fields_encode($fieldDefinitions)
     {
         $s = '';
-        foreach ($campos as $value) {
+        foreach ($fieldDefinitions as $value) {
             unset($value['order']);
             $s .= implode('{,}', $value).'{;}';
         }

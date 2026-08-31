@@ -21,7 +21,7 @@ use Jp7\InterAdmin\Type;
  * @property mixed $permissions
  * @property string $default
  * @property string $name_id
- * Injected by the xtra_disabledfields parser rather than stored in campos, and read only
+ * Injected by the xtra_disabledfields parser rather than stored in `fields`, and read only
  * by SelectFieldTrait::query(), which is a trait and cannot declare it.
  * @property string $where
  */
@@ -137,7 +137,7 @@ class ColumnField extends BaseField
 
     protected function getIdentifier(): string
     {
-        // A field built in code rather than parsed out of `campos` carries no alias: ci's
+        // A field built in code rather than parsed out of `fields` carries no alias: ci's
         // Ci\Field\Passeios\Roteiros hands SelectField only `nome` and `tipo`. The column is
         // the identifier those have, and __get() returns null rather than '' for a missing key.
         return $this->name_id ?: $this->getColumn();

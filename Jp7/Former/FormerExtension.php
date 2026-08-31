@@ -133,7 +133,7 @@ class FormerExtension
 
     private function decorateFieldByTypeAndAlias($field, $type, $alias)
     {
-        $campos = $type->getFields();
+        $fieldDefinitions = $type->getFields();
         $aliases = array_flip($type->getFieldAliases());
 
         if (empty($aliases[$alias])) {
@@ -141,7 +141,7 @@ class FormerExtension
         }
 
         $name = $aliases[$alias];
-        $fieldDefinition = $campos[$name];
+        $fieldDefinition = $fieldDefinitions[$name];
 
         // Set label
         if (!Lang::has('validation.attributes.'.$alias)) {

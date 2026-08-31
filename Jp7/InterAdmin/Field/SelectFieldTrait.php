@@ -175,17 +175,17 @@ trait SelectFieldTrait
 
     protected function records($ordered = true)
     {
-        $camposCombo = $this->name->getComboFieldNames();
-        if (!$camposCombo) {
-            $camposCombo = ['id'];
+        $comboColumns = $this->name->getComboFieldNames();
+        if (!$comboColumns) {
+            $comboColumns = ['id'];
         }
         $query = $this->name->records();
         // used later by isPublished()
-        $camposPublished = ['char_key', 'parent_id', 'publish', 'deleted', 'date_publish', 'date_expire'];
-        $query->select(array_merge($camposCombo, $camposPublished))
+        $publishedColumns = ['char_key', 'parent_id', 'publish', 'deleted', 'date_publish', 'date_expire'];
+        $query->select(array_merge($comboColumns, $publishedColumns))
             ->where('deleted', false);
         if ($ordered) {
-            $query->orderByRaw(implode(', ', $camposCombo));
+            $query->orderByRaw(implode(', ', $comboColumns));
         }
         if ($this->where) {
             // From xtra_disabledfields

@@ -12,7 +12,7 @@ class FuncField extends ColumnField
      * The key composed into the $campo a handler receives: the type_id of the type this field
      * belongs to, which is the field's OWN type rather than the list's.
      *
-     * ⚠ It must not collide with a `campos` attribute name -- that array is otherwise entirely
+     * ⚠ It must not collide with a field-definition attribute name -- that array is otherwise entirely
      * the field's stored definition, and a handler reads both out of it.
      */
     public const FIELD_TYPE_ID = 'field_type_id';
@@ -87,7 +87,7 @@ class FuncField extends ColumnField
         $data = $this->ownerType->getRelationshipData($relation);
         $field = new SelectAjaxField([
             // ⚠ $data is getRelationshipData()'s array, whose `tipo` is a Type object; the key
-            // being built is the campos row's `name`, which for a select_ holds that same Type.
+            // being built is the field-definition row's `name`, which for a select_ holds that same Type.
             'name' => $data['tipo']
         ] + $this->campo);
         return $field->searchOptions($search);
