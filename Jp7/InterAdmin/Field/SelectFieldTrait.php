@@ -204,7 +204,7 @@ trait SelectFieldTrait
         $query = new TypeQuery;
         $query->select('name'.$suffix, 'parent_type_id')
             ->published()
-            ->orderByRaw('admin,ordem,name'.$suffix);
+            ->orderByRaw('admin,position,name'.$suffix);
         // only children tipos
         if ($this->name instanceof Type) {
             $query->where('parent_type_id', $this->name->type_id);
