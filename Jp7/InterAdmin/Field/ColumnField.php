@@ -163,7 +163,7 @@ class ColumnField extends BaseField
     /**
      * Whether the acting user may edit this field.
      *
-     * The host app's authenticated user must expose isSa(), isAdmin() and permissionTipo().
+     * The host app's authenticated user must expose isSa(), isAdmin() and permissionType().
      * This package deliberately does not name that class -- it has no dependency on any
      * host's namespace -- so the requirement is stated here rather than type-hinted. A host
      * whose user model predates those accessors gets a "call to undefined method" when a
@@ -180,7 +180,7 @@ class ColumnField extends BaseField
         // Null-safe, matching what it replaces: $s_user was [] with nobody logged in, so
         // every subscript read as null. `permissoes` is non-empty by the guard above, so an
         // absent user still compares false here rather than matching.
-        if ((string) $this->permissions === (string) $user?->permissionTipo()) {
+        if ((string) $this->permissions === (string) $user?->permissionType()) {
             // By select with the user type, used by CI Intercambio
             return true;
         }

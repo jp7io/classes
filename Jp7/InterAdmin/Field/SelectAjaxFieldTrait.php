@@ -9,12 +9,12 @@ trait SelectAjaxFieldTrait
 {
     public function searchOptions($search)
     {
-        if (!$this->hasTipo()) {
+        if (!$this->hasType()) {
             $query = $this->buildSearch($this->records(false), $this->getSearchableFields(), $search);
             return $this->toJsonOptions($query->get());
         }
         if ($this->name instanceof Type || $this->name === 'all') {
-            $query = $this->buildSearch($this->tipos(), ['name'], $search);
+            $query = $this->buildSearch($this->types(), ['name'], $search);
             return $this->toJsonOptions($query->get());
         }
         throw new UnexpectedValueException('Not implemented');

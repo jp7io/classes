@@ -64,7 +64,7 @@ class SelectMultiField extends ColumnField
         return $array;
     }
 
-    public function hasTipo(): bool
+    public function hasType(): bool
     {
         return in_array($this->xtra, [self::XTRA_TYPE, self::XTRA_TYPE_SEARCH]);
     }

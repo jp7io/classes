@@ -12,7 +12,7 @@ use Lang;
 /**
  * Everything a select-shaped field does with the type or the records on the other end.
  *
- * Besides hasTipo() below, this reads four values off the `campo` blob through ColumnField's
+ * Besides hasType() below, this reads four values off the `campo` blob through ColumnField's
  * __get -- `nome` (a Type, a type id, or the literal 'all'), `where`, `default` and `label` --
  * which a trait cannot declare. A user of this trait is a ColumnField.
  */
@@ -24,7 +24,7 @@ trait SelectFieldTrait
      * Whether the options are TYPES rather than records of one type. Half the methods here fork
      * on it, so it is declared rather than left to fail at render time on a class that forgot.
      */
-    abstract public function hasTipo(): bool;
+    abstract public function hasType(): bool;
 
     public function getLabel()
     {
@@ -100,12 +100,12 @@ trait SelectFieldTrait
         if (!$ids) {
             return []; // evita query inutil
         }
-        if (!$this->hasTipo()) {
+        if (!$this->hasType()) {
             //return $this->records()->whereIn('id', $ids)->get();
             return $this->cachedRecords($ids);
         }
         if ($this->name instanceof Type || $this->name === 'all') {
-            //return $this->tipos()->whereIn('type_id', $ids)->get();
+            //return $this->types()->whereIn('type_id', $ids)->get();
             $cached = new \Jp7\InterAdmin\Collection();
             foreach ($ids as $type_id) {
                 $type = Type::getInstance($type_id);
@@ -153,7 +153,7 @@ trait SelectFieldTrait
 
     protected function getOptions()
     {
-        if (!$this->hasTipo()) {
+        if (!$this->hasType()) {
             $cacheKey = 'cachedOptions,'.$this->name->type_id;
             $resolve = function () {
                 return $this->toOptions($this->records()->get());
@@ -165,10 +165,10 @@ trait SelectFieldTrait
             }
         }
         if ($this->name instanceof Type) {
-            return $this->toOptions($this->tipos()->get());
+            return $this->toOptions($this->types()->get());
         }
         if ($this->name === 'all') {
-            return $this->toTreeOptions($this->tipos()->get());
+            return $this->toTreeOptions($this->types()->get());
         }
         throw new UnexpectedValueException('Not implemented');
     }
@@ -194,7 +194,7 @@ trait SelectFieldTrait
         return $query;
     }
 
-    protected function tipos(): TypeQuery
+    protected function types(): TypeQuery
     {
         // The same translated-column suffix Type::getName() reads, instead of the `$lang` global
         // it used to reach for. Both resolve to the object Tenant::readClientEnv builds; this one
@@ -205,7 +205,7 @@ trait SelectFieldTrait
         $query->select('name'.$suffix, 'parent_type_id')
             ->published()
             ->orderByRaw('admin,position,name'.$suffix);
-        // only children tipos
+        // only children types
         if ($this->name instanceof Type) {
             $query->where('parent_type_id', $this->name->type_id);
         }
@@ -249,17 +249,17 @@ trait SelectFieldTrait
             $map[$type->parent_type_id][] = $type;
         }
         $options = [];
-        $this->addTipoTreeOptions($options, $map, 0);
+        $this->addTypeTreeOptions($options, $map, 0);
         return $options;
     }
 
-    protected function addTipoTreeOptions(array &$options, array $map, $parent_type_id, $level = 0)
+    protected function addTypeTreeOptions(array &$options, array $map, $parent_type_id, $level = 0)
     {
         if (!empty($map[$parent_type_id])) {
             foreach ($map[$parent_type_id] as $type) {
                 $prefix = ($level ? str_repeat('--', $level) . '> ' : ''); // ----> Nome
                 $options[$type->type_id] = $prefix.$type->getName();
-                $this->addTipoTreeOptions($options, $map, $type->type_id, $level + 1);
+                $this->addTypeTreeOptions($options, $map, $type->type_id, $level + 1);
             }
         }
     }
