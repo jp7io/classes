@@ -5,11 +5,13 @@ namespace Jp7\InterAdmin\Field;
 use Former;
 
 /**
- * A char(1) flag storing 'S' or ''. What is left of that encoding after 2026_09_02_000000:
- * `publish` and `deleted` on every record table, and the `types` flags.
+ * A char(1) flag storing 'S' or ''. After 2026_09_03_000000 no InterAdmin COLUMN is one: the
+ * record slots, `publish`, `deleted` and the `types` flags are all tinyint, and {@see BoolField}
+ * is what `field_type => 'bool'` resolves to.
  *
- * ⚠ A record's own boolean slots are NOT these any more. They are `bool_*` tinyint(1), and
- * {@see BoolField} is the subclass that posts 1 instead of 'S'.
+ * ⚠ It survives for values that are not columns. InterMail renders a template VARIABLE of type
+ * Checkbox with it, and that value lives in a blob whose encoding is still 'S'. Reachable only by
+ * an explicit `new`; nothing the Factory derives from a column name lands here any more.
  */
 class CharField extends ColumnField
 {
