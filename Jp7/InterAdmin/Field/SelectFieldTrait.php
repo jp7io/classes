@@ -181,7 +181,7 @@ trait SelectFieldTrait
         }
         $query = $this->name->records();
         // used later by isPublished()
-        $publishedColumns = ['bool_key', 'parent_id', 'publish', 'deleted', 'date_publish', 'date_expire'];
+        $publishedColumns = ['bool_key', 'parent_id', 'publish', 'deleted', 'publish_at', 'expire_at'];
         $query->select(array_merge($comboColumns, $publishedColumns))
             ->where('deleted', false);
         if ($ordered) {
