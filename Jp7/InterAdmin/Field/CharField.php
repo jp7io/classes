@@ -17,8 +17,8 @@ class CharField extends ColumnField
 {
     protected $id = 'char';
 
-    const XTRA_UNCHECKED = '0';
-    const XTRA_CHECKED = 'S';
+    const XTRA_UNCHECKED = '';
+    const XTRA_CHECKED = 'checked';
 
     /** The value a checked box posts, i.e. this column's spelling of true. */
     protected const CHECKED_VALUE = 'S';

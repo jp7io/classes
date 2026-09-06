@@ -19,19 +19,19 @@ enum VarcharXtra: string
     case Cep = 'cep';
     case Cpf = 'cpf';
     case Cnpj = 'cnpj';
-    case Phone = 'telefone';
+    case Phone = 'phone';
     case LatLong = 'll';
     case Url = 'url';
-    case Color = 'cor';
-    case Time = 'hora';
+    case Color = 'color';
+    case Time = 'time';
 
     /**
      * The validation rule this format implies, run by RecordController on every save.
      *
      * The last four were added on 2026-08-02 and were each measured against ci's stored values
      * first, because a rule added here can make an EXISTING record unsaveable -- the form posts
-     * every field, so an untouched one is validated too. `telefone` and `ll` reject nothing real;
-     * `cor` rejects 52 rows of one repurposed column, which is the deliberate cost. Empty values
+     * every field, so an untouched one is validated too. `phone` and `ll` reject nothing real;
+     * `color` rejects 52 rows of one repurposed column, which is the deliberate cost. Empty values
      * are skipped by Laravel for all of them, so `required` stays the only thing that makes a
      * field mandatory. Full sweep: docs/frontend.md, "the four xtras that had no server rule".
      */
@@ -43,9 +43,9 @@ enum VarcharXtra: string
             self::Cep => 'cep',
             self::Cpf => 'cpf',
             self::Cnpj => 'cnpj',
-            self::Phone => 'telefone',
+            self::Phone => 'phone',
             self::LatLong => 'll',
-            self::Color => 'cor',
+            self::Color => 'color',
             // Laravel's own rule. Former's LiveValidation knows this name, so it also renders
             // type="url" -- the only one here that changes the markup by itself.
             self::Url => 'url',

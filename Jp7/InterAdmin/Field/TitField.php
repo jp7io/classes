@@ -6,7 +6,7 @@ class TitField extends ColumnField
 {
     protected $id = 'tit';
 
-    const XTRA_VISIBLE = '0';
+    const XTRA_VISIBLE = '';
     const XTRA_HIDDEN = 'hidden';
 
     public function openPanel(): string

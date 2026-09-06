@@ -13,10 +13,10 @@ class SelectMultiField extends ColumnField
 
     protected $id = 'select_multi';
 
-    const XTRA_RECORD = '0'; // checkboxes
-    const XTRA_TYPE = 'S';   // checkboxes
-    const XTRA_RECORD_SEARCH = 'X';
-    const XTRA_TYPE_SEARCH = 'X_tipos';
+    const XTRA_RECORD = ''; // checkboxes
+    const XTRA_TYPE = 'types'; // checkboxes
+    const XTRA_RECORD_SEARCH = 'records_search';
+    const XTRA_TYPE_SEARCH = 'types_search';
 
     /** How many related records a list cell shows before it starts hiding them. */
     private const CELL_LIMIT = 5;

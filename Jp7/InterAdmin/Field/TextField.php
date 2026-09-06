@@ -8,8 +8,8 @@ use HtmlObject\Element;
 class TextField extends ColumnField
 {
     protected $id = 'text';
-    const XTRA_TEXT = '0';
-    const XTRA_HTML = 'S';
+    const XTRA_TEXT = '';
+    const XTRA_HTML = 'html';
     const XTRA_HTML_LIGHT = 'html_light';
 
     public function getText()

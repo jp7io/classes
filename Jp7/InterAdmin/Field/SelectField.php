@@ -11,12 +11,12 @@ class SelectField extends ColumnField
 
     protected $id = 'select';
 
-    const XTRA_RECORD = '0';
-    const XTRA_RECORD_RADIO = 'radio';
-    const XTRA_RECORD_AJAX = 'ajax';
-    const XTRA_TYPE = 'S';
-    const XTRA_TYPE_RADIO = 'radio_tipos';
-    const XTRA_TYPE_AJAX = 'ajax_tipos';
+    const XTRA_RECORD = '';
+    const XTRA_RECORD_RADIO = 'records_radio';
+    const XTRA_RECORD_AJAX = 'records_ajax';
+    const XTRA_TYPE = 'types';
+    const XTRA_TYPE_RADIO = 'types_radio';
+    const XTRA_TYPE_AJAX = 'types_ajax';
 
     public function getCellHtml(): string
     {
