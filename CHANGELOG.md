@@ -5,8 +5,20 @@
   reads before, 4 after, and those 4 only on a macOS Docker bind mount, where rename()
   is not atomic. 0 of 18,000 on a normal filesystem.
 * PHP 8.5 floor, illuminate/support ^13.0
-* Several improvements to eager load relations (see Jp7/CollectionUtil.php)
 * Deprecate jp7_collect(), use collect() instead.
+* Removed 23 classes, 5 global helpers and config/httpcache.php that no consumer calls. Checked
+  against interadmin, interadmin-orm, interadmin-graphql, intermail, ci and ci-intranet, following
+  transitive use and the two dynamic paths: Field\Factory resolving *Field from a column type, and
+  Former's dispatcher repository 'Jp7\Former\Fields\'. Gone: Jp7\Cells\*, Jp7\CollectionUtil,
+  Jp7\Flysystem\*, Jp7\Former\FormRequest, Jp7\Html\Table, Jp7\HttpCache\*, Jp7\Laravel\Controller
+  and its two traits, Jp7\Laravel\FormRequest, Jp7\Laravel\InteradminControllerTrait,
+  Jp7\Laravel\Middleware\*, Jp7\Laravel\Migrations\CreateInteradminTables,
+  Jp7\Laravel\RedirectModelTrait, Jp7\Laravel\Seeder\InteradminSeeder,
+  Jp7\Laravel\WhoopsHandlerTrait, Jp7\MethodLogger, Jp7\MobileDetect, Jp7\ReadOnlyArray, and
+  time_to_int(), error_controller(), link_open(), link_close(), trans_route().
+* ⚠ Half of the above was reachable only from jp7io/abipe, which is retired. If a project outside
+  the six listed ever comes back, it pinned classes at 498f1c31 (2025-06-02) and predates the
+  InterAdmin namespace recase anyway, so it cannot follow this main regardless.
 * Dropped the jp7io/classes-deprecated dev dependency. Nothing here used it at runtime; it only
   supported tests for Jp7_Interadmin_Upload, which no live project calls (interadmin replaced it
   with InterAdmin\Files\FileUrl). Those tests were replaced by ones for Jp7\Imgix\ImgResize.

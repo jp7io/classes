@@ -17,16 +17,6 @@ if (!function_exists('interadmin_data')) {
 
         return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)).' '.@$size[$factor];
     }
-    /**
-     * Converts "1 hour" to 3600
-     *
-     * @param string
-     * @return int
-     */
-    function time_to_int($time)
-    {
-        return strtotime($time) - time();
-    }
 
     function to_slug($string, $separator = '-')
     {
@@ -53,30 +43,6 @@ if (!function_exists('interadmin_data')) {
         } elseif ($record && getenv('APP_DEBUG')) {
             throw new InvalidArgumentException('@ia expects a Record, instance of '.get_class($record).' given');
         }
-    }
-
-    /**
-     * @deprecated
-     */
-    function error_controller($action)
-    {
-        $request = Request::create('/error/'.$action, 'GET', []);
-        $session = Request::getSession();
-        if ($session) {
-            $request->setSession($session);
-        }
-        return Route::dispatch($request);
-    }
-
-
-    function link_open($url, $attributes = [])
-    {
-        return substr(link_to($url, '', $attributes), 0, -4);
-    }
-
-    function link_close()
-    {
-        return '</a>';
     }
 
     function img_tag($img, $template = null, $options = [])
@@ -213,13 +179,6 @@ if (!function_exists('interadmin_data')) {
     function jp7_collect($arr = null)
     {
         return new \Jp7\InterAdmin\Collection($arr);
-    }
-
-    function trans_route($name, $parameters = [], $absolute = true)
-    {
-        $locale = LaravelLocalization::getCurrentLocale();
-        $prefix = $locale === LaravelLocalization::getDefaultLocale() ? '' : $locale.'.';
-        return route($prefix.$name, $parameters, $absolute);
     }
 
     /**

@@ -52,7 +52,6 @@ class InteradminServiceProvider extends ServiceProvider
         $base = __DIR__.'/../..';
 
         $this->publishes([
-            $base.'/config/httpcache.php' => config_path('httpcache.php'),
             $base.'/config/imgix.php' => config_path('imgix.php'),
             $base.'/config/interadmin.php' => config_path('interadmin.php'),
         ], 'config');
