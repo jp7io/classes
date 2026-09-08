@@ -13,7 +13,7 @@ trait WorkerFixTrait
   protected function preventWorkerLooping(Throwable $e)
   {
     if ($e instanceof PDOException || $e instanceof QueryException) {
-        if (App::runningInConsole() && isset($GLOBALS['argv'][1]) && $GLOBALS['argv'][1] === 'queue:work') {
+        if (App::runningConsoleCommand('queue:work')) {
             Log::notice('Preventing queue:work from looping without database');
             sleep(10);
         }

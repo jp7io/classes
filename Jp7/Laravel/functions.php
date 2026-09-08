@@ -24,6 +24,8 @@ if (!function_exists('human_size')) {
         // ''. Since PHP 8.1 that is a deprecation on every str_* below, not a silent cast.
         $string = (string) $string;
 
+        // ⚠ NOT Str::slug()'s $dictionary. That pads its replacement with spaces, so 'M&M'
+        // becomes 'm-e-m' where this gives 'mem', and these values are stored in id_slug.
         $string = str_replace('/', '-', $string);
         $string = str_replace('®', '', $string);
         $string = str_replace('&', 'e', $string);
@@ -129,11 +131,7 @@ if (!function_exists('human_size')) {
      */
     function replace_prefix($search, $replace, $subject)
     {
-        if (mb_strpos($subject, $search) === 0) {
-            return $replace.mb_substr($subject, mb_strlen($search));
-        } else {
-            return $subject;
-        }
+        return Str::replaceStart($search, $replace, $subject);
     }
     // Laravel 5 functions
     /**
