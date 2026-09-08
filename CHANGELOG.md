@@ -36,6 +36,9 @@
 * Dropped the jp7io/classes-deprecated dev dependency. Nothing here used it at runtime; it only
   supported tests for Jp7_Interadmin_Upload, which no live project calls (interadmin replaced it
   with InterAdmin\Files\FileUrl). Those tests were replaced by ones for Jp7\Imgix\ImgResize.
+* Removed jp7_collect(), deprecated since the Laravel 5.3 upgrade in 2018. It returned a
+  Jp7\InterAdmin\Collection, which lives in interadmin-orm and is not required here, so it only
+  ever resolved inside an app pulling both packages. No consumer calls it; use collect().
 
 ## 3.2.2
 * Small fixes for Laravel 5.7

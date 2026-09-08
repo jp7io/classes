@@ -39,14 +39,6 @@ if (!function_exists('human_size')) {
     }
 
     /**
-     * @deprecated Dont extend the base Collection
-     */
-    function jp7_collect($arr = null)
-    {
-        return new \Jp7\InterAdmin\Collection($arr);
-    }
-
-    /**
      * Like file_get_contents() but with some default settings for URLs
      */
     function url_get_contents($url, array $contextOptions = ['http' => []])
