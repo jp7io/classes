@@ -25,6 +25,11 @@
   getChildrenMenu(); its slug/studly/controller-name cluster was reachable only from a commented
   method. Also dropped the interadmin_data() and memoize() helpers.
   ⚠ functions.php's guard named interadmin_data, so it now names human_size instead.
+* Removed the dm() debug helper. It listed an object's method signatures as clickable subl://
+  links before dd()ing it, and it could not run on this floor: it read $param->getType()->getName(),
+  which only ReflectionNamedType has, so any union- or intersection-typed parameter fatalled with
+  "Call to undefined method ReflectionUnionType::getName()" - 19 files in illuminate/support alone
+  have such signatures. Tinker does the same job better: `ls -l --methods $obj`, plus `doc`.
 * ⚠ Half of the above was reachable only from jp7io/abipe, which is retired. If a project outside
   the six listed ever comes back, it pinned classes at 498f1c31 (2025-06-02) and predates the
   InterAdmin namespace recase anyway, so it cannot follow this main regardless.
