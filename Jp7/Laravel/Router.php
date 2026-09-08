@@ -6,9 +6,7 @@ use Illuminate\Support\Str;
 use Jp7\MethodForwarder;
 use Jp7\InterAdmin\RecordClassMap;
 use Jp7\InterAdmin\Type;
-use LaravelLocalization;
 use Illuminate\Support\Facades\Route;
-use Closure;
 use App;
 
 /**
@@ -21,7 +19,6 @@ class Router extends MethodForwarder
      */
     protected $map = [];
     protected $cachefile = 'bootstrap/cache/routemap.cache';
-    protected $locale;
 
 ////
 //// Cache functions: Type map will work even when Laravel routes are cached
@@ -73,11 +70,10 @@ class Router extends MethodForwarder
 //// Map functions: Read/write to the type map
 ////
 
-    private function hasType($type_id)
+    // The map is keyed by locale, so a tenant serving two languages keeps one basename each.
+    protected function getLocale()
     {
-        $map = &$this->map[$this->getLocale()];
-        $map = $map ?: [];
-        return array_key_exists($type_id, $map);
+        return App::getLocale();
     }
 
     private function addType($type_id, $controllerName)
@@ -146,27 +142,6 @@ class Router extends MethodForwarder
     public function getTypeMap()
     {
         return $this->map;
-    }
-
-    public function tempTypeRoutes(...$type_id_array)
-    {
-        $map = &$this->map[$this->getLocale()]; // reference
-        foreach ($type_id_array as $type_id) {
-            if (isset($map[$type_id])) {
-                echo 'WARNING: Please check tempTypeRoutes for type_id: '.$type_id.PHP_EOL;
-                continue;
-            }
-            // Create temporary controller
-            $tempRouteName = 'temporarilyIgnored'.$type_id;
-            if (!class_exists('App\Http\Controllers\\'.$tempRouteName.'Controller')) {
-                eval('namespace App\Http\Controllers {
-                    class '.$tempRouteName.'Controller extends \Illuminate\Routing\Controller {
-                    }
-                }');
-            }
-            parent::resource($tempRouteName, $tempRouteName.'Controller');
-            $map[$type_id] = $tempRouteName;
-        }
     }
 
 ////
@@ -258,89 +233,6 @@ class Router extends MethodForwarder
             echo 'Controller has no actions: '.$class.PHP_EOL;
         }
         return $actions;
-    }
-
-////
-//// Localization: allows caching routes with localization
-////
-
-    protected function getLocale()
-    {
-        // route creation: $this->locale
-        // route resolution: App::getLocale()
-        return is_null($this->locale) ? App::getLocale() : $this->locale;
-    }
-
-    // Works with Laravel 5.2
-    public function languages(Closure $callback)
-    {
-        foreach (LaravelLocalization::getSupportedLanguagesKeys() as $locale) {
-            $this->locale = $locale; // Used as map key
-            if ($locale === LaravelLocalization::getDefaultLocale()) {
-                $prefix = '';
-            } else {
-                $prefix = $locale;
-            }
-            $this->group(['prefix' => $prefix, 'namespace' => null], $callback);
-        }
-        $this->locale = null;
-    }
-
-    // Works with Laravel 5.3
-    public function setLocale($locale)
-    {
-        $this->locale = $locale;
-    }
-
-    public function localizeRoute($routeName)
-    {
-        if ($this->locale === LaravelLocalization::getDefaultLocale()) {
-            return $routeName;
-        }
-        return $this->locale.'.'.$routeName;
-    }
-////
-//// Dynamic routes: Creates routes automatically from InterAdmin's sections
-////
-
-    /**
-     * Creates routes automatically from InterAdmin's sections.
-     * Only creates routes if Type has 'menu' checked.
-     *
-     * @param  Type     $section        Should use trait Jp7\Laravel\Routable
-     * @param  array    $currentPath    Used for recursivity
-     * @return void
-     */
-    public function createDynamicRoutes($section, $currentPath = [])
-    {
-        $isRoot = $section->isRoot();
-
-        if ($subsections = $section->getChildrenMenu()) {
-            $closure = function () use ($subsections, $currentPath) {
-                foreach ($subsections as $subsection) {
-                    $this->createDynamicRoutes($subsection, $currentPath, false);
-                }
-            };
-
-            if ($isRoot) {
-                $closure();
-            } else {
-                Route::group([
-                    'namespace' => $section->getStudly(),
-                    'prefix' => $section->getSlug()
-                ], $closure);
-            }
-        }
-        if (!$isRoot) {
-            if (!$this->hasType($section->type_id)) {
-                // won't enter here if there is already a route for this type
-                $controllerClass = $section->getControllerBasename();
-                Route::resource($section->getSlug(), $controllerClass, [
-                    'only' => $this->getControllerActions($controllerClass)
-                ]);
-                $this->addType($section->type_id, $controllerClass);
-            }
-        }
     }
 
 ////

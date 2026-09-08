@@ -10,16 +10,6 @@ class Cdn
             ($version ? '?v='.self::getVersion() : '');
     }
 
-    public static function css($url)
-    {
-        return '<link href="'.self::asset($url, true).'"  rel="stylesheet" type="text/css">';
-    }
-
-    public static function js($url)
-    {
-        return '<script src="'.self::asset($url, true).'"></script>';
-    }
-
     private static function replace($url)
     {
         if ($cdn = config('cdn.url')) {
