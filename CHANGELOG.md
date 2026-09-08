@@ -16,6 +16,15 @@
   Jp7\Laravel\RedirectModelTrait, Jp7\Laravel\Seeder\InteradminSeeder,
   Jp7\Laravel\WhoopsHandlerTrait, Jp7\MethodLogger, Jp7\MobileDetect, Jp7\ReadOnlyArray, and
   time_to_int(), error_controller(), link_open(), link_close(), trans_route().
+* Trimmed Jp7\Laravel down to what the apps invoke, 267 more lines. Jp7\Laravel\Cdn is gone:
+  no app sets `cdn.url`, so its rewrite was the identity, and its one caller now says asset().
+  Jp7\Laravel\BladeExtension is gone with it: no app sets `view.includes-with-underline`, so the
+  @include rewrite never fired, and ci-intranet had already replaced the @ia() directive with its
+  own. LogServiceProviderTrait keeps listenQueueEvents() and drops the other three, two of which
+  called Log::getMonolog()/Log::useSyslog(), removed in Laravel 5.6. Routable keeps
+  getChildrenMenu(); its slug/studly/controller-name cluster was reachable only from a commented
+  method. Also dropped the interadmin_data() and memoize() helpers.
+  ⚠ functions.php's guard named interadmin_data, so it now names human_size instead.
 * ⚠ Half of the above was reachable only from jp7io/abipe, which is retired. If a project outside
   the six listed ever comes back, it pinned classes at 498f1c31 (2025-06-02) and predates the
   InterAdmin namespace recase anyway, so it cannot follow this main regardless.

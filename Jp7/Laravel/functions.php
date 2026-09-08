@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Str;
 
-if (!function_exists('interadmin_data')) {
+if (!function_exists('human_size')) {
     /**
      * Converts 1024 to 1kB
      *
@@ -31,20 +31,6 @@ if (!function_exists('interadmin_data')) {
         return Str::slug($string, $separator);
     }
 
-    /**
-     * Called by @ia($record) blade extension
-     *
-     * @param $record|null
-     */
-    function interadmin_data($record = null)
-    {
-        if ($record instanceof \Jp7\InterAdmin\RecordAbstract) {
-            echo ' data-ia="'.$record->id.':'.$record->type_id.'"';
-        } elseif ($record && getenv('APP_DEBUG')) {
-            throw new InvalidArgumentException('@ia expects a Record, instance of '.get_class($record).' given');
-        }
-    }
-
     function img_tag($img, $template = null, $options = [])
     {
         return ImgResize::tag($img, $template, $options);
@@ -58,29 +44,6 @@ if (!function_exists('interadmin_data')) {
         return $object ?: new \Jp7\NullObject();
     }
 
-    /**
-     * @deprecated
-     */
-    function memoize(Closure $closure)
-    {
-        static $memoized = [];
-
-        list(, $caller) = debug_backtrace(false, 2);
-
-        $key = $caller['class'].':'.$caller['function'];
-
-        foreach ($caller['args'] as $arg) {
-            $key .= ",\0".(is_array($arg) ? serialize($arg) : (string) $arg);
-        }
-
-        $cache = &$memoized[$key];
-
-        if (!isset($cache)) {
-            $cache = call_user_func_array($closure, $caller['args']);
-        }
-
-        return $cache;
-    }
     /**
      * @param $object
      * @param string $search

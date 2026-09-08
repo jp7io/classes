@@ -36,7 +36,6 @@ class InteradminServiceProvider extends ServiceProvider
             return;
         }
         if (isset($this->app['view'])) {
-            BladeExtension::apply();
             $this->shareViewPath();
         }
 

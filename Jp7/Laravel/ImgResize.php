@@ -108,7 +108,7 @@ class ImgResize
             $url = static::seoReplace($url, $title);
         }
 
-        return Cdn::asset($url);
+        return asset($url);
     }
 
     protected static function storageUrl()

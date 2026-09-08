@@ -12,7 +12,7 @@ use Tests\Config;
  * name adds to them.
  *
  * Only addTemplate() is exercised. The rest of the class (url(), tag(), bg(), srcset())
- * bottoms out in Cdn::asset() and so in Laravel's asset() helper, which needs a booted app
+ * bottoms out in Laravel's asset() helper, which needs a booted app
  * rather than the config() stub this suite provides.
  */
 class ImgResizeTest extends TestCase
