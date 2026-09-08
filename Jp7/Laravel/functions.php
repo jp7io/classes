@@ -24,7 +24,7 @@ if (!function_exists('human_size')) {
         // ''. Since PHP 8.1 that is a deprecation on every str_* below, not a silent cast.
         $string = (string) $string;
 
-        // ⚠ NOT Str::slug()'s $dictionary. That pads its replacement with spaces, so 'M&M'
+        // ⚠ NOT Str::slug()'s $dictionary. That pads its replacement with the separator, so 'M&M'
         // becomes 'm-e-m' where this gives 'mem', and these values are stored in id_slug.
         $string = str_replace('/', '-', $string);
         $string = str_replace('®', '', $string);
@@ -38,28 +38,6 @@ if (!function_exists('human_size')) {
         return ImgResize::tag($img, $template, $options);
     }
 
-    /**
-     * @deprecated
-     */
-    function _try($object)
-    {
-        return $object ?: new \Jp7\NullObject();
-    }
-
-    /**
-     * Same as str_replace but only if the string starts with $search.
-     *
-     * @param string $search
-     * @param string $replace
-     * @param string $subject
-     *
-     * @return string
-     */
-    function replace_prefix($search, $replace, $subject)
-    {
-        return Str::replaceStart($search, $replace, $subject);
-    }
-    // Laravel 5 functions
     /**
      * @deprecated Dont extend the base Collection
      */
@@ -80,16 +58,6 @@ if (!function_exists('human_size')) {
             // JP7 in user agent for whitelisting in Firewall / Bot Blocker
             'user_agent' => $safariUserAgent.' JP7'
         ];
-        $host = parse_url($url, PHP_URL_HOST);
-        if ($host && Str::endsWith($host, '.dev')) {
-            // Local development does not have SSL certificates
-            $contextOptions += [
-                'ssl' => [
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                ],
-            ];
-        }
         $context = stream_context_create($contextOptions);
         return file_get_contents($url, false, $context);
     }
