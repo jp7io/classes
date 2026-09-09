@@ -148,6 +148,12 @@ trait SelectFieldTrait
                 Cache::put($prefix.','.$id, $found ? $found->getAttributes() : false, 600);
             }
         }
+        // ⚠ The keys are the STORED order and array_values() reads INSERTION order, so without
+        // this a partially warm cache lists whatever was already cached first: the six ids of one
+        // ci cell rendered `Loja Própria, Office, Express, ...` once two of them had been primed by
+        // an earlier row of the same page, and pushed a seventh into the "+1" overflow.
+        ksort($cached);
+
         return new \Jp7\InterAdmin\Collection(array_values(array_filter($cached)));
     }
 
