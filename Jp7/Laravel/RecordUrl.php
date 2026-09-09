@@ -50,13 +50,17 @@ class RecordUrl
     /**
      * Return URL from the route associated with this record.
      *
+     * ⚠ Untyped because this package sits BELOW the app that declares the second record class:
+     * InterAdmin\Models\Record answers every name used below and cannot be named from here.
+     *
+     * @param Record|\InterAdmin\Models\Record $record
      * @param string $action Defaults to 'show'
      *
      * @return string
      *
      * @throws BadMethodCallException
      */
-    public static function getRecordUrl(Record $record, $action = 'show')
+    public static function getRecordUrl($record, $action = 'show')
     {
         $route = $record->getRoute($action);
         if (!$route) {
