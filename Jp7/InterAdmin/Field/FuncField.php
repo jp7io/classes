@@ -39,6 +39,8 @@ class FuncField extends ColumnField
         if (!is_callable($this->name)) {
             return 'Function '.$this->name.' not found.';
         }
+        $buffers = ob_get_level();
+
         try {
             ob_start();
             // http://wiki.jp7.com.br:81/jp7/InterAdmin:Special
@@ -48,6 +50,14 @@ class FuncField extends ColumnField
             $response .= ob_get_clean();
             return $response;
         } catch (Throwable $e) {
+            // ⚠ The buffer above is only closed on the success path, so every throwing handler
+            // leaked one -- and neither arm below reaches it. A leaked buffer captures whatever the
+            // rest of the request echoes and PHP flushes it after the response, so a page with two
+            // erroring fields is a 200 with stray bytes appended and nothing in any log saying so.
+            while (ob_get_level() > $buffers) {
+                ob_end_clean();
+            }
+
             if (getenv('APP_DEBUG')) {
                 throw $e;
             }
