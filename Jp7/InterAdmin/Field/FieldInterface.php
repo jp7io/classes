@@ -17,7 +17,8 @@ interface FieldInterface
 
     public function setRecord($record);
 
-    public function setType(Type $type);
+    /** @param Type|\InterAdmin\Models\Type $type */
+    public function setType($type);
 
     /**
      * Which repeat of a multi-value field this is. Beside setRecord()/setType() because the

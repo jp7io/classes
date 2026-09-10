@@ -23,7 +23,7 @@ abstract class BaseField implements FieldInterface
      * and that row's first entry is `type` -- so a property called `$type` would answer the Type
      * object inside the hierarchy and the column string outside it.
      *
-     * @var Type
+     * @var Type|\InterAdmin\Models\Type
      */
     protected $ownerType;
     /**
@@ -37,8 +37,15 @@ abstract class BaseField implements FieldInterface
         $this->record = $record;
     }
 
-    public function setType(Type $type)
+    /**
+     * ⚠ Untyped because this package sits BELOW the app declaring the second Type class, as
+     * RecordUrl::getRecordUrl() is. Nothing HERE reads it -- two pass-throughs and no method call.
+     *
+     * @param Type|\InterAdmin\Models\Type $type
+     */
+    public function setType($type)
     {
+        assert(is_object($type));
         $this->ownerType = $type;
     }
 
