@@ -2,11 +2,9 @@
 
 namespace Jp7\InterAdmin\Field;
 
-use Jp7\InterAdmin\Type;
-
 /**
  * @property string $type
- * @property Type|string $name
+ * @property TypeInterface|string $name
  * @property string $help
  * @property string|int $size
  * @property string|bool $required    'S' or ''
@@ -21,8 +19,7 @@ use Jp7\InterAdmin\Type;
  * @property mixed $permissions
  * @property string $default
  * @property string $name_id
- * Injected by the xtra_disabledfields parser rather than stored in `fields`, and read only
- * by SelectFieldTrait::query(), which is a trait and cannot declare it.
+ * Injected by the xtra_disabledfields parser and read by SelectFieldTrait, which cannot declare it.
  * @property string $where
  */
 class ColumnField extends BaseField

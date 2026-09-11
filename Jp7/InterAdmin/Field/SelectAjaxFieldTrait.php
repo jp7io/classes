@@ -3,7 +3,6 @@
 namespace Jp7\InterAdmin\Field;
 
 use UnexpectedValueException;
-use Jp7\InterAdmin\Type;
 
 trait SelectAjaxFieldTrait
 {
@@ -13,7 +12,7 @@ trait SelectAjaxFieldTrait
             $query = $this->buildSearch($this->records(false), $this->getSearchableFields(), $search);
             return $this->toJsonOptions($query->get());
         }
-        if ($this->name instanceof Type || $this->name === 'all') {
+        if ($this->name instanceof TypeInterface || $this->name === 'all') {
             $query = $this->buildSearch($this->types(), ['name'], $search);
             return $this->toJsonOptions($query->get());
         }
@@ -55,7 +54,7 @@ trait SelectAjaxFieldTrait
         $searchable = [];
 
         foreach ($this->name->getComboFieldNames() as $comboColumn) {
-            if ($fieldDefinitions[$comboColumn]['name'] instanceof Type) {
+            if ($fieldDefinitions[$comboColumn]['name'] instanceof TypeInterface) {
                 foreach ($fieldDefinitions[$comboColumn]['name']->getComboFieldNames() as $subComboColumn) {
                     $searchable[] = $comboColumn.'.'.$subComboColumn;
                 }

@@ -45,7 +45,7 @@ class FuncField extends ColumnField
             ob_start();
             // http://wiki.jp7.com.br:81/jp7/InterAdmin:Special
             // callable(array $campo, mixed $value, string $parte, stdClass $record)
-            $campo = $this->campo + [self::FIELD_TYPE_ID => $this->ownerType ? (int) $this->ownerType->type_id : null];
+            $campo = $this->campo + [self::FIELD_TYPE_ID => $this->ownerType ? (int) $this->ownerType->getKey() : null];
             $response = call_user_func($this->name, $campo, $value, $parte, $this->record);
             $response .= ob_get_clean();
             return $response;

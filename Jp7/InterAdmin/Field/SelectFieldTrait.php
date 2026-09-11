@@ -2,7 +2,6 @@
 
 namespace Jp7\InterAdmin\Field;
 
-use Jp7\InterAdmin\Record;
 use Jp7\InterAdmin\Type;
 use Jp7\InterAdmin\Query\TypeQuery;
 use UnexpectedValueException;
@@ -31,7 +30,7 @@ trait SelectFieldTrait
         if ($this->label) {
             return $this->label;
         }
-        if ($this->name instanceof Type) {
+        if ($this->name instanceof TypeInterface) {
             return $this->name->getName();
         }
         if ($this->name === 'all') {
@@ -51,10 +50,10 @@ trait SelectFieldTrait
 
     protected function valueAndStatus($related): array
     {
-        if ($related instanceof Type) {
+        if ($related instanceof TypeInterface) {
             return [$related->getName(), true];
         }
-        if ($related instanceof Record) {
+        if ($related instanceof RecordInterface) {
             return [$related->getStringValue(), $related->isPublished()];
         }
         if (!$related) {
@@ -65,12 +64,12 @@ trait SelectFieldTrait
 
     protected function getDefaultValue()
     {
-        if ($this->default && !is_numeric($this->default) && $this->name instanceof Type) {
+        if ($this->default && !is_numeric($this->default) && $this->name instanceof TypeInterface) {
             $defaultArr = [];
             foreach (array_filter(explode(',', $this->default)) as $idString) {
                 // records() takes no arguments, so an options array here is discarded in
                 // silence and first() answers with whichever record comes first.
-                $selectedObj = $this->name->records()->where('id_string', $idString)->first();
+                $selectedObj = $this->name->selectableRecords()->where('id_string', $idString)->first();
                 if ($selectedObj) {
                     $defaultArr[] = $selectedObj->id;
                 }
@@ -104,7 +103,7 @@ trait SelectFieldTrait
             //return $this->records()->whereIn('id', $ids)->get();
             return $this->cachedRecords($ids);
         }
-        if ($this->name instanceof Type || $this->name === 'all') {
+        if ($this->name instanceof TypeInterface || $this->name === 'all') {
             //return $this->types()->whereIn('type_id', $ids)->get();
             $cached = new \Jp7\InterAdmin\Collection();
             foreach ($ids as $type_id) {
@@ -120,7 +119,7 @@ trait SelectFieldTrait
 
     protected function cachedRecords($ids): \Jp7\InterAdmin\Collection
     {
-        $prefix = 'cachedRecords,'.$this->name->type_id;
+        $prefix = 'cachedRecords,'.$this->name->getKey();
         $cached = [];
         foreach ($ids as $key => $id) {
             $attributes = Cache::get($prefix.','.$id);
@@ -129,8 +128,7 @@ trait SelectFieldTrait
                 $cached[$key] = null;
             } elseif ($attributes) {
                 // cached
-                $cached[$key] = Record::getInstance($id, [], $this->name);
-                $cached[$key]->setRawAttributes($attributes);
+                $cached[$key] = $this->name->recordFromAttributes($attributes);
             }
         }
         if ($pending = array_diff_key($ids, $cached)) {
@@ -160,7 +158,7 @@ trait SelectFieldTrait
     protected function getOptions()
     {
         if (!$this->hasType()) {
-            $cacheKey = 'cachedOptions,'.$this->name->type_id;
+            $cacheKey = 'cachedOptions,'.$this->name->getKey();
             $resolve = function () {
                 return $this->toOptions($this->records()->get());
             };
@@ -170,7 +168,7 @@ trait SelectFieldTrait
                 return $resolve();
             }
         }
-        if ($this->name instanceof Type) {
+        if ($this->name instanceof TypeInterface) {
             return $this->toOptions($this->types()->get());
         }
         if ($this->name === 'all') {
@@ -185,7 +183,7 @@ trait SelectFieldTrait
         if (!$comboColumns) {
             $comboColumns = ['id'];
         }
-        $query = $this->name->records();
+        $query = $this->name->selectableRecords();
         // used later by isPublished()
         $publishedColumns = ['bool_key', 'parent_id', 'publish', 'deleted_at', 'publish_at', 'expire_at'];
         $query->select(array_merge($comboColumns, $publishedColumns))
@@ -212,8 +210,8 @@ trait SelectFieldTrait
             ->published()
             ->orderByRaw('admin,position,name'.$suffix);
         // only children types
-        if ($this->name instanceof Type) {
-            $query->where('parent_type_id', $this->name->type_id);
+        if ($this->name instanceof TypeInterface) {
+            $query->where('parent_type_id', $this->name->getKey());
         }
         return $query;
     }
@@ -224,11 +222,11 @@ trait SelectFieldTrait
     protected function toOptions($array)
     {
         $options = [];
-        if (!empty($array[0]) && $array[0] instanceof Type) {
+        if (!empty($array[0]) && $array[0] instanceof TypeInterface) {
             foreach ($array as $type) {
                 $options[$type->type_id] = e($type->getName());
             }
-        } elseif (!empty($array[0]) && $array[0] instanceof Record) {
+        } elseif (!empty($array[0]) && $array[0] instanceof RecordInterface) {
             foreach ($array as $record) {
                 $options[$record->id] = e($record->getStringValue() . ($record->isPublished() ? '': ' (despublicado)'));
             }

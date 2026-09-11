@@ -4,7 +4,6 @@ namespace Jp7\InterAdmin\Field;
 
 use HtmlObject\Element;
 use Former;
-use Jp7\InterAdmin\Type;
 
 abstract class BaseField implements FieldInterface
 {
@@ -16,15 +15,8 @@ abstract class BaseField implements FieldInterface
      * @var object
      */
     protected $record;
-    /**
-     * The Type this field belongs to.
-     *
-     * ⚠ NOT `$type`: ColumnField's `__get()` resolves an unknown property from the field-definition row,
-     * and that row's first entry is `type` -- so a property called `$type` would answer the Type
-     * object inside the hierarchy and the column string outside it.
-     *
-     * @var Type|\InterAdmin\Models\Type
-     */
+    /** ⚠ NOT `$type`: ColumnField's __get() answers that name with the field row's column string.
+     * @var TypeInterface The type this field belongs to. */
     protected $ownerType;
     /**
      * @var int|null
@@ -41,7 +33,7 @@ abstract class BaseField implements FieldInterface
      * ⚠ Untyped because this package sits BELOW the app declaring the second Type class, as
      * RecordUrl::getRecordUrl() is. Nothing HERE reads it -- two pass-throughs and no method call.
      *
-     * @param Type|\InterAdmin\Models\Type $type
+     * @param TypeInterface $type
      */
     public function setType($type)
     {

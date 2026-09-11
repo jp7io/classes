@@ -29,7 +29,7 @@ class SelectMultiAjaxField extends SelectMultiField
             ->value(array_keys($options))
             ->multiple()
             ->data_ajax()
-            ->data_type_id($this->ownerType->type_id);
+            ->data_type_id($this->ownerType->getKey());
     }
 
     /**
