@@ -19,8 +19,9 @@ class RecordUrl
      * @throws BadMethodCallException
      *
      * @return string
+     * @param Type|\InterAdmin\Models\Type $type ⚠ Untyped for the model, as getRecordUrl() is.
      */
-    public static function getTypeUrl(Type $type, $action = 'index', $parameters = null)
+    public static function getTypeUrl($type, $action = 'index', $parameters = null)
     {
         $route = $type->getRoute($action);
         if (!$route) {

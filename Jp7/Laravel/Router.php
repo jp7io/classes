@@ -5,7 +5,7 @@ namespace Jp7\Laravel;
 use Illuminate\Support\Str;
 use Jp7\MethodForwarder;
 use Jp7\InterAdmin\RecordClassMap;
-use Jp7\InterAdmin\Type;
+use InterAdmin\Models\Type;
 use Illuminate\Support\Facades\Route;
 use App;
 
@@ -123,8 +123,20 @@ class Router extends MethodForwarder
         $map = $map ?: [];
         $type_id = array_search($routeBasename, $map);
         if ($type_id) {
-            return Type::getInstance($type_id);
+            return $this->typeClass()::find($type_id);
         }
+    }
+
+    /**
+     * The tenant's own Type (`interadmin.namespace`), which an unbound type hydrates as: the class
+     * the ORM's getInstance() fell back to.
+     * @return class-string<Type>
+     */
+    private function typeClass(): string
+    {
+        $namespace = config('interadmin.namespace');
+
+        return $namespace ? $namespace.'Type' : Type::class;
     }
     /**
      * @param  Route $route

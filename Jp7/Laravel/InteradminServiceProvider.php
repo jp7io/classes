@@ -68,18 +68,23 @@ class InteradminServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        App::bind(Type::class, function () {
+        $currentType = function () {
             $route = Route::getCurrentRoute();
             if ($route) { // Some pages don't have route, like 503.blade.php
                 return r::getTypeByRoute($route);
             }
-        });
+        };
+        // Under the ORM's name too: a tenant still hinting it gets the model and a TypeError, never
+        // the blank Type the container would build otherwise.
+        App::bind(\InterAdmin\Models\Type::class, $currentType);
+        App::bind(Type::class, $currentType);
     }
 
     private function bootOrm()
     {
         if (config('interadmin.namespace')) {
             Type::setDefaultClass(config('interadmin.namespace').'Type');
+            \InterAdmin\Models\Type::setDefaultClass(config('interadmin.namespace').'Type');
         }
         $classesFile = GenerateClasses::getFilePath();
         if (file_exists($classesFile)) {
