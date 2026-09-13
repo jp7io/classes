@@ -2,8 +2,6 @@
 
 namespace Jp7\Laravel;
 
-use Jp7\InterAdmin\Type;
-use Jp7\InterAdmin\Record;
 use Jp7\Laravel\RouterFacade as r;
 use BadMethodCallException;
 use URL;
@@ -19,7 +17,7 @@ class RecordUrl
      * @throws BadMethodCallException
      *
      * @return string
-     * @param Type|\InterAdmin\Models\Type $type ⚠ Untyped for the model, as getRecordUrl() is.
+     * @param \InterAdmin\Models\Type $type ⚠ Untyped for the model, as getRecordUrl() is.
      */
     public static function getTypeUrl($type, $action = 'index', $parameters = null)
     {
@@ -50,15 +48,11 @@ class RecordUrl
 
     /**
      * Return URL from the route associated with this record.
+     * ⚠ Untyped: the models live in interadmin-orm, which requires this package.
      *
-     * ⚠ Untyped because this package sits BELOW the app that declares the second record class:
-     * InterAdmin\Models\Record answers every name used below and cannot be named from here.
-     *
-     * @param Record|\InterAdmin\Models\Record $record
+     * @param \InterAdmin\Models\Record $record
      * @param string $action Defaults to 'show'
-     *
      * @return string
-     *
      * @throws BadMethodCallException
      */
     public static function getRecordUrl($record, $action = 'show')

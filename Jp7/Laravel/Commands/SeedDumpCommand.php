@@ -4,8 +4,7 @@ namespace Jp7\Laravel\Commands;
 
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
-use Jp7\InterAdmin\Type;
-use Jp7\InterAdmin\Query;
+use InterAdmin\Models\Type;
 use DB;
 
 class SeedDumpCommand extends Command
@@ -76,15 +75,14 @@ class SeedDumpCommand extends Command
     {
         $tables = [];
         foreach ($this->typeIds as $typeId) {
-            $type = Type::getInstance($typeId);
-            $count = $type->records()->count();
+            $type = Type::findOrFail($typeId);
+            $count = $type->records()->published()->count();
             if ($count > $this->tooManyRecords) {
                 $this->error($type->name.' ('.$typeId.') exports too many records: '.$count);
             }
-            foreach ($type->getRelationships() as $relation => $data) {
-                $query = $data['query'];
-                if ($query instanceof Query && !in_array($query->type()->type_id, $this->typeIds)) {
-                    $this->warn($type->name.' ('.$typeId.') might require '.$relation.' ('.$query->type()->type_id.')');
+            foreach ($type->relationships() as $relation => $data) {
+                if (!$data['holds_type'] && $data['type_id'] && !in_array($data['type_id'], $this->typeIds)) {
+                    $this->warn($type->name.' ('.$typeId.') might require '.$relation.' ('.$data['type_id'].')');
                 }
             }
             $tables[] = $type->getInterAdminsTableName();

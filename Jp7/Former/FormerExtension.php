@@ -5,8 +5,6 @@ namespace Jp7\Former;
 use Illuminate\Support\Str;
 use Former\Former as OriginalFormer;
 use Log;
-use Jp7\InterAdmin\Record;
-use Jp7\InterAdmin\EloquentProxy;
 use Jp7\InterAdmin\FieldUtil;
 use Lang;
 use UnexpectedValueException;
@@ -72,16 +70,7 @@ class FormerExtension
 
     public function populate($model)
     {
-        if (!$model instanceof Record) {
-            return $this->former->populate($model);
-        }
-
-        $this->model = $model;
-        $this->rules = $model->getRules();
-
-        $proxy = new EloquentProxy;
-        $proxy->setRecord($model);
-        return $this->former->populate($proxy);
+        return $this->former->populate($model);
     }
 
     public function close()

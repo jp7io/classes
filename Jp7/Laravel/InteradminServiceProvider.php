@@ -74,10 +74,7 @@ class InteradminServiceProvider extends ServiceProvider
                 return r::getTypeByRoute($route);
             }
         };
-        // Under the ORM's name too: a tenant still hinting it gets the model and a TypeError, never
-        // the blank Type the container would build otherwise.
         App::bind(\InterAdmin\Models\Type::class, $currentType);
-        App::bind(Type::class, $currentType);
     }
 
     private function bootOrm()
