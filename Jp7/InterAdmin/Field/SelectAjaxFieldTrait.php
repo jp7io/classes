@@ -41,11 +41,15 @@ trait SelectAjaxFieldTrait
             }
         });
 
-        $startsWith = \DB::connection()->getPdo()->quote($search.'%');
-        $order = array_map(fn (string $field): string => $field.' LIKE '.$startsWith.' DESC', $fields);
+        // ⚠ Nothing to rank by is no ORDER BY at all: Eloquent compiles an empty orderByRaw() as
+        // `order by ,`, where the ORM's dropped it. A type with no combo column searches that way.
+        if ($fields) {
+            $startsWith = \DB::connection()->getPdo()->quote($search.'%');
+            $order = array_map(fn (string $field): string => $field.' LIKE '.$startsWith.' DESC', $fields);
+            $query->orderByRaw(implode(', ', array_merge($order, $fields)));
+        }
 
-        return $query->orderByRaw(implode(', ', array_merge($order, $fields)))
-            ->limit(100);
+        return $query->limit(100);
     }
 
     protected function getSearchableFields(): array

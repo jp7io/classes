@@ -4,7 +4,7 @@ namespace Jp7\Laravel;
 
 use Illuminate\Support\Str;
 use Jp7\MethodForwarder;
-use Jp7\InterAdmin\RecordClassMap;
+use Jp7\InterAdmin\Schema\RecordClassMap;
 use InterAdmin\Models\Type;
 use Illuminate\Support\Facades\Route;
 use App;

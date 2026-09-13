@@ -3,7 +3,7 @@
 namespace Jp7\Laravel;
 
 use Illuminate\Routing\Router;
-use Jp7\InterAdmin\RecordClassMap;
+use Jp7\InterAdmin\Schema\RecordClassMap;
 
 trait RouteConnectorTrait
 {

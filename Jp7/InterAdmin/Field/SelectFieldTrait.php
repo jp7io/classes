@@ -2,8 +2,9 @@
 
 namespace Jp7\InterAdmin\Field;
 
-use Jp7\InterAdmin\Type;
-use Jp7\InterAdmin\Query\TypeQuery;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+use InterAdmin\Models\Type;
 use UnexpectedValueException;
 use Cache;
 use Lang;
@@ -104,20 +105,15 @@ trait SelectFieldTrait
             return $this->cachedRecords($ids);
         }
         if ($this->name instanceof TypeInterface || $this->name === 'all') {
-            //return $this->types()->whereIn('type_id', $ids)->get();
-            $cached = new \Jp7\InterAdmin\Collection();
-            foreach ($ids as $type_id) {
-                $type = Type::getInstance($type_id);
-                if ($type->name !== null) { // deleted types
-                    $cached[] = $type;
-                }
-            }
-            return $cached;
+            // Any row, unpublished too, in the order stored; one whose row is gone is left out.
+            $types = Type::prime($ids);
+
+            return new Collection(array_values(array_filter(array_map(fn ($id) => $types[(int) $id] ?? null, $ids))));
         }
         throw new UnexpectedValueException('Not implemented');
     }
 
-    protected function cachedRecords($ids): \Jp7\InterAdmin\Collection
+    protected function cachedRecords($ids): Collection
     {
         $prefix = 'cachedRecords,'.$this->name->getKey();
         $cached = [];
@@ -152,7 +148,7 @@ trait SelectFieldTrait
         // an earlier row of the same page, and pushed a seventh into the "+1" overflow.
         ksort($cached);
 
-        return new \Jp7\InterAdmin\Collection(array_values(array_filter($cached)));
+        return new Collection(array_values(array_filter($cached)));
     }
 
     protected function getOptions()
@@ -198,16 +194,14 @@ trait SelectFieldTrait
         return $query;
     }
 
-    protected function types(): TypeQuery
+    /** Published types in the tree's order, selecting only what an option reads: the key and getName()'s columns. */
+    protected function types(): Builder
     {
-        // The same translated-column suffix Type::getName() reads, instead of the `$lang` global
-        // it used to reach for. Both resolve to the object Tenant::readClientEnv builds; this one
-        // does not need it to still be in scope.
         $suffix = Lang::get('interadmin.suffix');
 
-        $query = new TypeQuery;
-        $query->select('name'.$suffix, 'parent_type_id')
-            ->published()
+        $query = Type::query();
+        $query->scopes('published')
+            ->select(array_values(array_unique(['type_id', 'name', 'name'.$suffix, 'parent_type_id'])))
             ->orderByRaw('admin,position,name'.$suffix);
         // only children types
         if ($this->name instanceof TypeInterface) {

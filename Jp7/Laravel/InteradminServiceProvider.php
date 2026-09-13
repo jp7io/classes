@@ -4,7 +4,7 @@ namespace Jp7\Laravel;
 
 use Illuminate\Support\ServiceProvider;
 use Jp7\InterAdmin\DynamicLoader;
-use Jp7\InterAdmin\RecordClassMap;
+use Jp7\InterAdmin\Schema\RecordClassMap;
 use Jp7\InterAdmin\Type;
 use Jp7\Laravel\Commands\GenerateClasses;
 use Jp7\Laravel\RouterFacade as r;
