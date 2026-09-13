@@ -2,6 +2,7 @@
 
 namespace Jp7\Laravel;
 
+use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\ServiceProvider;
 use Jp7\InterAdmin\DynamicLoader;
 use Jp7\InterAdmin\Schema\RecordClassMap;
@@ -43,6 +44,9 @@ class InteradminServiceProvider extends ServiceProvider
 
         $this->publishPackageFiles();
         $this->bootOrm();
+        // `queue:work` boots once for every job it runs, so what the models derived from `types`
+        // would otherwise outlive a type edited in the admin until the worker restarts.
+        $this->app['events']->listen(JobProcessing::class, fn () => \InterAdmin\Models\Type::forgetTypeState());
         // self::bootTestingEnv();
     }
 
