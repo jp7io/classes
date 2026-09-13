@@ -4,10 +4,9 @@ namespace Jp7\Laravel;
 
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\ServiceProvider;
-use Jp7\InterAdmin\DynamicLoader;
+use Jp7\InterAdmin\Schema\DynamicLoader;
 use Jp7\InterAdmin\Schema\RecordClassMap;
 use Jp7\InterAdmin\Type;
-use Jp7\Laravel\Commands\GenerateClasses;
 use Jp7\Laravel\RouterFacade as r;
 use Schema;
 use App;
@@ -84,18 +83,12 @@ class InteradminServiceProvider extends ServiceProvider
     private function bootOrm()
     {
         if (config('interadmin.namespace')) {
-            Type::setDefaultClass(config('interadmin.namespace').'Type');
             \InterAdmin\Models\Type::setDefaultClass(config('interadmin.namespace').'Type');
         }
-        $classesFile = GenerateClasses::getFilePath();
-        if (file_exists($classesFile)) {
-            require_once $classesFile;
-        } else {
-            if (getenv('APP_DEBUG') && RecordClassMap::getInstance()->getClasses()) {
-                Type::checkCache();
-            }
-            DynamicLoader::register();
+        if (getenv('APP_DEBUG') && RecordClassMap::getInstance()->getClasses()) {
+            Type::checkCache();
         }
+        DynamicLoader::register();
     }
 
     private function shareViewPath()
