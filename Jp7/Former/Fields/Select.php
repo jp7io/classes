@@ -11,10 +11,6 @@ class Select extends \Former\Form\Fields\Select
 
     public function options($list, $selected = null, $valuesAsKeys = false)
     {
-        if ($list instanceof \Jp7\InterAdmin\Query\BaseQuery) {
-            throw new \Exception('Expected array but received Query, use $query->pluck(attr_name,id)');
-        }
-
         // clear previous options
         $this->children = [];
         $this->lazyOptions = null;

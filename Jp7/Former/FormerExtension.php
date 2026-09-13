@@ -5,7 +5,7 @@ namespace Jp7\Former;
 use Illuminate\Support\Str;
 use Former\Former as OriginalFormer;
 use Log;
-use Jp7\InterAdmin\FieldUtil;
+use Jp7\InterAdmin\Field\FieldHeader;
 use Lang;
 use UnexpectedValueException;
 use BadMethodCallException;
@@ -134,8 +134,8 @@ class FormerExtension
 
         // Set label
         if (!Lang::has('validation.attributes.'.$alias)) {
-            // FIXME FieldUtil::getFieldHeader roda funcoes special_
-            $label = $fieldDefinition['label'] ?: FieldUtil::getFieldHeader($fieldDefinition);
+            // FIXME FieldHeader::text() roda funcoes special_
+            $label = $fieldDefinition['label'] ?: FieldHeader::text($fieldDefinition);
             $field->label($label);
         }
 
