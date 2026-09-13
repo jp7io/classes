@@ -5,8 +5,7 @@ namespace Jp7\Laravel;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\ServiceProvider;
 use Jp7\InterAdmin\Schema\DynamicLoader;
-use Jp7\InterAdmin\Schema\RecordClassMap;
-use Jp7\InterAdmin\Type;
+use Jp7\InterAdmin\Schema\TypeCache;
 use Jp7\Laravel\RouterFacade as r;
 use Schema;
 use App;
@@ -85,10 +84,9 @@ class InteradminServiceProvider extends ServiceProvider
         if (config('interadmin.namespace')) {
             \InterAdmin\Models\Type::setDefaultClass(config('interadmin.namespace').'Type');
         }
-        if (getenv('APP_DEBUG') && RecordClassMap::getInstance()->getClasses()) {
-            Type::checkCache();
-        }
         DynamicLoader::register();
+        // The unit's stamp check, here and not inside its first query-counted read of a type.
+        TypeCache::store();
     }
 
     private function shareViewPath()

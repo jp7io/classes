@@ -73,7 +73,7 @@ abstract class BaseClassMap
     public function getClasses()
     {
         if ($this->classes === null) {
-            $cache = Cache::tag(TypeCache::TAG);
+            $cache = TypeCache::store();
             $this->classes = $cache->get(static::CACHE_KEY);
             if (!$this->classes) {
                 $this->classes = static::prepareMap(static::CLASS_ATTRIBUTE);
