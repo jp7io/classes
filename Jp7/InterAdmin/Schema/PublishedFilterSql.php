@@ -7,13 +7,26 @@ final class PublishedFilterSql
 {
     /**
      * Ends in 'AND ' deliberately: every caller concatenates it onto the front of its own clause.
+     * @param int $now Record::getTimestamp(), the clock a test can freeze.
+     * @param bool $preview The admin's mode, which also admits unpublished rows and any child row.
+     * @return string|null Null for a table with nothing to filter: tags.
+     */
+    public static function build(string $table, string $alias, int $now, bool $preview): ?string
+    {
+        $predicate = self::predicate($table, $alias, $now, $preview);
+
+        return $predicate === null ? null : $predicate.' AND ';
+    }
+
+    /**
+     * build() without its joiner, for a builder's whereRaw().
      * ⚠ Only a PREFIXED `types`/`tags` takes its own branch, and a bare one falls through to the
      * records calendar, on columns it does not have. Every caller passes a prefixed name.
      * @param int $now Record::getTimestamp(), the clock a test can freeze.
      * @param bool $preview The admin's mode, which also admits unpublished rows and any child row.
      * @return string|null Null for a table with nothing to filter: tags.
      */
-    public static function build(string $table, string $alias, int $now, bool $preview): ?string
+    public static function predicate(string $table, string $alias, int $now, bool $preview): ?string
     {
         $tableParts = explode('_', $table);
         $table = end($tableParts);
@@ -23,7 +36,7 @@ final class PublishedFilterSql
         }
 
         if (($table === 'types' && count($tableParts) === 3) || $table === 'files') {
-            return $alias.'.visible = 1 AND '.$alias.'.deleted_at IS NULL AND ';
+            return $alias.'.visible = 1 AND '.$alias.'.deleted_at IS NULL';
         }
 
         return self::records($alias, $now, $preview);
@@ -41,9 +54,8 @@ final class PublishedFilterSql
             ' AND ('.$alias.".expire_at > '".date('Y-m-d H:i:00', $now)."' OR ".$alias.
                 '.expire_at IS NULL)'.
             ' AND '.$alias.'.bool_key = 1'.
-            ' AND '.$alias.'.deleted_at IS NULL'.
-            ' AND ';
+            ' AND '.$alias.'.deleted_at IS NULL';
 
-        return $preview ? $filter.'('.$alias.'.publish = 1 OR '.$alias.'.parent_id > 0) AND ' : $filter;
+        return $preview ? $filter.' AND ('.$alias.'.publish = 1 OR '.$alias.'.parent_id > 0)' : $filter;
     }
 }
