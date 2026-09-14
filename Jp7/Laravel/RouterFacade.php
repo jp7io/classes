@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static \Illuminate\Routing\Route|null getRouteByTypeId(int|string $type_id, string $action = 'index')
- * @method static \Jp7\InterAdmin\Type|null getTypeByRouteBasename(string $routeBasename)
+ * @method static \InterAdmin\Models\Type|null getTypeByRouteBasename(string $routeBasename)
  *
  * @see Router
  */

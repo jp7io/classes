@@ -10,11 +10,7 @@ class FileField
     use Downloadable;
 
     protected $_parent;
-    /**
-     * Creditos/Legenda da imagem.
-     *
-     * @var Record
-     */
+    /** @var string Creditos/Legenda da imagem. */
     public $text;
     /**
      * Url da imagem.
@@ -51,11 +47,9 @@ class FileField
         return '';
     }
     /**
-     * Returns $parent.
-     *
      * @see FileField::$parent
      *
-     * @return Record
+     * @return \InterAdmin\Models\Record|null
      */
     public function getParent()
     {
@@ -64,7 +58,7 @@ class FileField
     /**
      * Sets $parent.
      *
-     * @param Record $parent
+     * @param \InterAdmin\Models\Record $parent
      *
      * @see FileField::$parent
      */
