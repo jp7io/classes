@@ -13,6 +13,9 @@ abstract class BaseClassMap
     // singleton shared with its sibling.
     protected $classes;
 
+    /** @var array<string, int|string>|null each class's FIRST type_id, as array_search() answered: inherited rows share one */
+    protected ?array $typeIds = null;
+
     final protected function __construct()
     {
     }
@@ -68,6 +71,7 @@ abstract class BaseClassMap
     {
         Cache::tag(TypeCache::TAG)->forget(static::CACHE_KEY);
         static::getInstance()->classes = null;
+        static::getInstance()->typeIds = null;
     }
 
     public function getClasses()
@@ -92,13 +96,27 @@ abstract class BaseClassMap
      */
     public function getClassTypeId($class): int|string|false
     {
-        $type_id = array_search($class, $this->getClasses());
+        // An index, never array_search(): every autoload MISS reaches here through DynamicLoader,
+        // and Former misses once per field (class_exists() on a bare framework name).
+        $typeIds = $this->typeIds ??= $this->indexTypeIds();
+        $type_id = $typeIds[$class] ?? false;
         if ($type_id === false && strpos($class, '\\') !== false) {
             // A psr-4=false tenant binds underscore names while its class_alias() bridge makes
             // static::class report the namespaced one (Ci\Loja for Ci_Loja), so ask both ways.
-            $type_id = array_search(str_replace('\\', '_', $class), $this->getClasses());
+            $type_id = $typeIds[str_replace('\\', '_', $class)] ?? false;
         }
         return $type_id;
+    }
+
+    /** @return array<string, int|string> */
+    private function indexTypeIds(): array
+    {
+        $typeIds = [];
+        foreach ($this->getClasses() as $typeId => $class) {
+            $typeIds[$class] ??= $typeId;
+        }
+
+        return $typeIds;
     }
 
     /**
