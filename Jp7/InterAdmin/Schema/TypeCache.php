@@ -82,10 +82,22 @@ final class TypeCache
         }
     }
 
+    /** A write's forgets, which never wait on the stamp. */
+    public static function forget(string ...$keys): void
+    {
+        $cache = Cache::tag(self::TAG);
+        foreach ($keys as $key) {
+            $cache->forget($key);
+        }
+    }
+
     /** Everything derived from `types`, in the store and in this process. */
     public static function flush(): void
     {
         Cache::tag(self::TAG)->flush();
+        // Singletons a queue worker keeps across jobs, holding the maps the flush just dropped.
+        RecordClassMap::getInstance()->clearCache();
+        TypeClassMap::getInstance()->clearCache();
         Type::forgetTypeState();
     }
 
