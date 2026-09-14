@@ -4,6 +4,7 @@ namespace Jp7\Former;
 
 use Illuminate\Support\Str;
 use Former\Former as OriginalFormer;
+use InterAdmin\Models\Record;
 use Log;
 use Jp7\InterAdmin\Field\FieldHeader;
 use Lang;
@@ -70,6 +71,11 @@ class FormerExtension
 
     public function populate($model)
     {
+        if ($model instanceof Record) {
+            $this->model = $model;
+            $this->rules = $model->getRules();
+        }
+
         return $this->former->populate($model);
     }
 
@@ -109,8 +115,11 @@ class FormerExtension
             }
             list($childName, $i, $childAlias) = $aliasParts;
             try {
-                $childType = $this->model->$childName()->type();
-                $this->decorateFieldByTypeAndAlias($field, $childType, $childAlias);
+                // A child relation's related model is a template carrying the child's type_id.
+                $related = $this->model->$childName()->getRelated();
+                if ($related instanceof Record) {
+                    $this->decorateFieldByTypeAndAlias($field, $related->getType(), $childAlias);
+                }
             } catch (BadMethodCallException $e) {
                 // no child type with this name
             }
