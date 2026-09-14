@@ -5,6 +5,7 @@ namespace Jp7\InterAdmin\Field;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use InterAdmin\Models\Type;
+use InterAdmin\Models\TypeIndex;
 use UnexpectedValueException;
 use Cache;
 use Lang;
@@ -164,11 +165,10 @@ trait SelectFieldTrait
                 return $resolve();
             }
         }
-        if ($this->name instanceof TypeInterface) {
-            return $this->toOptions($this->types()->get());
-        }
-        if ($this->name === 'all') {
-            return $this->toTreeOptions($this->types()->get());
+        if ($this->name instanceof TypeInterface || $this->name === 'all') {
+            $types = $this->indexedTypes() ?? $this->types()->get();
+
+            return $this->name === 'all' ? $this->toTreeOptions($types) : $this->toOptions($types);
         }
         throw new UnexpectedValueException('Not implemented');
     }
@@ -194,6 +194,33 @@ trait SelectFieldTrait
         return $query;
     }
 
+    /**
+     * types() as rows off the type index: an option needs no model, and hydrating each type as its
+     * bound class set up ~200 classes per form on ci. Null where getName() reads a translated column.
+     * @return list<\stdClass>|null
+     */
+    protected function indexedTypes(): ?array
+    {
+        if (Lang::get('interadmin.suffix') !== '') {
+            return null;
+        }
+
+        $ids = $this->name instanceof TypeInterface
+            ? TypeIndex::childIds((int) $this->name->getKey(), true)
+            : array_keys(array_filter(TypeIndex::rows(), [TypeIndex::class, 'isPublished']));
+        $rows = array_map(fn (int $id) => (object) TypeIndex::row($id), $ids);
+        // Stable, so `admin, position, name` is the index's own order with admin in front.
+        usort($rows, fn (\stdClass $a, \stdClass $b) => (int) $a->admin <=> (int) $b->admin);
+
+        return $rows;
+    }
+
+    /** getName() of a model, or the `name` column of an index row, which is what it reads untranslated. */
+    private function typeLabel(TypeInterface|\stdClass $type): string
+    {
+        return $type instanceof TypeInterface ? $type->getName() : (string) $type->name;
+    }
+
     /** Published types in the tree's order, selecting only what an option reads: the key and getName()'s columns. */
     protected function types(): Builder
     {
@@ -216,9 +243,9 @@ trait SelectFieldTrait
     protected function toOptions($array)
     {
         $options = [];
-        if (!empty($array[0]) && $array[0] instanceof TypeInterface) {
+        if (!empty($array[0]) && ($array[0] instanceof TypeInterface || $array[0] instanceof \stdClass)) {
             foreach ($array as $type) {
-                $options[$type->type_id] = e($type->getName());
+                $options[$type->type_id] = e($this->typeLabel($type));
             }
         } elseif (!empty($array[0]) && $array[0] instanceof RecordInterface) {
             foreach ($array as $record) {
@@ -256,7 +283,7 @@ trait SelectFieldTrait
         if (!empty($map[$parent_type_id])) {
             foreach ($map[$parent_type_id] as $type) {
                 $prefix = ($level ? str_repeat('--', $level) . '> ' : ''); // ----> Nome
-                $options[$type->type_id] = $prefix.$type->getName();
+                $options[$type->type_id] = $prefix.$this->typeLabel($type);
                 $this->addTypeTreeOptions($options, $map, $type->type_id, $level + 1);
             }
         }
