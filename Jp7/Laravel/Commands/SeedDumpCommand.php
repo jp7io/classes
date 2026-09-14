@@ -85,7 +85,7 @@ class SeedDumpCommand extends Command
                     $this->warn($type->name.' ('.$typeId.') might require '.$relation.' ('.$data['type_id'].')');
                 }
             }
-            $tables[] = $type->getInterAdminsTableName();
+            $tables[] = $type->prefixedRecordsTable();
         }
         return array_unique($tables);
     }

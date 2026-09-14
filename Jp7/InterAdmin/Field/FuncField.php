@@ -96,9 +96,9 @@ class FuncField extends ColumnField
         $relation = str_replace(['_ids', '_id'], '', $this->name_id);
         $data = $this->ownerType->getRelationshipData($relation);
         $field = new SelectAjaxField([
-            // ⚠ $data is getRelationshipData()'s array, whose `tipo` is a Type object; the key
+            // ⚠ $data is getRelationshipData()'s array, whose `related_type` is a Type object; the key
             // being built is the field-definition row's `name`, which for a select_ holds that same Type.
-            'name' => $data['tipo']
+            'name' => $data['related_type']
         ] + $this->campo);
         return $field->searchOptions($search);
     }
