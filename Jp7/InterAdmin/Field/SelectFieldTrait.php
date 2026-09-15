@@ -208,9 +208,9 @@ trait SelectFieldTrait
         $ids = $this->name instanceof TypeInterface
             ? TypeIndex::childIds((int) $this->name->getKey(), true)
             : array_keys(array_filter(TypeIndex::rows(), [TypeIndex::class, 'isPublished']));
-        $rows = array_map(fn (int $id) => (object) TypeIndex::row($id), $ids);
+        $rows = array_map(fn (int $id): \stdClass => (object) TypeIndex::row($id), $ids);
         // Stable, so `admin, position, name` is the index's own order with admin in front.
-        usort($rows, fn (\stdClass $a, \stdClass $b) => (int) $a->admin <=> (int) $b->admin);
+        usort($rows, fn (\stdClass $a, \stdClass $b): int => (int) $a->admin <=> (int) $b->admin);
 
         return $rows;
     }
