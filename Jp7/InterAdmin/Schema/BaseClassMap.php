@@ -8,10 +8,12 @@ use DB;
 /** Which class `types.class` or `types.class_type` binds each type to, cached under TypeCache's tag. */
 abstract class BaseClassMap
 {
-    // ⚠ $instance, CACHE_KEY and CLASS_ATTRIBUTE are deliberately NOT declared on the base: undefined
-    // here makes a subclass that forgets one a fatal, rather than a map cached under '' and a
-    // singleton shared with its sibling.
+    // ⚠ CACHE_KEY and CLASS_ATTRIBUTE are deliberately NOT declared here: undefined makes a
+    // subclass that forgets one a fatal, rather than a map cached under ''.
     protected $classes;
+
+    /** @var array<class-string, static> keyed, so no subclass can share its sibling's singleton */
+    private static array $instances = [];
 
     /** @var array<string, int|string>|null each class's FIRST type_id, as array_search() answered: inherited rows share one */
     protected ?array $typeIds = null;
@@ -25,8 +27,7 @@ abstract class BaseClassMap
      */
     public static function getInstance()
     {
-        static::$instance = static::$instance ?: new static;
-        return static::$instance;
+        return self::$instances[static::class] ??= new static;
     }
 
     protected static function prepareMap($attr): array

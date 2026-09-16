@@ -15,6 +15,6 @@ final class RecordColumns
 
     public static function isDate(string $column): bool
     {
-        return strpos($column, 'date_') === 0 || in_array($column, self::SYSTEM_DATES, true);
+        return str_starts_with($column, 'date_') || in_array($column, self::SYSTEM_DATES, true);
     }
 }

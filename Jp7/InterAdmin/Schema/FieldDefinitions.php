@@ -17,6 +17,11 @@ class FieldDefinitions
     // 1,988 rows, and a sweep reading it as a flag destroys every one of them silently.
     const BOOLEAN_ATTRIBUTES = ['required', 'separator', 'list', 'combo', 'readonly', 'form'];
 
+    /** Which xtras make a field hold a TYPE's id rather than a record's, and which hold several. */
+    const SELECT_TYPE_XTRAS = ['types', 'types_search', 'types_ajax', 'types_radio'];
+    const SPECIAL_TYPE_XTRAS = ['types_multi', 'types'];
+    const SPECIAL_MULTI_XTRAS = ['records_multi', 'types_multi'];
+
     /**
      * The renamed xtra values, applied on the way OUT of both formats.
      * ⚠ Keyed by field type because `S` meant SIX things: MD5 on a password, no-time on a date,
@@ -50,7 +55,7 @@ class FieldDefinitions
     {
         $base = explode('_', $column)[0];
 
-        return $base === 'select' && strpos($column, 'select_multi_') === 0 ? 'select_multi' : $base;
+        return $base === 'select' && str_starts_with($column, 'select_multi_') ? 'select_multi' : $base;
     }
 
     /**
@@ -76,7 +81,7 @@ class FieldDefinitions
         });
 
         // Normalised on the way OUT, so the app reads the same values either side of a migration.
-        return array_map([self::class, 'normalise'], $rows);
+        return array_map(self::normalise(...), $rows);
     }
 
     /** JSON padded to every attribute, in the order given, which IS the form's field order. */
@@ -203,7 +208,7 @@ class FieldDefinitions
     {
         $name = $row['name'] ?? '';
 
-        if (strpos($column, 'select_') === 0 && $name != 'all') {
+        if (str_starts_with($column, 'select_') && $name != 'all') {
             return empty($row['label']) ? $typeName($name) : $row['label'];
         }
 
@@ -213,12 +218,12 @@ class FieldDefinitions
     /** ⚠ Loose in_array on purpose, as the derivation it came from. */
     private static function aliasSuffix(string $column, array $row): string
     {
-        if (strpos($column, 'select_') === 0) {
-            return strpos($column, 'select_multi_') === 0 ? '_ids' : '_id';
+        if (str_starts_with($column, 'select_')) {
+            return str_starts_with($column, 'select_multi_') ? '_ids' : '_id';
         }
 
-        if (strpos($column, 'special_') === 0 && ($row['xtra'] ?? '')) {
-            return in_array($row['xtra'], self::getSpecialMultiXtras()) ? '_ids' : '_id';
+        if (str_starts_with($column, 'special_') && ($row['xtra'] ?? '')) {
+            return in_array($row['xtra'], self::SPECIAL_MULTI_XTRAS) ? '_ids' : '_id';
         }
 
         return '';
@@ -227,33 +232,24 @@ class FieldDefinitions
     /** A `tit_` or `func_` row renders on the form and backs no column: no record answers to it. */
     public static function isVirtualField(string $column): bool
     {
-        return strpos($column, 'tit_') === 0 || strpos($column, 'func_') === 0;
+        return str_starts_with($column, 'tit_') || str_starts_with($column, 'func_');
     }
 
-    /**
-     * The xtra values of select_ fields which store types.
-     * @return array
-     */
+    /** The xtra values of select_ fields which store types. */
     public static function getSelectTypeXtras(): array
     {
-        return ['types', 'types_search', 'types_ajax', 'types_radio'];
+        return self::SELECT_TYPE_XTRAS;
     }
 
-    /**
-     * The xtra values of special_ fields which store types.
-     * @return array
-     */
+    /** The xtra values of special_ fields which store types. */
     public static function getSpecialTypeXtras(): array
     {
-        return ['types_multi', 'types'];
+        return self::SPECIAL_TYPE_XTRAS;
     }
 
-    /**
-     * The xtras of the special_ fields that store multiple records.
-     * @return array
-     */
+    /** The xtras of the special_ fields that store multiple records. */
     public static function getSpecialMultiXtras(): array
     {
-        return ['records_multi', 'types_multi'];
+        return self::SPECIAL_MULTI_XTRAS;
     }
 }
