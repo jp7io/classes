@@ -100,10 +100,13 @@ abstract class BaseClassMap
         // and Former misses once per field (class_exists() on a bare framework name).
         $typeIds = $this->typeIds ??= $this->indexTypeIds();
         $type_id = $typeIds[$class] ?? false;
-        if ($type_id === false && strpos($class, '\\') !== false) {
-            // A psr-4=false tenant binds underscore names while its class_alias() bridge makes
-            // static::class report the namespaced one (Ci\Loja for Ci_Loja), so ask both ways.
-            $type_id = $typeIds[str_replace('\\', '_', $class)] ?? false;
+        if ($type_id === false) {
+            // The map's spelling is the TENANT's, psr-4 off binding `Ci_Loja` where on binds
+            // `Ci\Loja`, and the caller's is its own app's -- and each app holds the other's code,
+            // ci-intranet vendoring ci. So ask the other spelling, whichever way this one is written.
+            $type_id = $typeIds[str_contains($class, '\\')
+                ? str_replace('\\', '_', $class)
+                : str_replace('_', '\\', $class)] ?? false;
         }
         return $type_id;
     }

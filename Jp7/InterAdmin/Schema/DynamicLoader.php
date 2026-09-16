@@ -20,7 +20,7 @@ final class DynamicLoader
     /** Where a generated class extends when the tenant names no default class, as `defaultRecordClass()` falls back. */
     private const MODELS_NAMESPACE = 'InterAdmin\\Models\\';
 
-    /** @var array<string, bool> memoized, because the misses are asked about per record. */
+    /** @var array<string, bool> memoized by SHORT name, the only part this decides on. */
     private static array $declarable = [];
 
     /**
@@ -30,16 +30,18 @@ final class DynamicLoader
      */
     public static function isDeclarable(string $class): bool
     {
-        if (!isset(self::$declarable[$class])) {
-            $short = last(explode('\\', $class));
+        $short = last(explode('\\', $class));
+
+        if (!isset(self::$declarable[$short])) {
             try {
                 token_get_all('<?php class '.$short.' {}', TOKEN_PARSE);
-                self::$declarable[$class] = !in_array(strtolower($short), self::RESERVED_CLASS_NAMES, true);
+                self::$declarable[$short] = !in_array(strtolower($short), self::RESERVED_CLASS_NAMES, true);
             } catch (\ParseError $e) {
-                self::$declarable[$class] = false;
+                self::$declarable[$short] = false;
             }
         }
-        return self::$declarable[$class];
+
+        return self::$declarable[$short];
     }
 
     public static function register(): void
@@ -67,14 +69,19 @@ final class DynamicLoader
     }
 
     /** The code declaring $class, or null when no type binds it. */
-    public static function getCode(string $class): ?string
+    private static function getCode(string $class): ?string
     {
-        if (RecordClassMap::getInstance()->getClassTypeId($class)) {
-            return self::buildClass(self::className($class), self::parentNamespace().'Record', '');
+        // ⚠ Declared under the name PHP ASKED for, in the caller's own spelling: the map answers
+        // both (getClassTypeId()), and declaring the other one leaves this autoload failing.
+        if (RecordClassMap::getInstance()->getClassTypeId($class) !== false) {
+            return self::buildClass($class, self::parentNamespace().'Record', '');
         }
-        if ($typeId = TypeClassMap::getInstance()->getClassTypeId($class)) {
-            return self::buildClass(self::className($class), self::parentNamespace().'Type', "const TYPE_ID = {$typeId};");
+
+        $typeId = TypeClassMap::getInstance()->getClassTypeId($class);
+        if ($typeId !== false) {
+            return self::buildClass($class, self::parentNamespace().'Type', "const TYPE_ID = {$typeId};");
         }
+
         return null;
     }
 
@@ -88,12 +95,6 @@ final class DynamicLoader
             : self::MODELS_NAMESPACE;
     }
 
-    /** Under psr-4 a `_` in `types.class` is a namespace separator, as BaseClassMap::prepareMap() reads it. */
-    private static function className(string $class): string
-    {
-        return config('interadmin.psr-4') ? str_replace('_', '\\', $class) : $class;
-    }
-
     private static function buildClass(string $className, string $parentClass, string $classBody): string
     {
         $namespace = explode('\\', $className);
@@ -102,7 +103,6 @@ final class DynamicLoader
 
         return <<<STR
 <?php
-// THIS IS A GENERATED FILE, BE CAREFUL TO EDIT THIS
 {$namespace}
 
 class {$className} extends \\{$parentClass}
