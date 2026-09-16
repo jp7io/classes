@@ -2,10 +2,10 @@
 
 namespace Jp7\Laravel\Commands;
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use InterAdmin\Models\Type;
-use DB;
 
 class SeedDumpCommand extends Command
 {
@@ -97,7 +97,9 @@ class SeedDumpCommand extends Command
      */
     protected function getTables()
     {
-        $tables = DB::connection()->getDoctrineSchemaManager()->listTableNames();
+        // ⚠ Both arguments, and the database mysqldump() is handed: unscoped this lists every
+        // schema on the server (9 here, 84 prefix matches against 42), and qualified it matches 0.
+        $tables = Schema::getTableListing($this->config['database'], schemaQualified: false);
         return array_filter($tables, function ($table) {
             return !in_array($table, $this->getIgnoredTables()) && Str::startsWith($table, $this->config['prefix']);
         });
