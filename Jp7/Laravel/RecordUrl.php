@@ -19,7 +19,7 @@ class RecordUrl
      * @return string
      * @param \InterAdmin\Models\Type $type ⚠ Untyped for the model, as getRecordUrl() is.
      */
-    public static function getTypeUrl($type, $action = 'index', $parameters = null)
+    public static function getTypeUrl($type, string $action = 'index', $parameters = null)
     {
         $route = $type->getRoute($action);
         if (!$route) {
@@ -55,7 +55,7 @@ class RecordUrl
      * @return string
      * @throws BadMethodCallException
      */
-    public static function getRecordUrl($record, $action = 'show')
+    public static function getRecordUrl($record, string $action = 'show')
     {
         $route = $record->getRoute($action);
         if (!$route) {
@@ -77,7 +77,7 @@ class RecordUrl
             array_push($variables, $removedVar);
         }
         // object -> id_slug
-        $parameters = array_map(function ($p) {
+        $parameters = array_map(function (\InterAdmin\Models\Record $p) {
             return $p->id_slug ?: $p->id;
         }, $parameters);
 

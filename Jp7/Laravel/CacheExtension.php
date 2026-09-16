@@ -8,7 +8,7 @@ use Illuminate\Filesystem\Filesystem;
 
 class CacheExtension
 {
-    public static function apply()
+    public static function apply(): void
     {
         // FileStore doesn't have tags()
         Cache::macro('tag', function (string $tag) {

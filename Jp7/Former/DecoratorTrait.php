@@ -8,7 +8,7 @@ trait DecoratorTrait
 
     abstract public function __call($method, $arguments);
 
-    public function decorator()
+    public function decorator(): \Jp7\Former\Decorator
     {
         $decorator = new Decorator();
         $this->decorators[] = $decorator;
@@ -16,12 +16,12 @@ trait DecoratorTrait
         return $decorator;
     }
 
-    public function closeDecorator()
+    public function closeDecorator(): void
     {
         array_pop($this->decorators);
     }
 
-    private function decorateField($field)
+    private function decorateField($field): void
     {
         foreach ($this->decorators as $decorator) {
             $decorator->_runOn($field);

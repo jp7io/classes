@@ -6,16 +6,16 @@ use HtmlObject\Image;
 
 class ImgResizeElement extends Image
 {
-    private $lazy = false;
+    private bool $lazy = false;
 
-    public function setLazy($status)
+    public function setLazy($status): void
     {
         $this->lazy = (bool) $status;
     }
 
 
     // Add <noscript> tags if needed
-    public function render()
+    public function render(): string
     {
         $noscript = '';
 

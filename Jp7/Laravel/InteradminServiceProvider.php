@@ -29,7 +29,7 @@ class InteradminServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         if ($this->app->isDownForMaintenance()) {
             return;
@@ -48,7 +48,7 @@ class InteradminServiceProvider extends ServiceProvider
         // self::bootTestingEnv();
     }
 
-    private function publishPackageFiles()
+    private function publishPackageFiles(): void
     {
         $base = __DIR__.'/../..';
 
@@ -68,7 +68,7 @@ class InteradminServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $currentType = function () {
             $route = Route::getCurrentRoute();
@@ -79,7 +79,7 @@ class InteradminServiceProvider extends ServiceProvider
         App::bind(\InterAdmin\Models\Type::class, $currentType);
     }
 
-    private function bootOrm()
+    private function bootOrm(): void
     {
         if (config('interadmin.namespace')) {
             \InterAdmin\Models\Type::setDefaultClass(config('interadmin.namespace').'Type');
@@ -89,9 +89,9 @@ class InteradminServiceProvider extends ServiceProvider
         TypeCache::store();
     }
 
-    private function shareViewPath()
+    private function shareViewPath(): void
     {
-        View::composer('*', function ($view) {
+        View::composer('*', function ($view): void {
             $parts = explode('.', $view->getName());
             array_pop($parts);
             View::share('viewPath', implode('.', $parts));

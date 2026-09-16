@@ -26,7 +26,7 @@ class ImgResize
         return static::$lazy;
     }
 
-    public static function setLazy($status)
+    public static function setLazy($status): void
     {
         static::$lazy = (bool) $status;
     }
@@ -36,7 +36,7 @@ class ImgResize
         return static::$seo;
     }
 
-    public static function setSeo($status)
+    public static function setSeo($status): void
     {
         static::$seo = (bool) $status;
     }
@@ -46,7 +46,7 @@ class ImgResize
         return static::$minSrcsetWidth;
     }
 
-    public static function setMinSrcsetWidth($minSrcsetWidth)
+    public static function setMinSrcsetWidth($minSrcsetWidth): void
     {
         static::$minSrcsetWidth = $minSrcsetWidth;
     }
@@ -58,7 +58,7 @@ class ImgResize
      * @param string|array          $template   Name of the template, or prefix for "srcset"
      * @param array                 $options    HTML options such as title, or class.
      */
-    public static function tag($img, $template = 'original', $options = [])
+    public static function tag($img, $template = 'original', array $options = [])
     {
         if (!is_string($img) && !is_object($img)) {
             throw new InvalidArgumentException('$img should be a string or use Downloadable trait');
@@ -71,7 +71,7 @@ class ImgResize
         return static::makeElement($img, $template, $alt, $options);
     }
 
-    protected static function makeElement($img, $template, $alt, $options)
+    protected static function makeElement($img, $template, $alt, array $options)
     {
         if (Str::endsWith($template, '-')) {
             // Image with srcset=""
@@ -96,7 +96,7 @@ class ImgResize
         return $element;
     }
 
-    public static function url($url, $template = 'original', $title = '')
+    public static function url($url, $template = 'original', $title = ''): string
     {
         // local test: $url = '/upload/mediabox/00202271.jpg';
         if (is_object($url)) {
@@ -111,13 +111,13 @@ class ImgResize
         return asset($url);
     }
 
-    protected static function storageUrl()
+    protected static function storageUrl(): string
     {
         $config = config('interadmin.storage');
         return $config['scheme'].'://'.$config['host'];
     }
 
-    public static function srcset($img, $prefix)
+    public static function srcset($img, $prefix): string
     {
         if (!Str::endsWith($prefix, '-')) {
             throw new InvalidArgumentException('Prefix for srcset must end with dash (Eg: small- or large-)');
@@ -142,12 +142,12 @@ class ImgResize
         return implode(', ', $srcs);
     }
 
-    public static function bg($url, $template = null, $title = '')
+    public static function bg($url, $template = null, $title = ''): string
     {
         return 'background-image: url(\'' . static::url($url, $template, $title) . '\')';
     }
 
-    public static function blankGif()
+    public static function blankGif(): string
     {
         return 'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=';
     }
@@ -163,7 +163,7 @@ class ImgResize
             'title='.to_slug($title);
     }
 
-    protected static function isExternal($url)
+    protected static function isExternal($url): bool
     {
         return parse_url($url, PHP_URL_HOST) != parse_url(self::storageUrl(), PHP_URL_HOST);
     }

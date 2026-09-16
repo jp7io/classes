@@ -8,7 +8,7 @@ use Former\Former as OriginalFormer;
 
 class FormerServiceProvider extends OriginalServiceProvider
 {
-    public function bindFormer(Container $app)
+    public function bindFormer(Container $app): Container
     {
         parent::bindFormer($app);
 
@@ -19,7 +19,7 @@ class FormerServiceProvider extends OriginalServiceProvider
         // Extend former
         $former = $app->make('former');
 
-        $app->singleton('former', function ($app) use ($former) {
+        $app->singleton('former', function ($app) use ($former): \Jp7\Former\FormerExtension {
             return new FormerExtension($former);
         });
 

@@ -19,10 +19,10 @@ class FormerExtension
 {
     use RowTrait, DecoratorTrait;
 
-    private $model;
-    private $rules;
-    private $former;
-    private $labelless = false; // Custom setting
+    private ?\InterAdmin\Models\Record $model = null;
+    private ?array $rules = null;
+    private \Former\Former $former;
+    private bool $labelless = false; // Custom setting
 
     public function __construct(OriginalFormer $former)
     {
@@ -53,12 +53,12 @@ class FormerExtension
         return $result;
     }
 
-    public function &__get($property)
+    public function &__get(string $property): mixed
     {
         return $this->former->$property;
     }
 
-    public function __set($property, $value)
+    public function __set(string $property, mixed $value)
     {
         $this->former->$property = $value;
     }
@@ -89,7 +89,7 @@ class FormerExtension
     /**
      * Add "rules" and "action" from InterAdmin.
      */
-    private function decorateFormInterAdmin($form)
+    private function decorateFormInterAdmin(\Former\Form\Form $form): void
     {
         if ($this->model) {
             $form->rules($this->rules);
@@ -102,7 +102,7 @@ class FormerExtension
     /**
      * Set "label" and "options" from InterAdmin.
      */
-    private function decorateFieldInterAdmin($field)
+    private function decorateFieldInterAdmin(\Former\Traits\Field $field): void
     {
         if (!$this->model || (!$alias = $field->getName())) {
             return;
@@ -129,7 +129,7 @@ class FormerExtension
         $this->decorateFieldByTypeAndAlias($field, $type, $alias);
     }
 
-    private function decorateFieldByTypeAndAlias($field, $type, $alias)
+    private function decorateFieldByTypeAndAlias(\Former\Traits\Field $field, \InterAdmin\Models\Type $type, $alias): void
     {
         $fieldDefinitions = $type->getFields();
         $aliases = array_flip($type->getFieldAliases());
@@ -168,7 +168,7 @@ class FormerExtension
         }
     }
 
-    protected function toDots($name)
+    protected function toDots($name): string
     {
         $name = str_replace( // same replace Laravel and Former do
             ['[', ']'],
@@ -178,10 +178,10 @@ class FormerExtension
         return trim($name, '.');
     }
 
-    private function populateOptions($field, $optionsType)
+    private function populateOptions(\Former\Traits\Field $field, $optionsType): void
     {
         if ($field->getType() === 'select') {
-            $field->options(function () use ($optionsType) {
+            $field->options(function () use ($optionsType): array {
                 $options = [];
                 foreach ($optionsType->records()->get() as $record) {
                     $options[$record->id] = $record->getName();

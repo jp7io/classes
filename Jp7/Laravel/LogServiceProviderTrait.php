@@ -10,10 +10,10 @@ trait LogServiceProviderTrait
 {
     protected function listenQueueEvents()
     {
-        Queue::after(function (JobProcessed $event) {
+        Queue::after(function (JobProcessed $event): void {
             Log::info('[QUEUE] Processed: '.$event->job->getName());
         });
-        Queue::looping(function () {
+        Queue::looping(function (): void {
             static $last = 0;
             if ($last > time() - 60) {
                 return; // too soon for ping

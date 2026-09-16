@@ -18,7 +18,7 @@ class Router extends MethodForwarder
      * @var array [type_id => route basename]
      */
     protected $map = [];
-    protected $cachefile = 'bootstrap/cache/routemap.cache';
+    protected string $cachefile = 'bootstrap/cache/routemap.cache';
 
 ////
 //// Cache functions: Type map will work even when Laravel routes are cached
@@ -35,14 +35,14 @@ class Router extends MethodForwarder
         parent::__construct($target);
     }
 
-    public function clearCache()
+    public function clearCache(): void
     {
         // In memory only. The caller rebuilds and saves straight after, and leaving the file
         // alone until then is what keeps a concurrent reader off an empty map.
         $this->map = [];
     }
 
-    public function saveCache()
+    public function saveCache(): void
     {
         // Renamed into place rather than written in place: map() rewrites this on every
         // request, and a php-fpm worker reading a half-written file gets "unserialize():
@@ -59,7 +59,7 @@ class Router extends MethodForwarder
         }
     }
 
-    public function loadCache()
+    public function loadCache(): void
     {
         // The map is nested arrays of strings, so no class may come back out of it: unserialize()
         // over a file is an object-injection sink otherwise.
@@ -76,7 +76,7 @@ class Router extends MethodForwarder
         return App::getLocale();
     }
 
-    private function addType($type_id, $controllerName)
+    private function addType(float|int|string|bool $type_id, $controllerName): void
     {
         $map = &$this->map[$this->getLocale()];
         $map = $map ?: [];
@@ -210,7 +210,7 @@ class Router extends MethodForwarder
      * @param  string $name Resource name such as 'places'
      * @return string       Controller name such as 'PlacesController'
      */
-    protected function getControllerClass($name)
+    protected function getControllerClass($name): string
     {
         if ($name === '/') {
             $controller = 'Index';
@@ -223,7 +223,10 @@ class Router extends MethodForwarder
         return $controller;
     }
 
-    protected function getControllerActions($classBasename)
+    /**
+     * @return mixed[]
+     */
+    protected function getControllerActions($classBasename): array
     {
         $stack = $this->getGroupStack();
         $namespace = end($stack)['namespace'];
@@ -276,7 +279,7 @@ class Router extends MethodForwarder
      * @param Route $route
      * @return string
      */
-    public function getRouteBasename($route)
+    public function getRouteBasename($route): string
     {
         $parts = explode('.', $route->getName());
         array_pop($parts);
@@ -289,8 +292,9 @@ class Router extends MethodForwarder
      *
      * @param string $uri
      * @param Closure $resolveParameter     Closure will be called each time a {placeholder} is found
+     * @return mixed[]
      */
-    public function uriToBreadcrumb($uri, $resolveParameter)
+    public function uriToBreadcrumb($uri, $resolveParameter): array
     {
         $breadcrumb = [];
         $uri = trim($uri, '/');

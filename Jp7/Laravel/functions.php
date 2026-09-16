@@ -10,7 +10,7 @@ if (!function_exists('human_size')) {
      * @param int $decimals
      * @return string   Human readable size
      */
-    function human_size($bytes, $decimals = 2)
+    function human_size($bytes, $decimals = 2): string
     {
         $size = ['B','KB','MB','GB','TB','PB','EB','ZB','YB'];
         $factor = floor((strlen($bytes) - 1) / 3);
@@ -41,7 +41,7 @@ if (!function_exists('human_size')) {
     /**
      * Like file_get_contents() but with some default settings for URLs
      */
-    function url_get_contents($url, array $contextOptions = ['http' => []])
+    function url_get_contents($url, array $contextOptions = ['http' => []]): string|false
     {
         // Using Safari, not Chrome to avoid downloading WEBP
         $safariUserAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Safari/605.1.15';
@@ -63,7 +63,7 @@ if (!function_exists('interadmin_type_fields_encode')) {
      *
      * @return string
      */
-    function interadmin_type_fields_encode($fieldDefinitions)
+    function interadmin_type_fields_encode($fieldDefinitions): string
     {
         $s = '';
         foreach ($fieldDefinitions as $value) {
@@ -85,7 +85,7 @@ if (!function_exists('toId')) {
      *
      * @version (2006/01/18)
      */
-    function toId($string, $tofile = false, $separador = '')
+    function toId($string, $tofile = false, $separador = ''): string|array|null
     {
         // Same as to_slug(): an unset field arrives as NULL, which every preg_* below
         // deprecates rather than casting.

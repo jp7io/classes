@@ -12,7 +12,7 @@ trait RouteConnectorTrait
      *
      * @return void
      */
-    public function map()
+    public function map(): void
     {
         if (env('SKIP_ROUTES') || !RecordClassMap::getInstance()->getClasses()) {
             return;
