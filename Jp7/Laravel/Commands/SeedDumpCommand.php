@@ -31,7 +31,7 @@ class SeedDumpCommand extends Command
         $this->config = config('database.connections.mysql');
     }
 
-    public function handle()
+    public function handle(): void
     {
         $this->dumpSchema();
         $this->dumpTypes();
@@ -54,8 +54,9 @@ class SeedDumpCommand extends Command
             " --where=\"deleted_at IS NULL AND visible <> ''\"".
             " --skip-extended-insert".
             " --no-create-info";
-        $this->mysqldump($options, 'database/interadmin_tipos.sql');
-        $this->removeLogs('database/interadmin_tipos.sql');
+        if ($this->mysqldump($options, 'database/interadmin_tipos.sql')) {
+            $this->removeLogs('database/interadmin_tipos.sql');
+        }
     }
 
     protected function dumpRecords()
@@ -67,11 +68,12 @@ class SeedDumpCommand extends Command
             " --skip-extended-insert".
             " --no-create-info";
 
-        $this->mysqldump($options, 'database/interadmin_records.sql');
-        $this->removeLogs('database/interadmin_records.sql');
+        if ($this->mysqldump($options, 'database/interadmin_records.sql')) {
+            $this->removeLogs('database/interadmin_records.sql');
+        }
     }
 
-    protected function getRecordsTables()
+    protected function getRecordsTables(): array
     {
         $tables = [];
         foreach ($this->typeIds as $typeId) {
@@ -95,12 +97,12 @@ class SeedDumpCommand extends Command
      *
      * @return array
      */
-    protected function getTables()
+    protected function getTables(): array
     {
         // ⚠ Both arguments, and the database mysqldump() is handed: unscoped this lists every
         // schema on the server (9 here, 84 prefix matches against 42), and qualified it matches 0.
         $tables = Schema::getTableListing($this->config['database'], schemaQualified: false);
-        return array_filter($tables, function ($table) {
+        return array_filter($tables, function ($table): bool {
             return !in_array($table, $this->getIgnoredTables()) && Str::startsWith($table, $this->config['prefix']);
         });
     }
@@ -110,7 +112,7 @@ class SeedDumpCommand extends Command
      *
      * @return array
      */
-    protected function getIgnoredTables()
+    protected function getIgnoredTables(): array
     {
         return [
             $this->config['prefix'].'migrations',
@@ -120,23 +122,40 @@ class SeedDumpCommand extends Command
         ];
     }
 
-    protected function mysqldump($options, $output)
+    protected function mysqldump($options, $output): bool
     {
+        // ⚠ A sibling of $output, never $output itself: the shell truncates a redirect target
+        // before mysqldump runs, so a failed dump emptied the committed seed file.
+        $temp = $output.'.part';
+
         $command = "mysqldump -h ".$this->config['host'].
             " -u ".$this->config['username'].
             " -p".$this->config['password'].
             " ".$this->config['database'].
-            $options." > ".$output;
+            $options." > ".$temp;
         if ($this->option('verbose')) {
             $this->comment($command);
         }
-        exec($command, $_, $error_code);
 
-        if ($error_code) {
+        if ($this->runShell($command)) {
+            @unlink($temp);
             $this->error('Mysqldump failed');
-        } else {
-            $this->info('Dumped: '.$output);
+
+            return false;
         }
+
+        rename($temp, $output);
+        $this->info('Dumped: '.$output);
+
+        return true;
+    }
+
+    /** The shell call alone, so a test can drive both outcomes without the mysqldump binary. */
+    protected function runShell(string $command): int
+    {
+        exec($command, $_, $code);
+
+        return $code;
     }
 
     /**
