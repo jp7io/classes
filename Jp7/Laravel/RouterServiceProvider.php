@@ -14,7 +14,7 @@ class RouterServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Used by Jp7\Laravel\RouterFacade
-        \App::singleton(Router::class, function (array $app): \Jp7\Laravel\Router {
+        \App::singleton(Router::class, function ($app): \Jp7\Laravel\Router {
             return new Router($app['router']);
         });
     }
